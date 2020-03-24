@@ -1,4 +1,5 @@
 import math
+# Constants, pulled from the book.
 
 spring_calc = {
 'magi' : 5,
@@ -85,7 +86,3 @@ class Covenant:
         print('\nTotal income:' + str(self.total_income()).rjust(10))
         print('Treasury:' + str(self.treasury).rjust(14))
     
-cov = Covenant()
-print('Total covenant points: %s' % cov.calc_points())
-print('Needed servants and teamsters: %s' % cov.calc_needs())
-cov.display_finances()
