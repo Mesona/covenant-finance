@@ -7,5 +7,5 @@ cov = Covenant()
 print('Total covenant points: %s' % cov.calc_points())
 print('Needed servants and teamsters: %s' % cov.calc_needs())
 
-cov.bank(30)
+cov.advance_year()
 cov.display_finances()

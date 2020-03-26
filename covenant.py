@@ -29,6 +29,8 @@ class Covenant:
             'Guenny' : 0,
             'Ex Max' : 0}
         self.treasury = 50.0
+        self.armory = self.covenfolk_tiers['grogs'] * 32
+        self.writers = 0
 
     def calc_points(self):
         point_cost = 0
@@ -56,10 +58,10 @@ class Covenant:
         expend['inflation'] = 0
         expend['laboratories'] = self.calc_labs() / 10
         expend['provisions'] = 5 * (self.calc_points() / 10)
-        expend['armory'] = 0
+        expend['armory'] = self.armory / 320
         expend['tithes'] = 0
         expend['wages'] = 2 * (self.calc_points() / 10)
-        expend['writing']= 0
+        expend['writing']= self.writers + self.covenfolk_tiers['magi']
         return expend
     
     def calc_labs(self):
@@ -67,7 +69,7 @@ class Covenant:
         for key, val in self.laboratories.items():
             total += cc.lab_upkeep(val)
         return total
-        
+    
     def total_expenditure(self):
         return sum(self.calc_expenditures().values())
                    
@@ -91,3 +93,5 @@ class Covenant:
     def bank(self, silver):
         self.treasury += silver
 
+    def advance_year(self):
+        self.treasury = self.treasury + self.total_income() - self.total_expenditure()
