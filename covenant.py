@@ -32,14 +32,13 @@ class Covenant:
 
     def calc_points(self):
         point_cost = 0
-        if self.covenant_season == 'spring' or self.covenant_season == 'summer':
-            for k, v in self.covenfolk_tiers.items():
-                point_cost += cc.spring_calc.get(k, 1) * v
-            #math for calculating
-            return point_cost
+        if self.covenant_season == 'spring' or self.covenant_season == 'winter':
+            default = 1
         else:
-            # math for calculating Fall or Winter covenants
-            pass
+            default = 2
+        for k, v in self.covenfolk_tiers.items():
+            point_cost += cc.spring_calc.get(k, 1) * v
+        return point_cost
 
     def calc_needs(self):
         cov_for_servants = ['magi', 'nobles', 'companions', 'crafters', 'specialists', 'dependants', 'grogs', 'horses']

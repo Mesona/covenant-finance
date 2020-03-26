@@ -19,8 +19,17 @@ spring_calc = {
 'nobles' : 5,
 'companions' : 3,
 'crafters' : 2,
-'specialists': 2,
+'specialists': 2
 }
+summer_calc = {
+'magi' : 10,
+'nobles' : 10,
+'companions' : 5,
+'crafters' : 3,
+'specialists': 3,
+'horses' : 1
+}
+    
 
 cost_max = {
     'buildings' : 0.5,
