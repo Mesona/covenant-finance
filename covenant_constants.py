@@ -1,4 +1,4 @@
-# covenant lab upkee
+# a file to keep all the charts and constants used by the covenant calculator
 
 #low upkeep costs
 lab_upkeep_low = {
