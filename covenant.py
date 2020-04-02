@@ -4,8 +4,9 @@ import covenant_constants as cc
 
 class Covenant:
     def __init__(self):
+        self.covenant_name = 'Vernus'
         self.covenant_season = 'spring'
-        self.income_sources = {'agriculture' : 100}
+        self.income_sources = {'source' : 100}
         self.covenfolk_tiers = {
             'magi' : 6,
             'nobles' : 0,
@@ -19,18 +20,18 @@ class Covenant:
             'teamsters' : 7,
             'horses': 0
             }
-##        self.covenfolk_points = self.calc_points()
-##        self.expenditures = self.calc_expenditures()
         self.laboratories = {
             'Bonny' : 0,
             'Merry' : 0,
-            'Tremmy' : 0,
             'Jerry' : 0,
-            'Guenny' : 0,
-            'Ex Max' : 0}
+            'Ex Manny': 0,
+            'Tremmy' : 0,
+            'Gwenny': 0}
         self.treasury = 50.0
         self.armory = self.covenfolk_tiers['grogs'] * 32
         self.writers = 0
+        self.cost_savings = []
+            
 
     def calc_points(self):
         point_cost = 0
@@ -48,7 +49,8 @@ class Covenant:
         if self.covenant_season == 'spring':
             for cov in cov_for_servants:
                 points += cc.spring_calc.get(cov, 1) * self.covenfolk_tiers[cov]
-        needs = [math.ceil(points / 10) * 2, math.ceil(points / 10) - (2 * self.covenfolk_tiers['laborers'])]
+        needs = [math.ceil(points / 10) * 2, #servants
+                 math.ceil((points + (cc.spring_calc.get('servants', 1) * self.covenfolk_tiers['servants'])  - (2 * self.covenfolk_tiers['laborers'])) / 10)]
         return needs
     
     def calc_expenditures(self):

@@ -38,3 +38,46 @@ cost_max = {
     'provisions' : 0.2,
     'arms' : 0.5,
     'writing' : 0.5}
+
+
+def semita(covenant):
+        covenant.covenant_name = 'Semita Errabunda'
+        covenant.covenant_season = 'spring'
+        covenant.income_sources = {'trading' : 100}
+        covenant.covenfolk_tiers = {
+            'magi' : 5,
+            'nobles' : 0,
+            'companions' : 4,
+            'crafters' : 12,
+            'specialists': 4,
+            'dependants': 5,
+            'grogs': 20,
+            'laborers' : 40,
+            'servants' : 16,
+            'teamsters' : 4,
+            'horses': 6
+            }
+        covenant.laboratories = {
+            'Carolus' : 0,
+            'Mari' : 0,
+            'Moratamis' : 0,
+            'Tillitus' : 0,
+            'Darius' : 2}
+        covenant.treasury = 100.0
+        covenant.armory = covenant.covenfolk_tiers['grogs'] * 32
+        covenant.writers = 4
+        covenant.cost_savings = [
+            ['provisions', 'brewer', 6],
+            ['provisions', 'brewer', 6],
+            ['buildings', 'thatcher', 6],
+            ['buildings', 'carpenter', 6],
+            ['buildings', 'furniture maker', 6],
+            ['buildings', 'carpenter', 6],
+            ['consumables', 'blacksmith', 6],
+            ['consumables', 'cobbler', 6],
+            ['consumables', 'tinker', 6],
+            ['consumables', 'candlemaker', 6],
+            ['consumables', 'magic loom, weaving', 6],
+            ['consumables', 'magic anvil, blacksmith', 2]
+            ]
+        return covenant
