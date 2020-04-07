@@ -67,17 +67,17 @@ def semita(covenant):
         covenant.armory = covenant.covenfolk_tiers['grogs'] * 32
         covenant.writers = 4
         covenant.cost_savings = [
-            ['provisions', 'brewer', 6],
-            ['provisions', 'brewer', 6],
-            ['buildings', 'thatcher', 6],
-            ['buildings', 'carpenter', 6],
-            ['buildings', 'furniture maker', 6],
-            ['buildings', 'carpenter', 6],
-            ['consumables', 'blacksmith', 6],
-            ['consumables', 'cobbler', 6],
-            ['consumables', 'tinker', 6],
-            ['consumables', 'candlemaker', 6],
-            ['consumables', 'magic loom, weaving', 6],
-            ['consumables', 'magic anvil, blacksmith', 2]
+            ['provisions', 'brewer', 6, 'crafter'],
+            ['provisions', 'brewer', 6, 'crafter'],
+            ['buildings', 'thatcher', 6, 'crafter'],
+            ['buildings', 'carpenter', 6, 'crafter'],
+            ['buildings', 'furniture maker', 6, 'crafter'],
+            ['buildings', 'carpenter', 6, 'crafter'],
+            ['consumables', 'blacksmith', 6, 'crafter'],
+            ['consumables', 'cobbler', 6, 'crafter'],
+            ['consumables', 'tinker', 6, 'crafter'],
+            ['consumables', 'candlemaker', 6, 'crafter'],
+            ['consumables', 'weaving', 6, 'magic loom'],
+            ['consumables', 'blacksmith', 2, 'magic anvil']
             ]
         return covenant

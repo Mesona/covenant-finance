@@ -24,7 +24,7 @@ class Covenant:
             'Bonny' : 0,
             'Merry' : 0,
             'Jerry' : 0,
-            'Ex Manny': 0,
+            'Ex Max': 0,
             'Tremmy' : 0,
             'Gwenny': 0}
         self.treasury = 50.0
@@ -65,6 +65,12 @@ class Covenant:
         expend['wages'] = 2 * (self.calc_points() / 10)
         expend['writing']= self.writers + self.covenfolk_tiers['magi']
         return expend
+
+    # I need to figure out how to do this
+    # list comprehension on cost_savings?
+    def calc_savings(self, category):
+        app_craft = [crafter for crafter in self.cost_savings if crafter[0] == category]
+        return app_craft
     
     def calc_labs(self):
         total = 0
