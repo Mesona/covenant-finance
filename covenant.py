@@ -46,9 +46,13 @@ class Covenant:
     def calc_needs(self):
         cov_for_servants = ['magi', 'nobles', 'companions', 'crafters', 'specialists', 'dependants', 'grogs', 'horses']
         points = 0
-        if self.covenant_season == 'spring':
+        if self.covenant_season == 'spring' or self.covenant_season == 'winter':
             for cov in cov_for_servants:
                 points += cc.spring_calc.get(cov, 1) * self.covenfolk_tiers[cov]
+        else:
+            for cov in cov_for_servants:
+                points += cc.summer_calc.get(cov, 1) * self.covenfolk_tiers[cov]
+        
         needs = [math.ceil(points / 10) * 2, #servants
                  math.ceil((points + (cc.spring_calc.get('servants', 1) * self.covenfolk_tiers['servants'])  - (2 * self.covenfolk_tiers['laborers'])) / 10)]
         return needs
