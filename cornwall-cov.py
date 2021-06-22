@@ -15,22 +15,22 @@ def gglynn(covenant):
             'magi' : 6,
             'nobles' : 0,
             'companions' : 6,
-            'crafters' : 12,
+            'crafters' : 8,
             'specialists': 4,
-            'dependants': 5,
+            'dependants': 25,
             'grogs': 12,
             'laborers' : 30,
-            'servants' : 36,
-            'teamsters' : 14,
+            'servants' : 38,
+            'teamsters' : 15,
             'horses': 6
             }
         covenant.laboratories = {
-            'Iactus' : 2,
-            'Tepes' : 2,
-            'Perat' : 2,
-            'Fieri' : 2,
-            'Cassius' : 2,
-            'Hristos' : 2}
+            'Iactus' : 3,
+            'Tepes' : 3,
+            'Perat' : 3,
+            'Fieri' : 3,
+            'Cassius' : 3,
+            'Hristos' : 3}
         covenant.treasury = 250.0
         covenant.armory = covenant.covenfolk_tiers['grogs'] * 32
         covenant.writers = 4
