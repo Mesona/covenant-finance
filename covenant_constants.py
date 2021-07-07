@@ -1,19 +1,5 @@
 # a file to keep all the charts and constants used by the covenant calculator
 
-#low upkeep costs
-lab_upkeep_low = {
-    -5: 1,
-    -4: 2,
-    -3: 3,
-    -2: 5,
-    -1: 7,
-    0 : 10,
-    1 : 15}
-def lab_upkeep(cost):
-    if cost < 2:
-        return lab_upkeep_low[cost]
-    return 5 * (cost) * (cost + 1)
-
 spring_calc = {
 'magi' : 5,
 'nobles' : 5,
@@ -40,44 +26,3 @@ cost_max = {
     'writing' : 0.5}
 
 
-def semita(covenant):
-        covenant.covenant_name = 'Semita Errabunda'
-        covenant.covenant_season = 'spring'
-        covenant.income_sources = {'trading' : 100}
-        covenant.covenfolk_tiers = {
-            'magi' : 5,
-            'nobles' : 0,
-            'companions' : 4,
-            'crafters' : 12,
-            'specialists': 4,
-            'dependants': 5,
-            'grogs': 20,
-            'laborers' : 40,
-            'servants' : 16,
-            'teamsters' : 4,
-            'horses': 6
-            }
-        covenant.laboratories = {
-            'Carolus' : 0,
-            'Mari' : 0,
-            'Moratamis' : 0,
-            'Tillitus' : 0,
-            'Darius' : 2}
-        covenant.treasury = 100.0
-        covenant.armory = covenant.covenfolk_tiers['grogs'] * 32
-        covenant.writers = 4
-        covenant.cost_savings = [
-            ['provisions', 'brewer', 6, 'crafter'],
-            ['provisions', 'brewer', 6, 'crafter'],
-            ['buildings', 'thatcher', 6, 'crafter'],
-            ['buildings', 'carpenter', 6, 'crafter'],
-            ['buildings', 'furniture maker', 6, 'crafter'],
-            ['buildings', 'carpenter', 6, 'crafter'],
-            ['consumables', 'blacksmith', 6, 'crafter'],
-            ['consumables', 'cobbler', 6, 'crafter'],
-            ['consumables', 'tinker', 6, 'crafter'],
-            ['consumables', 'candlemaker', 6, 'crafter'],
-            ['consumables', 'weaving', 6, 'magic loom'],
-            ['consumables', 'blacksmith', 2, 'magic anvil']
-            ]
-        return covenant

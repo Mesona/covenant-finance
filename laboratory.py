@@ -1,23 +1,55 @@
 class Laboratory:
-    def __init__(self, owner="Lorem", size=0, virtue_points=0, flaw_points=0, extra_upkeep=0, usage="typical"):
+    def __init__(
+            self,
+            owner="Lorem",
+            size=0,
+            virtue_points=0,
+            flaw_points=0,
+            extra_upkeep=0,
+            usage="typical",
+            minor_fortifications=0,
+            major_fortifications=0,
+    ):
         self.owner = owner
         self.size = size
         self.vp = virtue_points
         self.fp = flaw_points
         self.extra_upkeep = extra_upkeep
         self.usage = usage
-        self.costs = self.calculate_annual_costs()
+        self.points = self.calculate_annual_points()
+        self.minor_fortifications = minor_fortifications
+        self.major_fortifications = major_fortifications
+
+    def add_minor_fortification(self, value=1):
+        self.minor_fortifications += value
+
+    def remove_minor_fortification(self, value=1):
+        new_total = self.minor_fortifications -= value
+        if new_total < 0:
+            raise ValueError("Labs cannot have negative fortifications!")
+
+        self.minor_fortifications = new_total
+
+    def add_major_fortification(self, value=1):
+        self.major_fortifications += value
+
+    def remove_major_fortification(self, value=1):
+        new_total = self.major_fortifications -= value
+        if new_total < 0:
+            raise ValueError("Labs cannot have negative fortifications!")
+
+        self.major_fortifications = new_total
 
     def set_size(self, size):
         if size < -5:
             raise ValueError("Laboratories cannot be smaller than size -5")
 
         self.size = size 
-        self.costs = self.calculate_annual_costs()
+        self.points = self.calculate_annual_points()
 
     def increase_size(self, size=1):
         self.size += size
-        self.costs = self.calculate_annual_costs()
+        self.points = self.calculate_annual_points()
 
     def decrease_size(self, size=1):
         new_size = self.size - size
@@ -25,7 +57,7 @@ class Laboratory:
             raise ValueError("Laboratories cannot be smaller than size -5")
 
         self.size = new_size
-        self.costs = self.calculate_annual_costs()
+        self.points = self.calculate_annual_points()
 
     def change_owner(self, person):
         self.owner = person
@@ -44,31 +76,31 @@ class Laboratory:
 
     def set_extra_upkeep(self, upkeep):
         self.extra_upkeep = upkeep
-        self.costs = self.calculate_annual_costs()
+        self.points = self.calculate_annual_points()
 
     def add_extra_upkeep(self, upkeep=1):
         self.extra_upkeep += upkeep
-        self.costs = self.calculate_annual_costs()
+        self.points = self.calculate_annual_points()
 
     def remove_extra_upkeep(self, upkeep=1):
         self.extra_upkeep -= upkeep
-        self.costs = self.calculate_annual_costs()
+        self.points = self.calculate_annual_points()
 
     def change_usage(self, usage):
         if not usage.lower() in ["light", "typical", "heavy"]:
             raise ValueError("Usage can only be 'light', 'typical', or 'heavy'")
 
         self.usage = usage.lower()
-        self.costs = self.calculate_annual_costs()
+        self.points = self.calculate_annual_points()
 
-    def calculate_annual_costs(self):
-        upkeep_multiplier = 0
+    def calculate_annual_points(self):
+        upkeep_points_multiplier = 0
         if self.usage == "light":
-            upkeep_multiplier = 0.5
+            upkeep_points_multiplier = 0.5
         elif self.usage == "typical":
-            upkeep_multiplier = 1
+            upkeep_points_multiplier = 1
         elif self.usage == "heavy":
-            upkeep_multiplier = 1.5
+            upkeep_points_multiplier = 1.5
 
         # TODO: Figure out the equation to make this dynamic
         base_lab_points = {
@@ -85,8 +117,5 @@ class Laboratory:
                5: 150
         }
 
-        base_costs = 1
-
-        print("EXTRA UPKEEP:", self.extra_upkeep)
-        total_costs = (base_lab_points[self.size + self.extra_upkeep] + base_costs) * upkeep_multiplier
-        return total_costs
+        total_points = base_lab_points[self.size + self.extra_upkeep] * upkeep_points_multiplier
+        return total_points

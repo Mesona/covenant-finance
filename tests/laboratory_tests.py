@@ -2,7 +2,16 @@ import pytest
 from laboratory import Laboratory
 
 def demo_lab():
-    lab = Laboratory(owner = "Ipsum", size = 1, virtue_points = 3, flaw_points = 2, extra_upkeep = 1, usage = "heavy")
+    lab = Laboratory(
+            owner = "Ipsum",
+            size = 1,
+            virtue_points = 3,
+            flaw_points = 2,
+            extra_upkeep = 1,
+            usage = "heavy",
+            minor_fortifications = 1,
+            major_fortifications = 2,
+    )
     return lab
 
 class DescribeLaboratories:
@@ -15,7 +24,9 @@ class DescribeLaboratories:
         assert lab.fp == 0
         assert lab.extra_upkeep == 0
         assert lab.usage == "typical"
-        assert lab.costs == 11
+        assert lab.points == 11
+        assert lab.minor_fortifications == 0
+        assert lab.major_fortifications == 0
 
     @staticmethod
     def it_initializes_with_custom_values():
@@ -26,6 +37,8 @@ class DescribeLaboratories:
         assert lab.fp == 2
         assert lab.extra_upkeep == 1
         assert lab.usage == "heavy"
+        assert lab.minor_fortifications == 1
+        assert lab.major_fortifications == 2
 
     @staticmethod
     def it_can_set_size():
@@ -143,13 +156,56 @@ class DescribeLaboratories:
             lab.change_usage("weird")
 
     @staticmethod
-    def it_correctly_calculates_annual_costs():
+    def it_correctly_calculates_annual_points():
         default_lab = Laboratory()
         demo = demo_lab()
-        assert default_lab.costs == 11
-        assert demo.costs == 46.5
+        assert default_lab.points == 11
+        assert demo.points == 46.5
         default_lab.increase_size()
-        assert default_lab.costs == 16
+        assert default_lab.points == 16
         default_lab.add_extra_upkeep()
-        assert default_lab.costs == 31
+        assert default_lab.points == 31
 
+    @staticmethod
+    def it_correctly_adds_minor_fortifications():
+        lab = Laboratory()
+        lab.add_minor_fortification()
+        assert lab.minor_fortification == 1
+        lab.add_minor_fortification(3)
+        assert lab.minor_fortification == 4
+
+    @staticmethod
+    def it_correctly_removes_minor_fortifications():
+        lab = Laboratory(minor_fortifications = 10)
+        lab.remove_minor_fortifications()
+        assert lab.minor_fortifications == 9
+        lab.remove_minor_fortifications(6)
+        assert lab.minor_fortifications == 3
+
+    @staticmethod
+    def it_correctly_adds_major_fortifications():
+        lab = Laboratory()
+        lab.add_major_fortification()
+        assert lab.major_fortification == 1
+        lab.add_major_fortification(2)
+        assert lab.major_fortification == 3
+
+    @staticmethod
+    def it_correctly_removes_major_fortifications():
+        lab = Laboratory(major_fortifications = 10)
+        lab.remove_major_fortifications()
+        assert lab.major_fortifications == 9
+        lab.remove_major_fortifications(5)
+        assert lab.major_fortifications == 4
+
+    @staticmethod
+    def it_correctly_raises_errors_when_too_few_minor_fortifications():
+        lab = Laboratory()
+        with pytest.raises(ValueError):
+            lab.remove_minor_fortification()
+
+    @staticmethod
+    def it_correctly_raises_errors_when_too_few_major_fortifications():
+        lab = Laboratory()
+        with pytest.raises(ValueError):
+            lab.remove_major_fortification()

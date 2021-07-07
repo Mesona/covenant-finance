@@ -1,6 +1,52 @@
 import math
-import covenant_constants as cc
-# Constants, pulled from the book.
+
+covenant_season_costs = {
+        "spring": {
+            "magi": 5,
+            "nobles": 5,
+            "companions": 3,
+            "crafters": 2,
+            "specialists": 2,
+            "covenfolk": 1,
+            "horse": 1,
+        },
+        "summer": {
+            "magi": 10,
+            "nobles": 10,
+            "companions": 5,
+            "crafters": 3,
+            "specialists": 3,
+            "covenfolk": 2,
+            "horse": 1,
+        },
+        "fall": {
+            "magi": 5,
+            "nobles": 5,
+            "companions": 3,
+            "crafters": 2,
+            "specialists": 2,
+            "covenfolk": 2,
+            "horse": 1,
+        },
+        "winter": {
+            "magi": 5,
+            "nobles": 5,
+            "companions": 3,
+            "crafters": 2,
+            "specialists": 2,
+            "covenfolk": 1,
+            "horse": 1,
+        },
+}
+
+maximum_cost_savings = {
+    "buildings" : 0.5,
+    "consumables" : 0.2,
+    "laboratories" : 0.2,
+    "provisions" : 0.2,
+    "arms" : 0.5,
+    "writing" : 0.5}
+}
 
 class Covenant:
     def __init__(
@@ -14,9 +60,23 @@ class Covenant:
             covenfolk_tiers = {},
             laboratories = {},
             armory = "",
+            inflation_enabled = True,
+            minor_fortifications = 0,
+            major_foritifications = 0,
         ):
-        self.covenant_name = name
-        self.covenant_season = season
+        self.name = name
+
+        if season.lower() in ["spring", "summer", "winter", "fall"]:
+            self.season = season.lower()
+        else:
+            raise ValueError(f"
+Season {season} is not an accepted covenant season!
+Please select between spring, summer, fall, and winter.
+")
+        for k, v in income_sources.items():
+            assert isinstance(k, str)
+            assert isinstance(v * 1.0, float)
+
         self.income_sources = income_sources
         self.treasury = treasury
         self.writers = writers
@@ -39,44 +99,63 @@ class Covenant:
             self.armory = self.covenfolk_tiers['grogs'] * 32
         else:
             self.armory = armory
+        self.treasury = 50.0
+        self.armory = self.covenfolk_tiers['grogs'] * 32
+        self.writers = 0
+        self.cost_savings = []
+        self.inflation = inflation_enabled
+        self.minor_foritifications = minor_fortifications + sum(lab.minor_fortifications for lab in self.laboratories)
+        self.major_foritifications = major_foritifcations + sum(lab.major_fortifications for lab in self.laboratories)
+        self.expenses = self.calc_expenditures()
             
-
-    def calc_points(self):
+    def calc_covenfolk_points(self):
         point_cost = 0
-        if self.covenant_season == 'spring' or self.covenant_season == 'winter':
-            default = 1
-        else:
-            default = 2
-        for k, v in self.covenfolk_tiers.items():
-            point_cost += cc.spring_calc.get(k, 1) * v
+        # FIXME: What are these lines intended to do?
+        #if self.season == "spring" or self.season == "winter":
+        #    default = 1
+        #else:
+        #    default = 2
+        for covenfolk, amount in self.covenfolk_tiers.items():
+            point_cost += covenant_season_costs[self.season][covenfolk] * amount
         return point_cost
 
-    def calc_needs(self):
-        cov_for_servants = ['magi', 'nobles', 'companions', 'crafters', 'specialists', 'dependants', 'grogs', 'horses']
-        points = 0
-        if self.covenant_season == 'spring' or self.covenant_season == 'winter':
-            for cov in cov_for_servants:
-                points += cc.spring_calc.get(cov, 1) * self.covenfolk_tiers[cov]
-        else:
-            for cov in cov_for_servants:
-                points += cc.summer_calc.get(cov, 1) * self.covenfolk_tiers[cov]
-        
-        needs = [math.ceil(points / 10) * 2, #servants
-                 math.ceil((points + (cc.spring_calc.get('servants', 1) * self.covenfolk_tiers['servants'])  - (2 * self.covenfolk_tiers['laborers'])) / 10)]
-        return needs
+    def calc_servant_minimum(self):
+        covenfolk_roles = ["magi", "nobles", "companions", "crafters", "specialists", "dependants", "grogs", "horses"]
+        covenfolk_points = 0
+
+        for covenfolk in covenfolk_roles:
+            covenfolk_points += covenant_season_costs[self.season][covenfolk] * self.covenfolk_tiers[covenfolk]
+
+        servant_minimums = math.ceil(points / 10) * 2
+        return servant_minimums
+
+    def calc_teamster_minimum(self):
+        covenfolk_roles = ["magi", "nobles", "companions", "crafters", "specialists", "dependants", "grogs", "horses", "servants"]
+        covenfolk_points = 0
+
+        for covenfolk in covenfolk_roles:
+            covenfolk_points += covenant_season_costs[self.season][covenfolk] * self.covenfolk_tiers[covenfolk]
+
+        teamster_minimums = math.ceil(points / 10)
+        return teamster_minimums
     
     def calc_expenditures(self):
         expend = {}
-        expend['buildings'] = self.calc_points() / 10
-        expend['consumables'] = 2 * (self.calc_points() / 10)
-        expend['inflation'] = 0
-        expend['laboratories'] = self.calc_labs() / 10
-        expend['provisions'] = 5 * (self.calc_points() / 10)
+        expend['buildings'] = self.calc_covenfolk_points() / 10
+        expend['consumables'] = 2 * (self.calc_covenfolk_points() / 10)
+        expend['laboratories'] = self.calc_lab_points() / 10
+        expend['provisions'] = (5 * (self.calc_covenfolk_points() / 10)) * self.calc_savings("provisions")
         expend['armory'] = self.armory / 320
         expend['tithes'] = 0
-        expend['wages'] = 2 * (self.calc_points() / 10)
+        expend['wages'] = 2 * (self.calc_covenfolk_points() / 10)
         expend['writing']= self.writers + self.covenfolk_tiers['magi']
-        return expend
+
+        if self.inflation:
+            expend['inflation'] = 0
+        else:
+            expend['inflation'] = 0
+
+        self.expenses = expend
 
     # I need to figure out how to do this
     # list comprehension on cost_savings?
@@ -84,14 +163,14 @@ class Covenant:
         app_craft = [crafter for crafter in self.cost_savings if crafter[0] == category]
         return app_craft
     
-    def calc_labs(self):
-        total = 0
-        for key, val in self.laboratories.items():
-            total += cc.lab_upkeep(val)
-        return total
+    def calc_lab_points(self):
+        points = 0
+        for lab in self.laboratories:
+            points += lab.points
+        return points
     
     def total_expenditure(self):
-        return sum(self.calc_expenditures().values())
+        return self.expenses
                    
     def total_income(self):
         return sum(self.income_sources.values())
