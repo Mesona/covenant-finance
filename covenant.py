@@ -54,6 +54,7 @@ class Covenant:
             name = "Vernus",
             season = "spring",
             income_sources = {"source": 100},
+            tithes = {},
             treasury = 50.0,
             writers = 0,
             cost_savings = [],
@@ -61,6 +62,7 @@ class Covenant:
             laboratories = {},
             armory = "",
             inflation_enabled = True,
+            inflation_value = 0,
             minor_fortifications = 0,
             major_foritifications = 0,
         ):
@@ -103,7 +105,8 @@ Please select between spring, summer, fall, and winter.
         self.armory = self.covenfolk_tiers['grogs'] * 32
         self.writers = 0
         self.cost_savings = []
-        self.inflation = inflation_enabled
+        self.inflation_enabled = inflation_enabled
+        self.inflation = inflation_value
         self.minor_foritifications = minor_fortifications + sum(lab.minor_fortifications for lab in self.laboratories)
         self.major_foritifications = major_foritifcations + sum(lab.major_fortifications for lab in self.laboratories)
         self.expenses = self.calc_expenditures()
@@ -144,18 +147,34 @@ Please select between spring, summer, fall, and winter.
         expend['buildings'] = self.calc_covenfolk_points() / 10
         expend['consumables'] = 2 * (self.calc_covenfolk_points() / 10)
         expend['laboratories'] = self.calc_lab_points() / 10
-        expend['provisions'] = (5 * (self.calc_covenfolk_points() / 10)) * self.calc_savings("provisions")
+        expend['provisions'] = 5 * (self.calc_covenfolk_points() / 10))
         expend['armory'] = self.armory / 320
-        expend['tithes'] = 0
+        expend['tithes'] = sum(self.tithes.values())
         expend['wages'] = 2 * (self.calc_covenfolk_points() / 10)
-        expend['writing']= self.writers + self.covenfolk_tiers['magi']
+        expend['writing'] = self.writers + self.covenfolk_tiers['magi']
 
-        if self.inflation:
-            expend['inflation'] = 0
-        else:
-            expend['inflation'] = 0
+        savings = self.calc_savings(expend)
+        ##TODO: factor in savings
 
-        self.expenses = expend
+        expenses = sum(expend.values())
+
+        if self.inflation_enabled:
+            inflation = calculate_inflation(expenses)
+            expenses += inflation
+            self.inflation = inflation
+
+        self.expenses = expenses
+
+    def calculate_inflation(self, expenses):
+        # Page 65 of Covenant book, inflation should not increase if the year's
+        # expenditures decreased that year, and I (@mesona) made the decision
+        # that the previous year's inflation should not be factored into this
+        # calculation
+        inflation = self.inflation
+        if expenses >= self.expenses - self.inflation:
+            inflation = expenses // 100
+
+        return inflation
 
     # I need to figure out how to do this
     # list comprehension on cost_savings?

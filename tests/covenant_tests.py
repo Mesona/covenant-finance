@@ -20,6 +20,7 @@ def custom_covenant():
             name = "Lorem",
             season = "fall",
             income_sources = {"source": 250, "source2": 100},
+            tithes = {"Lord Farqua": 10},
             treasury = 75.5,
             writers = 2,
             cost_savings = ["abc"],
@@ -39,6 +40,7 @@ def custom_covenant():
             laboratories = {},
             armory = 5,
             inflation_enabled = False,
+            inflation = 10,
             minor_fortifications = 1,
             major_fortifications = 3,
     )
@@ -51,13 +53,15 @@ class DescribeCovenant:
         assert cov.name == "Vernus"
         assert cov.season == "spring"
         assert cov.income_sources == {"source": 100}
+        assert cov.tithes == {}
         assert cov.treasury == 50.0
         assert cov.writers == 0
         assert cov.cost_savings == []
         assert cov.covenfolk_tiers == covenfolk_tiers
         assert cov.laboratories == {}
         assert cov.armory == cov.covenfolk_tiers['grogs'] * 32
-        assert cov.inflation == True
+        assert cov.inflation_enabled == True
+        assert cov.inflation == 0
         assert cov.minor_fortifications == 0
         assert cov.major_fortifications == 0
 
@@ -67,6 +71,7 @@ class DescribeCovenant:
         assert cov.name == "Lorem"
         assert cov.season == "fall"
         assert cov.income_sources == {"source": 250, "source2": 100}
+        assert cov.tithes == {"Lord Farqua": 10}
         assert cov.treasury == 75.5
         assert cov.writes == 2
         assert cov.cost_savings == ["abc"]
@@ -84,7 +89,8 @@ class DescribeCovenant:
             "horses": 4
         }
         assert cov.armory == 5
-        assert cov.inflation == False
+        assert cov.inflation_enabled == False
+        assert cov.inflation == 10
         assert cov.minor_fortifications == 1
         assert cov.major_fortifications == 3
 
