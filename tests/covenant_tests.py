@@ -1,7 +1,7 @@
 from covenant import Covenant
 import pytest
 
-covenfolks = {
+covenfolken = {
     'magi' : 6,
     'nobles' : 0,
     'companions' : 4,
@@ -24,7 +24,7 @@ def custom_covenant():
             treasury = 75.5,
             writers = 2,
             cost_savings = ["abc"],
-            covenfolks = {
+            covenfolken = {
                 "magi": 2,
                 "nobles": 1,
                 "companions": 3,
@@ -57,9 +57,9 @@ class DescribeCovenant:
         assert cov.treasury == 50.0
         assert cov.writers == 0
         assert cov.cost_savings == []
-        assert cov.covenfolks == covenfolks
+        assert cov.covenfolken == covenfolken
         assert cov.laboratories == {}
-        assert cov.armory == cov.covenfolks['grogs'] * 32
+        assert cov.armory == cov.covenfolken['grogs'] * 32
         assert cov.inflation_enabled == True
         assert cov.inflation == 0
         assert cov.minor_fortifications == 0
@@ -75,7 +75,7 @@ class DescribeCovenant:
         assert cov.treasury == 75.5
         assert cov.writes == 2
         assert cov.cost_savings == ["abc"]
-        assert cov.covenfolks == {
+        assert cov.covenfolken == {
             "magi": 2,
             "nobles": 1,
             "companions": 3,
@@ -107,9 +107,10 @@ class DescribeCovenant:
     @staticmethod
     def it_errors_when_bad_income_sources_are_added():
         with pytest.raises(ValueError):
-            cov = Covenant(income_sources = {"source": "abc"}
+            cov = Covenant(income_sources = {"source": "abc"})
+
         with pytest.raises(ValueError):
-            cov = Covenant(income_sources = {1: 200}
+            cov = Covenant(income_sources = {1: 200})
 
     @staticmethod
     def it_calculates_income_source_changes():

@@ -24,7 +24,7 @@ class Laboratory:
         self.minor_fortifications += value
 
     def remove_minor_fortification(self, value=1):
-        new_total = self.minor_fortifications -= value
+        new_total = self.minor_fortifications - value
         if new_total < 0:
             raise ValueError("Labs cannot have negative fortifications!")
 
@@ -34,7 +34,7 @@ class Laboratory:
         self.major_fortifications += value
 
     def remove_major_fortification(self, value=1):
-        new_total = self.major_fortifications -= value
+        new_total = self.major_fortifications - value
         if new_total < 0:
             raise ValueError("Labs cannot have negative fortifications!")
 

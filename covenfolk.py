@@ -1,5 +1,5 @@
-def validate_profession(profession):
-    professions = [
+def validate_classification(classification):
+    classifications = [
             "mage",
             "noble",
             "companion",
@@ -13,11 +13,13 @@ def validate_profession(profession):
             "horse",
     ]
 
-    if profession not in professions:
-        raise InputError(f"{profession} is not in the list of professions!
-Please choose between these options: {professions}")
+    if classification not in classifications:
+        raise ValueError(f"""
+{classification} is not in the list of classifications!
+Please choose between these options: {classifications}
+""")
 
-    return profession
+    return classification
 
 def validate_saving_category(category):
     categories = [
@@ -29,49 +31,89 @@ def validate_saving_category(category):
             "writing materials",
     ]
 
-    if category not in categories:
-        raise InputError(f"{category} is not in the list of categories!
-Please choose between these options: {categories}")
+    if category and category not in categories:
+        raise ValueError(f"""
+{category} is not in the list of categories!
+Please choose between these options: {categories}
+""")
 
     return category
 
-class Covenfolks:
-    def __init__():
+class Covenfolken:
+    def __init__(self):
         self.covenfolk = {}
 
-    def calculate_savings(saving_category):
+    def calculate_savings(self, saving_category):
         saving_potential = [person.skill for person in self.covenfolk if person.saving_category == saving_category]
         return saving_potential
 
-    def total_of(profession):
-        individuals = [person for person in self.covenfolk if person.profession == profession]
+    def total(self, class_or_profession):
+        individuals = [person for person in self.covenfolk if person.classification == class_or_profession]
+        if individuals == []:
+            individuals = [person for person in self.covenfolk if person.profession == class_or_profession]
+
         return len(individuals)
 
-    def add_covenfolk(name, profession, saving_category="", skill=0):
-        self.covenfolk[name] = Covenfolk(name, profession, saving_category, skill))
+    def add_covenfolk(self, *args):
+        # Allows the passing of either a Covenfolk object or the parameters
+        # to create a Covenfolk
+        if isinstance(args[0], Covenfolk):
+            folk = args[0]
+            if self.is_name_unique(folk.name):
+                self.covenfolk[folk.name] = folk
+        else:
+            if self.is_name_unique(args[0]):
+                folk = Covenfolk(
+                        args[0],
+                        args[1],
+                        args[2] if len(args) >= 3 else "",
+                        args[3] if len(args) >= 4 else "",
+                        args[4] if len(args) >= 5 else 0,
+                )
+                self.covenfolk[folk.name] = folk
 
-    def remove_covenfolk(name)
+    def is_name_unique(self, name):
+        if name not in self.covenfolk.keys():
+            return True
+
+        return False
+
+    def remove_covenfolk(self, name):
         self.covenfolk.pop(name)
+
+    def list(self):
+        for covenfolk in self.covenfolk.values():
+            print(f"{covenfolk.name}: {covenfolk.classification}")
+            if covenfolk.saving_category:
+                print(f"""Savings Category: {covenfolk.saving_category}
+{covenfolk.profession}: {covenfolk.skill}""")
+            print("")
 
 
 class Covenfolk:
-    def __init__(name, profession, saving_category="", skill=0):
+    def __init__(self, name, classification, profession="", saving_category="", skill=0):
         self.name = name
-        self.profession = validate_profession(profession)
+        self.classification = validate_classification(classification)
+        self.profession = profession.lower()
         self.saving_category = validate_saving_category(saving_category.lower())
-        self.skill = self.set_skill(skill)
+        self.set_skill(skill)
 
+    def change_profession(self, profession):
+        self.profession = profession
 
     def set_skill(self, value):
+        if value < 0:
+            raise ValueError("Skills cannot be below 0!")
+
         self.skill = value
 
     def increase_skill(self, value=1):
-        self.skil += value
+        self.skill += value
 
     def reduce_skill(self, value=1):
         new_value = self.skill - value
         if new_value < 0:
-            raise InputError("Cannot lower skills below 0!")
+            raise ValueError("Cannot lower skills below 0!")
 
         self.skill = new_value
 

@@ -1,4 +1,5 @@
 import math
+from covenfolk import Covenfolken, Covenfolk
 
 covenant_season_costs = {
         "spring": {
@@ -45,7 +46,7 @@ maximum_cost_savings = {
     "laboratories" : 0.2,
     "provisions" : 0.2,
     "arms" : 0.5,
-    "writing" : 0.5}
+    "writing" : 0.5,
 }
 
 class Covenant:
@@ -56,9 +57,8 @@ class Covenant:
             income_sources = {"source": 100},
             tithes = {},
             treasury = 50.0,
-            writers = 0,
             cost_savings = [],
-            covenfolks = {},
+            covenfolken = Covenfolken(),
             laboratories = {},
             armory = "",
             inflation_enabled = True,
@@ -71,19 +71,18 @@ class Covenant:
         if season.lower() in ["spring", "summer", "winter", "fall"]:
             self.season = season.lower()
         else:
-            raise ValueError(f"
+            raise ValueError(f"""
 Season {season} is not an accepted covenant season!
 Please select between spring, summer, fall, and winter.
-")
+""")
         for k, v in income_sources.items():
             assert isinstance(k, str)
             assert isinstance(v * 1.0, float)
 
         self.income_sources = income_sources
         self.treasury = treasury
-        self.writers = writers
         self.cost_savings = cost_savings
-        self.covenfolks = {
+        self.covenfolken = {
             'magi' : 6,
             'nobles' : 0,
             'companions' : 4,
@@ -98,12 +97,10 @@ Please select between spring, summer, fall, and winter.
         }
         self.laboratories = laboratories
         if armory == "":
-            self.armory = self.covenfolks['grogs'] * 32
+            self.armory = self.covenfolken.total('grogs') * 32
         else:
             self.armory = armory
         self.treasury = 50.0
-        self.armory = self.covenfolks['grogs'] * 32
-        self.writers = 0
         self.cost_savings = []
         self.inflation_enabled = inflation_enabled
         self.inflation = inflation_value
@@ -118,7 +115,7 @@ Please select between spring, summer, fall, and winter.
         #    default = 1
         #else:
         #    default = 2
-        for covenfolk, amount in self.covenfolks.items():
+        for covenfolk, amount in self.covenfolken.items():
             point_cost += covenant_season_costs[self.season][covenfolk] * amount
         return point_cost
 
@@ -127,7 +124,7 @@ Please select between spring, summer, fall, and winter.
         covenfolk_points = 0
 
         for covenfolk in covenfolk_roles:
-            covenfolk_points += covenant_season_costs[self.season][covenfolk] * self.covenfolks[covenfolk]
+            covenfolk_points += covenant_season_costs[self.season][covenfolk] * self.covenfolken[covenfolk]
 
         servant_minimums = math.ceil(points / 10) * 2
         return servant_minimums
@@ -137,7 +134,7 @@ Please select between spring, summer, fall, and winter.
         covenfolk_points = 0
 
         for covenfolk in covenfolk_roles:
-            covenfolk_points += covenant_season_costs[self.season][covenfolk] * self.covenfolks[covenfolk]
+            covenfolk_points += covenant_season_costs[self.season][covenfolk] * self.covenfolken[covenfolk]
 
         teamster_minimums = math.ceil(points / 10)
         return teamster_minimums
@@ -147,11 +144,11 @@ Please select between spring, summer, fall, and winter.
         expend['buildings'] = self.calc_covenfolk_points() / 10
         expend['consumables'] = 2 * (self.calc_covenfolk_points() / 10)
         expend['laboratories'] = self.calc_lab_points() / 10
-        expend['provisions'] = 5 * (self.calc_covenfolk_points() / 10))
+        expend['provisions'] = 5 * (self.calc_covenfolk_points() / 10)
         expend['armory'] = self.armory / 320
         expend['tithes'] = sum(self.tithes.values())
         expend['wages'] = 2 * (self.calc_covenfolk_points() / 10)
-        expend['writing'] = self.writers + self.covenfolks['magi']
+        expend['writing'] = self.covenfolken.total("writer") + self.covenfolken.total("magi")
 
         savings = self.calc_savings(expend)
         ##TODO: factor in savings

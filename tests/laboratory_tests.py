@@ -24,7 +24,7 @@ class DescribeLaboratories:
         assert lab.fp == 0
         assert lab.extra_upkeep == 0
         assert lab.usage == "typical"
-        assert lab.points == 11
+        assert lab.points == 10
         assert lab.minor_fortifications == 0
         assert lab.major_fortifications == 0
 
@@ -159,43 +159,43 @@ class DescribeLaboratories:
     def it_correctly_calculates_annual_points():
         default_lab = Laboratory()
         demo = demo_lab()
-        assert default_lab.points == 11
-        assert demo.points == 46.5
+        assert default_lab.points == 10
+        assert demo.points == 45.0
         default_lab.increase_size()
-        assert default_lab.points == 16
+        assert default_lab.points == 15
         default_lab.add_extra_upkeep()
-        assert default_lab.points == 31
+        assert default_lab.points == 30
 
     @staticmethod
     def it_correctly_adds_minor_fortifications():
         lab = Laboratory()
         lab.add_minor_fortification()
-        assert lab.minor_fortification == 1
+        assert lab.minor_fortifications == 1
         lab.add_minor_fortification(3)
-        assert lab.minor_fortification == 4
+        assert lab.minor_fortifications == 4
 
     @staticmethod
     def it_correctly_removes_minor_fortifications():
         lab = Laboratory(minor_fortifications = 10)
-        lab.remove_minor_fortifications()
+        lab.remove_minor_fortification()
         assert lab.minor_fortifications == 9
-        lab.remove_minor_fortifications(6)
+        lab.remove_minor_fortification(6)
         assert lab.minor_fortifications == 3
 
     @staticmethod
     def it_correctly_adds_major_fortifications():
         lab = Laboratory()
         lab.add_major_fortification()
-        assert lab.major_fortification == 1
+        assert lab.major_fortifications == 1
         lab.add_major_fortification(2)
-        assert lab.major_fortification == 3
+        assert lab.major_fortifications == 3
 
     @staticmethod
     def it_correctly_removes_major_fortifications():
         lab = Laboratory(major_fortifications = 10)
-        lab.remove_major_fortifications()
+        lab.remove_major_fortification()
         assert lab.major_fortifications == 9
-        lab.remove_major_fortifications(5)
+        lab.remove_major_fortification(5)
         assert lab.major_fortifications == 4
 
     @staticmethod

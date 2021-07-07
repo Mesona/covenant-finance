@@ -1,30 +1,30 @@
 import pytest
-from covenfolk import Covenfolk, validate_profession, validate_saving_category
+from covenfolk import Covenfolken, Covenfolk, validate_classification, validate_saving_category
 
 def demo_folk():
-    return Covenfolk(name="Jimmy", profession="crafter")
+    return Covenfolk(name="Jimmy", classification="crafter")
 
 class DescribeCovenfolk:
     @staticmethod
     def it_initializes_with_default_values():
         folk = demo_folk()
         assert folk.name == "Jimmy"
-        assert profession == "crafter"
-        assert savings_category == ""
-        assert skill == 0
+        assert folk.classification == "crafter"
+        assert folk.saving_category == ""
+        assert folk.skill == 0
 
     @staticmethod
     def it_accepts_inputs():
-        folk = Covenfolk(name="A", profession="noble", saving_category="buildings", skill=1)
+        folk = Covenfolk(name="A", classification="noble", saving_category="buildings", skill=1)
         assert folk.name == "A"
-        assert folk.profession == "noble"
+        assert folk.classification == "noble"
         assert folk.saving_category == "buildings"
         assert folk.skill == 1
 
     @staticmethod
     def it_raises_error_with_incorrect_saving_category():
-        with pytest.raises(InputError):
-            folk = Covenfolk(name="A", profession="noble", saving_category="Gong Farmer", skill=99)
+        with pytest.raises(ValueError):
+            folk = Covenfolk(name="A", classification="noble", saving_category="Gong Farmer", skill=99)
 
     @staticmethod
     def it_sets_skill_level_properly():
@@ -60,24 +60,24 @@ class DescribeCovenfolk:
     @staticmethod
     def it_raises_errors_if_skill_below_zero():
         folk = demo_folk()
-        with pytest.raises(InputError):
+        with pytest.raises(ValueError):
             folk.reduce_skill(5)
 
     @staticmethod
     def it_raises_errors_if_created_with_negative_skills():
-        with pytest.raises(InputError):
-            folk = Covenfolk(name="a", profession="mage", skill = -5)
+        with pytest.raises(ValueError):
+            folk = Covenfolk(name="a", classification="mage", skill = -5)
 
     @staticmethod
-    def it_raises_errors_if_created_with_bad_profession():
-        with pytest.raises(InputError):
-            folk = Covenfolk(name="a", profession="Floor licker")
+    def it_raises_errors_if_created_with_bad_classification():
+        with pytest.raises(ValueError):
+            folk = Covenfolk(name="a", classification="Floor licker")
 
 
 class DescribeValidateProfession:
     @staticmethod
-    def it_accepts_known_professions():
-        professions = [
+    def it_accepts_known_classification():
+        classifications = [
                 "mage",
                 "noble",
                 "companion",
@@ -91,13 +91,13 @@ class DescribeValidateProfession:
                 "horse",
         ]
 
-        for profession in professions:
-            validate_profession(profession)
+        for classification in classifications:
+            validate_classification(classification)
 
     @staticmethod
-    def it_errors_on_unknown_professions():
-        with pytest.raises(InputError):
-            validate_profession("daydreamer")
+    def it_errors_on_unknown_classifications():
+        with pytest.raises(ValueError):
+            validate_classification("daydreamer")
 
 
 class DescribeValidateSavingCategory:
@@ -117,8 +117,18 @@ class DescribeValidateSavingCategory:
 
     @staticmethod
     def it_raises_error_with_invalid_categories():
-        with pytest.raises(InputError):
+        with pytest.raises(ValueError):
             validate_saving_category("Flower picker")
 
 
+class DescribeCovenfolken:
+    @staticmethod
+    def it_instantiates():
+        cn = Covenfolken()
+        assert cn == {}
+
+    def it_accepts_new_covenfolk():
+        cn = Covenfolken()
+        folk = demo_folk()
+        cn.add_covenfolk
 
