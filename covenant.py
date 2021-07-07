@@ -3,10 +3,24 @@ import covenant_constants as cc
 # Constants, pulled from the book.
 
 class Covenant:
-    def __init__(self):
-        self.covenant_name = 'Vernus'
-        self.covenant_season = 'spring'
-        self.income_sources = {'source' : 100}
+    def __init__(
+            self,
+            name = "Vernus",
+            season = "spring",
+            income_sources = {"source": 100},
+            treasury = 50.0,
+            writers = 0,
+            cost_savings = [],
+            covenfolk_tiers = {},
+            laboratories = {},
+            armory = "",
+        ):
+        self.covenant_name = name
+        self.covenant_season = season
+        self.income_sources = income_sources
+        self.treasury = treasury
+        self.writers = writers
+        self.cost_savings = cost_savings
         self.covenfolk_tiers = {
             'magi' : 6,
             'nobles' : 0,
@@ -19,18 +33,12 @@ class Covenant:
             'servants' : 12,
             'teamsters' : 7,
             'horses': 0
-            }
-        self.laboratories = {
-            'Bonny' : 0,
-            'Merry' : 0,
-            'Jerry' : 0,
-            'Ex Max': 0,
-            'Tremmy' : 0,
-            'Gwenny': 0}
-        self.treasury = 50.0
-        self.armory = self.covenfolk_tiers['grogs'] * 32
-        self.writers = 0
-        self.cost_savings = []
+        }
+        self.laboratories = laboratories
+        if armory == "":
+            self.armory = self.covenfolk_tiers['grogs'] * 32
+        else:
+            self.armory = armory
             
 
     def calc_points(self):
