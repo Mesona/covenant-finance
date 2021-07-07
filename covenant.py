@@ -58,7 +58,7 @@ class Covenant:
             treasury = 50.0,
             writers = 0,
             cost_savings = [],
-            covenfolk_tiers = {},
+            covenfolks = {},
             laboratories = {},
             armory = "",
             inflation_enabled = True,
@@ -83,7 +83,7 @@ Please select between spring, summer, fall, and winter.
         self.treasury = treasury
         self.writers = writers
         self.cost_savings = cost_savings
-        self.covenfolk_tiers = {
+        self.covenfolks = {
             'magi' : 6,
             'nobles' : 0,
             'companions' : 4,
@@ -98,11 +98,11 @@ Please select between spring, summer, fall, and winter.
         }
         self.laboratories = laboratories
         if armory == "":
-            self.armory = self.covenfolk_tiers['grogs'] * 32
+            self.armory = self.covenfolks['grogs'] * 32
         else:
             self.armory = armory
         self.treasury = 50.0
-        self.armory = self.covenfolk_tiers['grogs'] * 32
+        self.armory = self.covenfolks['grogs'] * 32
         self.writers = 0
         self.cost_savings = []
         self.inflation_enabled = inflation_enabled
@@ -118,7 +118,7 @@ Please select between spring, summer, fall, and winter.
         #    default = 1
         #else:
         #    default = 2
-        for covenfolk, amount in self.covenfolk_tiers.items():
+        for covenfolk, amount in self.covenfolks.items():
             point_cost += covenant_season_costs[self.season][covenfolk] * amount
         return point_cost
 
@@ -127,7 +127,7 @@ Please select between spring, summer, fall, and winter.
         covenfolk_points = 0
 
         for covenfolk in covenfolk_roles:
-            covenfolk_points += covenant_season_costs[self.season][covenfolk] * self.covenfolk_tiers[covenfolk]
+            covenfolk_points += covenant_season_costs[self.season][covenfolk] * self.covenfolks[covenfolk]
 
         servant_minimums = math.ceil(points / 10) * 2
         return servant_minimums
@@ -137,7 +137,7 @@ Please select between spring, summer, fall, and winter.
         covenfolk_points = 0
 
         for covenfolk in covenfolk_roles:
-            covenfolk_points += covenant_season_costs[self.season][covenfolk] * self.covenfolk_tiers[covenfolk]
+            covenfolk_points += covenant_season_costs[self.season][covenfolk] * self.covenfolks[covenfolk]
 
         teamster_minimums = math.ceil(points / 10)
         return teamster_minimums
@@ -151,7 +151,7 @@ Please select between spring, summer, fall, and winter.
         expend['armory'] = self.armory / 320
         expend['tithes'] = sum(self.tithes.values())
         expend['wages'] = 2 * (self.calc_covenfolk_points() / 10)
-        expend['writing'] = self.writers + self.covenfolk_tiers['magi']
+        expend['writing'] = self.writers + self.covenfolks['magi']
 
         savings = self.calc_savings(expend)
         ##TODO: factor in savings

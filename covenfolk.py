@@ -35,7 +35,24 @@ Please choose between these options: {categories}")
 
     return category
 
-class 
+class Covenfolks:
+    def __init__():
+        self.covenfolk = {}
+
+    def calculate_savings(saving_category):
+        saving_potential = [person.skill for person in self.covenfolk if person.saving_category == saving_category]
+        return saving_potential
+
+    def total_of(profession):
+        individuals = [person for person in self.covenfolk if person.profession == profession]
+        return len(individuals)
+
+    def add_covenfolk(name, profession, saving_category="", skill=0):
+        self.covenfolk[name] = Covenfolk(name, profession, saving_category, skill))
+
+    def remove_covenfolk(name)
+        self.covenfolk.pop(name)
+
 
 class Covenfolk:
     def __init__(name, profession, saving_category="", skill=0):
