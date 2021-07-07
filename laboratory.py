@@ -71,7 +71,7 @@ class Laboratory:
             upkeep_multiplier = 1.5
 
         # TODO: Figure out the equation to make this dynamic
-        base_lab_points = {
+        base_upkeep_costs = {
                -5: 1,
                -4: 2,
                -3: 3,
@@ -79,14 +79,16 @@ class Laboratory:
                -1: 7,
                0: 10,
                1: 15,
-               2: 30,
-               3: 60,
-               4: 100,
-               5: 150
         }
 
         base_costs = 1
+        upkeep = self.size + self.extra_upkeep
+        if upkeep < 2:
+            # Size cannot go below -5, but there's nothing saying total upkeep
+            # cannot, but I am imposing a cost cap at upkeep size -5
+            upkeep_costs = base_upkeep_costs[max(upkeep, -5)]
+        else:
+            upkeep_costs = 5 * upkeep * (upkeep + 1)
 
-        print("EXTRA UPKEEP:", self.extra_upkeep)
-        total_costs = (base_lab_points[self.size + self.extra_upkeep] + base_costs) * upkeep_multiplier
+        total_costs = (upkeep_costs + base_costs) * upkeep_multiplier
         return total_costs
