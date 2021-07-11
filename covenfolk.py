@@ -61,15 +61,11 @@ class Covenfolken:
             folk = args[0]
             if self.is_name_unique(folk.name):
                 self.covenfolk[folk.name] = folk
+            else:
+                raise ValueError(f"Covenfolk name {folk.name} is not unique!")
         else:
             if self.is_name_unique(args[0]):
-                folk = Covenfolk(
-                        args[0],
-                        args[1],
-                        args[2] if len(args) >= 3 else "",
-                        args[3] if len(args) >= 4 else "",
-                        args[4] if len(args) >= 5 else 0,
-                )
+                folk = Covenfolk(*args)
                 self.covenfolk[folk.name] = folk
 
     def is_name_unique(self, name):

@@ -1,5 +1,9 @@
+#!/usr/bin/env python3
+
 import math
 from covenfolk import Covenfolken
+from armory import Armory
+from laboratory import Laboratories
 
 covenant_season_costs = {
         "spring": {
@@ -59,7 +63,6 @@ class Covenant:
             treasury = 50.0,
             covenfolken = Covenfolken(),
             laboratories = {},
-            armory = 0,
             inflation_enabled = True,
             inflation_value = 0,
         ):
@@ -82,8 +85,8 @@ Please select between spring, summer, fall, and winter.
         self.tithes = tithes
         self.treasury = treasury
         self.covenfolken = Covenfolken()
-        self.laboratories = laboratories
-        self.armory = armory
+        self.laboratories = Laboratories()
+        self.armory = Armory()
         self.treasury = treasury
         self.inflation_enabled = inflation_enabled
         self.inflation = inflation_value
