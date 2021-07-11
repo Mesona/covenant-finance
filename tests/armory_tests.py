@@ -87,6 +87,18 @@ class DescribeArmory:
         assert armory.heavy_siege["trebuchet"]["expensive"] == 1
 
     @staticmethod
+    def it_returns_an_error_when_adding_unrecognized_quality():
+        armory = Armory()
+        with pytest.raises(ValueError):
+            armory.add_equipment("sword", "weapon", "legendary")
+
+    @staticmethod
+    def it_returns_an_error_when_adding_unrecognized_equipment_type():
+        armory = Armory()
+        with pytest.raises(ValueError):
+            armory.add_equipment("howitzer", "tank", "expensive")
+
+    @staticmethod
     def it_removes_equipment():
         armory = Armory()
         armory.add_equipment("sword", "weapon", "inexpensive")
@@ -105,6 +117,24 @@ class DescribeArmory:
         assert armory.partial["half plate"]["standard"] == 0
         assert armory.light_siege["battering ram"]["expensive"] == 0
         assert armory.heavy_siege["trebuchet"]["expensive"] == 0
+
+    @staticmethod
+    def it_returns_an_error_when_removing_unrecognized_quality():
+        armory = Armory()
+        with pytest.raises(ValueError):
+            armory.remove_equipment("sword", "weapon", "legendary")
+
+    @staticmethod
+    def it_returns_an_error_when_removing_unrecognized_equipment_type():
+        armory = Armory()
+        with pytest.raises(ValueError):
+            armory.remove_equipment("howitzer", "tank", "expensive")
+
+    @staticmethod
+    def it_returns_an_error_when_attempting_to_create_a_negative_supply():
+        armory = Armory()
+        with pytest.raises(ValueError):
+            armory.remove_equipment("sword", "weapon", "inexpensive")
 
     @staticmethod
     def it_calculates_type_points():
