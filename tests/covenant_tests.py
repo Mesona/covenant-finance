@@ -1,3 +1,4 @@
+from covenfolk import Covenfolken
 from covenant import Covenant
 import pytest
 
@@ -22,27 +23,11 @@ def custom_covenant():
             income_sources = {"source": 250, "source2": 100},
             tithes = {"Lord Farqua": 10},
             treasury = 75.5,
-            writers = 2,
-            cost_savings = ["abc"],
-            covenfolken = {
-                "magi": 2,
-                "nobles": 1,
-                "companions": 3,
-                "crafters": 1,
-                "specialists": 22,
-                "dependants": 5,
-                "grogs": 9,
-                "laborers": 15,
-                "servants": 0,
-                "teamsters": 2,
-                "horses": 4
-            },
+            covenfolken = Covenfolken(),
             laboratories = {},
             armory = 5,
             inflation_enabled = False,
-            inflation = 10,
-            minor_fortifications = 1,
-            major_fortifications = 3,
+            inflation_value = 10,
     )
     return cov
 
@@ -55,44 +40,24 @@ class DescribeCovenant:
         assert cov.income_sources == {"source": 100}
         assert cov.tithes == {}
         assert cov.treasury == 50.0
-        assert cov.writers == 0
-        assert cov.cost_savings == []
-        assert cov.covenfolken == covenfolken
+        assert cov.covenfolken.covenfolk == {}
         assert cov.laboratories == {}
-        assert cov.armory == cov.covenfolken['grogs'] * 32
+        #assert cov.armory == cov.covenfolken['grogs'] * 32
         assert cov.inflation_enabled == True
         assert cov.inflation == 0
-        assert cov.minor_fortifications == 0
-        assert cov.major_fortifications == 0
 
     @staticmethod
-    def it_initializes_with_custom_vales():
+    def it_initializes_with_custom_values():
         cov = custom_covenant()
         assert cov.name == "Lorem"
         assert cov.season == "fall"
         assert cov.income_sources == {"source": 250, "source2": 100}
         assert cov.tithes == {"Lord Farqua": 10}
         assert cov.treasury == 75.5
-        assert cov.writes == 2
-        assert cov.cost_savings == ["abc"]
-        assert cov.covenfolken == {
-            "magi": 2,
-            "nobles": 1,
-            "companions": 3,
-            "crafters": 1,
-            "specialists": 22,
-            "dependants": 5,
-            "grogs": 9,
-            "laborers": 15,
-            "servants": 0,
-            "teamsters": 2,
-            "horses": 4
-        }
+        assert cov.covenfolken.covenfolk == {}
         assert cov.armory == 5
         assert cov.inflation_enabled == False
         assert cov.inflation == 10
-        assert cov.minor_fortifications == 1
-        assert cov.major_fortifications == 3
 
     @staticmethod
     def it_correctly_capitalizes_season():
@@ -106,10 +71,10 @@ class DescribeCovenant:
 
     @staticmethod
     def it_errors_when_bad_income_sources_are_added():
-        with pytest.raises(ValueError):
+        with pytest.raises(TypeError):
             cov = Covenant(income_sources = {"source": "abc"})
 
-        with pytest.raises(ValueError):
+        with pytest.raises(TypeError):
             cov = Covenant(income_sources = {1: 200})
 
     @staticmethod

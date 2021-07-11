@@ -1,5 +1,5 @@
 import math
-from covenfolk import Covenfolken, Covenfolk
+from covenfolk import Covenfolken
 
 covenant_season_costs = {
         "spring": {
@@ -57,14 +57,11 @@ class Covenant:
             income_sources = {"source": 100},
             tithes = {},
             treasury = 50.0,
-            cost_savings = [],
             covenfolken = Covenfolken(),
             laboratories = {},
-            armory = "",
+            armory = 0,
             inflation_enabled = True,
             inflation_value = 0,
-            minor_fortifications = 0,
-            major_foritifications = 0,
         ):
         self.name = name
 
@@ -76,47 +73,26 @@ Season {season} is not an accepted covenant season!
 Please select between spring, summer, fall, and winter.
 """)
         for k, v in income_sources.items():
-            assert isinstance(k, str)
-            assert isinstance(v * 1.0, float)
+            if not isinstance(k, str):
+                raise TypeError("Income source names need to be strings!")
+            if not isinstance(v * 1.0, float):
+                raise TypeError("Income source values need to be numbers!")
 
         self.income_sources = income_sources
+        self.tithes = tithes
         self.treasury = treasury
-        self.cost_savings = cost_savings
-        self.covenfolken = {
-            'magi' : 6,
-            'nobles' : 0,
-            'companions' : 4,
-            'crafters' : 0,
-            'specialists': 3,
-            'dependants': 0,
-            'grogs': 10,
-            'laborers' : 0,
-            'servants' : 12,
-            'teamsters' : 7,
-            'horses': 0
-        }
+        self.covenfolken = Covenfolken()
         self.laboratories = laboratories
-        if armory == "":
-            self.armory = self.covenfolken.total('grogs') * 32
-        else:
-            self.armory = armory
-        self.treasury = 50.0
-        self.cost_savings = []
+        self.armory = armory
+        self.treasury = treasury
         self.inflation_enabled = inflation_enabled
         self.inflation = inflation_value
-        self.minor_foritifications = minor_fortifications + sum(lab.minor_fortifications for lab in self.laboratories)
-        self.major_foritifications = major_foritifcations + sum(lab.major_fortifications for lab in self.laboratories)
-        self.expenses = self.calc_expenditures()
+        self.expenses = float("inf")  # Prevents inflation from taking effect the first year
             
     def calc_covenfolk_points(self):
         point_cost = 0
-        # FIXME: What are these lines intended to do?
-        #if self.season == "spring" or self.season == "winter":
-        #    default = 1
-        #else:
-        #    default = 2
-        for covenfolk, amount in self.covenfolken.items():
-            point_cost += covenant_season_costs[self.season][covenfolk] * amount
+        for covenfolk in self.covenfolken.covenfolk.values():
+            point_cost += covenant_season_costs[self.season][covenfolk.classification]
         return point_cost
 
     def calc_servant_minimum(self):
@@ -155,20 +131,18 @@ Please select between spring, summer, fall, and winter.
 
         expenses = sum(expend.values())
 
+        previous_years_expenses = self.expenses
+        self.expenses = expenses
         if self.inflation_enabled:
-            inflation = calculate_inflation(expenses)
-            expenses += inflation
+            inflation = self.calculate_inflation(previous_years_expenses)
             self.inflation = inflation
 
-        self.expenses = expenses
 
-    def calculate_inflation(self, expenses):
-        # Page 65 of Covenant book, inflation should not increase if the year's
-        # expenditures decreased that year, and I (@mesona) made the decision
-        # that the previous year's inflation should not be factored into this
-        # calculation
-        inflation = self.inflation
-        if expenses >= self.expenses - self.inflation:
+
+    def calculate_inflation(self, previous_expenses):
+        # Page 65 of Covenant book, inflation should only increase if the year's
+        # expenditures were greater than the previous year's
+        if self.expenses - previous_expenses > 0:
             inflation = expenses // 100
 
         return inflation
@@ -176,8 +150,9 @@ Please select between spring, summer, fall, and winter.
     # I need to figure out how to do this
     # list comprehension on cost_savings?
     def calc_savings(self, category):
-        app_craft = [crafter for crafter in self.cost_savings if crafter[0] == category]
-        return app_craft
+        #app_craft = [crafter for crafter in self.cost_savings if crafter[0] == category]
+        #return app_craft
+        pass
     
     def calc_lab_points(self):
         points = 0

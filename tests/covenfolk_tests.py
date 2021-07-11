@@ -125,10 +125,74 @@ class DescribeCovenfolken:
     @staticmethod
     def it_instantiates():
         cn = Covenfolken()
-        assert cn == {}
+        assert cn.covenfolk == {}
 
-    def it_accepts_new_covenfolk():
+    @staticmethod
+    def it_accepts_new_covenfolk_objects():
         cn = Covenfolken()
         folk = demo_folk()
-        cn.add_covenfolk
+        cn.add_covenfolk(folk)
+        print("TEST POINT")
+        assert folk in cn.covenfolk.values()
 
+    @staticmethod
+    def it_creates_new_covenfolk_when_passed_parameters():
+        cn = Covenfolken()
+        cn.add_covenfolk("jane", "mage")
+        assert "jane" in cn.covenfolk.keys()
+        assert isinstance(cn.covenfolk["jane"], Covenfolk)
+
+    @staticmethod
+    def it_removes_covenfolk():
+        cn = Covenfolken()
+        folk = demo_folk()
+        cn.add_covenfolk(folk)
+        assert folk in cn.covenfolk.values()
+        cn.remove_covenfolk(folk.name)
+        assert folk not in cn.covenfolk.values()
+
+    @staticmethod
+    def it_displays_covenfolk(capsys):
+        cn = Covenfolken()
+        cn.add_covenfolk("weber", "mage")
+        cn.add_covenfolk("a", "mage", "writer", "consumables", 5)
+        cn.display()
+        captured = capsys.readouterr()
+        assert captured.out == """weber: mage
+
+a: mage
+Savings Category: consumables
+writer: 5
+
+"""
+
+    @staticmethod
+    def it_lists_covenfolk_names(capsys):
+        cn = Covenfolken()
+        cn.add_covenfolk("weber", "mage")
+        cn.add_covenfolk("yawgma", "mage")
+        cn.list()
+        captured = capsys.readouterr()
+        assert captured.out == "['weber', 'yawgma']\n"
+
+    @staticmethod
+    def it_calculates_savings_provided():
+        pass
+
+    @staticmethod
+    def it_returns_the_total_number_of_covenfolk_matching_classification():
+        cn = Covenfolken()
+        cn.add_covenfolk("weber", "mage", "writer", "consumables", 10)
+        cn.add_covenfolk("yawgma", "mage", "hammerer", "buildings", 5)
+        cn.add_covenfolk("dog", "horse", "stables", "buildings", 2)
+        assert cn.total("mage") == 2
+        assert cn.total("horse") == 1
+        assert isinstance(cn.total("mage"), int)
+
+    @staticmethod
+    def it_returns_the_total_number_of_covenfolk_matching_profession():
+        cn = Covenfolken()
+        cn.add_covenfolk("weber", "mage", "writer", "consumables", 10)
+        cn.add_covenfolk("yawgma", "mage", "hammerer", "buildings", 5)
+        cn.add_covenfolk("dog", "horse", "stables", "buildings", 2)
+        assert cn.total("writer") == 1

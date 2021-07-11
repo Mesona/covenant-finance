@@ -48,9 +48,9 @@ class Covenfolken:
         return saving_potential
 
     def total(self, class_or_profession):
-        individuals = [person for person in self.covenfolk if person.classification == class_or_profession]
+        individuals = [person for person in self.covenfolk.values() if person.classification == class_or_profession]
         if individuals == []:
-            individuals = [person for person in self.covenfolk if person.profession == class_or_profession]
+            individuals = [person for person in self.covenfolk.values() if person.profession == class_or_profession]
 
         return len(individuals)
 
@@ -81,13 +81,17 @@ class Covenfolken:
     def remove_covenfolk(self, name):
         self.covenfolk.pop(name)
 
-    def list(self):
+    def display(self):
         for covenfolk in self.covenfolk.values():
             print(f"{covenfolk.name}: {covenfolk.classification}")
             if covenfolk.saving_category:
                 print(f"""Savings Category: {covenfolk.saving_category}
 {covenfolk.profession}: {covenfolk.skill}""")
             print("")
+
+    def list(self):
+
+        print(list(self.covenfolk.keys()))
 
 
 class Covenfolk:
