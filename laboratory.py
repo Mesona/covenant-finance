@@ -13,7 +13,7 @@ class Laboratories:
 
     def add_lab(self, *args):
         if isinstance(args[0], Laboratory):
-            lab = Laboratory.name
+            lab = args[0]
             if self.is_lab_name_unique(lab.name):
                 self.labs[lab.name] = lab
             else:
@@ -28,10 +28,10 @@ class Laboratories:
 
     def calculate_total_point_costs(self):
         total_points = 0
-        for lab in self.labs.keys():
+        for lab in self.labs.values():
             total_points += lab.calculate_annual_points()
 
-        def return_total_points
+        return total_points
 
 
 class Laboratory:
@@ -135,6 +135,7 @@ class Laboratory:
         self.points = self.calculate_annual_points()
 
     def calculate_annual_points(self):
+        total_points = 0
         upkeep_points_multiplier = 0
         if self.usage == "light":
             upkeep_points_multiplier = 0.5
@@ -143,7 +144,6 @@ class Laboratory:
         elif self.usage == "heavy":
             upkeep_points_multiplier = 1.5
 
-        # TODO: Figure out the equation to make this dynamic
         base_lab_points = {
                -5: 1,
                -4: 2,
@@ -152,11 +152,16 @@ class Laboratory:
                -1: 7,
                0: 10,
                1: 15,
-               2: 30,
-               3: 60,
-               4: 100,
-               5: 150
         }
+        upkeep = self.size + self.extra_upkeep
 
-        total_points = base_lab_points[self.size + self.extra_upkeep] * upkeep_points_multiplier
+        if upkeep < 2:
+            # Size cannot go below -5, but there's nothing saying total upkeep
+            # cannot, but I am imposing a cost cap at upkeep size -5
+            upkeep_points = base_lab_points[max(upkeep, -5)]
+        else:
+            upkeep_points = 5 * upkeep * (upkeep + 1)
+
+
+        total_points = upkeep_points * upkeep_points_multiplier
         return total_points

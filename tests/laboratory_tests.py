@@ -18,27 +18,52 @@ def demo_lab():
 class DescribeLaboratories:
     @staticmethod
     def it_initializes():
-        pass
+        from collections import defaultdict
+        labs = Laboratories()
+        assert isinstance(labs.labs, defaultdict)
 
     @staticmethod
     def it_adds_lab_objects():
-        pass
+        lab = demo_lab()
+        labs = Laboratories()
+        labs.add_lab(lab)
+        assert labs.labs[lab.name] == lab
 
     @staticmethod
     def it_adds_lab_by_passing_parameters():
-        pass
+        labs = Laboratories()
+        labs.add_lab("seaside manor", "Oopsie", 1, 4, 5, 6, "heavy", 1, 2)
+        assert labs.labs["seaside manor"] != False
+        assert labs.labs["seaside manor"].owner == "Oopsie"
+        assert labs.labs["seaside manor"].size == 1
+        assert labs.labs["seaside manor"].usage == "heavy"
 
     @staticmethod
     def it_removes_labs():
-        pass
+        lab = demo_lab()
+        labs = Laboratories()
+        labs.add_lab(lab)
+        assert labs.labs[lab.name] == lab
+        labs.remove_lab("mountaintop 1")
+        assert len(labs.labs.keys()) == 0
 
     @staticmethod
     def it_vaidates_unique_names():
-        pass
+        lab = demo_lab()
+        labs = Laboratories()
+        labs.add_lab(lab)
+        with pytest.raises(ValueError):
+            labs.add_lab(lab)
 
     @staticmethod
     def it_calculates_total_point_costs():
-        pass
+        lab = demo_lab()
+        labs = Laboratories()
+        labs.add_lab("seaside manor", "Oopsie", 1, 4, 5, 6, "heavy", 1, 2)
+        assert labs.calculate_total_point_costs() == 420.0
+        labs.add_lab(lab)
+        assert labs.calculate_total_point_costs() == 465.0
+
 
 class DescribeLaboratory:
     @staticmethod
@@ -204,7 +229,7 @@ class DescribeLaboratory:
 
     @staticmethod
     def it_correctly_removes_minor_fortifications():
-        lab = Laboratory(minor_fortifications = 10)
+        lab = Laboratory("test lab", minor_fortifications = 10)
         lab.remove_minor_fortification()
         assert lab.minor_fortifications == 9
         lab.remove_minor_fortification(6)
@@ -220,7 +245,7 @@ class DescribeLaboratory:
 
     @staticmethod
     def it_correctly_removes_major_fortifications():
-        lab = Laboratory(major_fortifications = 10)
+        lab = Laboratory("test lab", major_fortifications = 10)
         lab.remove_major_fortification()
         assert lab.major_fortifications == 9
         lab.remove_major_fortification(5)
