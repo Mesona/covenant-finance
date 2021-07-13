@@ -1,6 +1,9 @@
+#!/usr/bin/env python3
+
+
 def validate_classification(classification):
     classifications = [
-            "mage",
+            "magi",
             "noble",
             "companion",
             "crafter",
@@ -28,7 +31,7 @@ def validate_saving_category(category):
             "laboratories",
             "provisions",
             "weapons and armor",
-            "writing materials",
+            "writing",
     ]
 
     if category and category not in categories:
@@ -43,9 +46,38 @@ class Covenfolken:
     def __init__(self):
         self.covenfolk = {}
 
-    def calculate_savings(self, saving_category):
-        saving_potential = [person.skill for person in self.covenfolk if person.saving_category == saving_category]
-        return saving_potential
+    def calculate_savings_of(self, saving_category):
+        from collections import defaultdict
+
+        matching_folk = [person for person in self.covenfolk.values() if person.saving_category == saving_category]
+        potential_savings = defaultdict(int)
+
+        for folk in matching_folk:
+            if saving_category == "provisions" and folk.classification == "laborer":
+                potential_savings["laborer"] += 1
+                continue 
+
+            current_profession = folk.profession
+            provided_savings = 1 + (folk.skill // (1 if folk.rarity == "rare" else 2))
+            potential_savings[current_profession] += provided_savings
+
+        return potential_savings
+
+    def calculate_all_savings(self):
+        provided_savings = {}
+        saving_categories = [
+                "buildings",
+                "consumables",
+                "laboratories",
+                "provisions",
+                "weapons and armor",
+                "writing",
+        ]
+
+        for category in saving_categories: 
+            provided_savings[category] = self.calculate_savings_of(category)
+
+        return provided_savings
 
     def total(self, class_or_profession):
         individuals = [person for person in self.covenfolk.values() if person.classification == class_or_profession]
@@ -91,12 +123,21 @@ class Covenfolken:
 
 
 class Covenfolk:
-    def __init__(self, name, classification, profession="", saving_category="", skill=0):
+    def __init__(self, name, classification, profession="", saving_category="", skill=0, rarity=""):
         self.name = name
         self.classification = validate_classification(classification)
-        self.profession = profession.lower()
         self.saving_category = validate_saving_category(saving_category.lower())
+
+        if classification == "laborer":
+            self.saving_category = "provisions"
+
+        if classification == "crafter":
+            if saving_category == "" or profession == "" or rarity == "":
+                raise ValueError("Crafters need a profession and a saving category!")
+
+        self.profession = profession.lower()
         self.set_skill(skill)
+        self.rarity = rarity
 
     def change_profession(self, profession):
         self.profession = profession

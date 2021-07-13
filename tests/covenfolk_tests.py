@@ -2,16 +2,24 @@ import pytest
 from covenfolk import Covenfolken, Covenfolk, validate_classification, validate_saving_category
 
 def demo_folk():
-    return Covenfolk(name="Jimmy", classification="crafter")
+    return Covenfolk(
+            name="Jimmy",
+            classification="crafter",
+            profession="woodworker",
+            saving_category="buildings",
+            rarity="common",
+    )
 
 class DescribeCovenfolk:
     @staticmethod
     def it_initializes_with_default_values():
-        folk = demo_folk()
+        folk = Covenfolk("Jimmy", "servant")
         assert folk.name == "Jimmy"
-        assert folk.classification == "crafter"
+        assert folk.classification == "servant"
         assert folk.saving_category == ""
+        assert folk.profession == ""
         assert folk.skill == 0
+        assert folk.rarity == ""
 
     @staticmethod
     def it_accepts_inputs():
@@ -20,6 +28,44 @@ class DescribeCovenfolk:
         assert folk.classification == "noble"
         assert folk.saving_category == "buildings"
         assert folk.skill == 1
+
+    @staticmethod
+    def it_requires_saving_category_for_crafters():
+        with pytest.raises(ValueError):
+            folk = Covenfolk(
+                    name="a",
+                    classification="crafter",
+                    profession="smith",
+                    skill=5,
+                    rarity="common",
+            )
+
+    @staticmethod
+    def it_automatically_assigns_savings_category_for_laborers():
+        folk = Covenfolk(name="a", classification="laborer")
+        assert folk.saving_category == "provisions"
+
+    @staticmethod
+    def it_requires_professions_for_crafters():
+        with pytest.raises(ValueError):
+            folk = Covenfolk(
+                    name="a",
+                    classification="crafter",
+                    saving_category="weapons and armor",
+                    skill=5,
+                    rarity="common",
+            )
+
+    @staticmethod
+    def it_requires_rarity_for_crafters():
+        with pytest.raises(ValueError):
+            folk = Covenfolk(
+                    name="a",
+                    classification="crafter",
+                    profession="smith",
+                    saving_category="weapons and armor",
+                    skill=5,
+            )
 
     @staticmethod
     def it_raises_error_with_incorrect_saving_category():
@@ -66,7 +112,7 @@ class DescribeCovenfolk:
     @staticmethod
     def it_raises_errors_if_created_with_negative_skills():
         with pytest.raises(ValueError):
-            folk = Covenfolk(name="a", classification="mage", skill = -5)
+            folk = Covenfolk(name="a", classification="magi", skill = -5)
 
     @staticmethod
     def it_raises_errors_if_created_with_bad_classification():
@@ -78,7 +124,7 @@ class DescribeValidateProfession:
     @staticmethod
     def it_accepts_known_classification():
         classifications = [
-                "mage",
+                "magi",
                 "noble",
                 "companion",
                 "crafter",
@@ -123,6 +169,28 @@ class DescribeValidateSavingCategory:
 
 class DescribeCovenfolken:
     @staticmethod
+    def it_calculates_the_savings_of_all_its_covenfolk():
+        cn = Covenfolken()
+        folk = demo_folk()
+        cn.add_covenfolk(folk)
+        cn.add_covenfolk("James", "crafter", "woodworker", "buildings", 3, "common")
+        cn.add_covenfolk("Arc", "crafter", "welder", "weapons and armor", 5, "rare")
+        savings = cn.calculate_all_savings()
+        assert savings["buildings"]["woodworker"] == 3
+        assert savings["weapons and armor"]["welder"] == 6
+
+    @staticmethod
+    def it_calculates_the_savings_of_one_category():
+        cn = Covenfolken()
+        folk = demo_folk()
+        cn.add_covenfolk(folk)
+        assert cn.calculate_savings_of("buildings") == {"woodworker": 1}
+        cn.add_covenfolk("James", "crafter", "woodworker", "buildings", 3, "common")
+        assert cn.calculate_savings_of("buildings") == {"woodworker": 3}
+        cn.add_covenfolk("Arc", "crafter", "welder", "weapons and armor", 5, "rare")
+        assert cn.calculate_savings_of("weapons and armor") == {"welder": 6}
+
+    @staticmethod
     def it_instantiates():
         cn = Covenfolken()
         assert cn.covenfolk == {}
@@ -132,13 +200,12 @@ class DescribeCovenfolken:
         cn = Covenfolken()
         folk = demo_folk()
         cn.add_covenfolk(folk)
-        print("TEST POINT")
         assert folk in cn.covenfolk.values()
 
     @staticmethod
     def it_creates_new_covenfolk_when_passed_parameters():
         cn = Covenfolken()
-        cn.add_covenfolk("jane", "mage")
+        cn.add_covenfolk("jane", "magi")
         assert "jane" in cn.covenfolk.keys()
         assert isinstance(cn.covenfolk["jane"], Covenfolk)
 
@@ -154,13 +221,13 @@ class DescribeCovenfolken:
     @staticmethod
     def it_displays_covenfolk(capsys):
         cn = Covenfolken()
-        cn.add_covenfolk("weber", "mage")
-        cn.add_covenfolk("a", "mage", "writer", "consumables", 5)
+        cn.add_covenfolk("weber", "magi")
+        cn.add_covenfolk("a", "magi", "writer", "consumables", 5)
         cn.display()
         captured = capsys.readouterr()
-        assert captured.out == """weber: mage
+        assert captured.out == """weber: magi
 
-a: mage
+a: magi
 Savings Category: consumables
 writer: 5
 
@@ -169,30 +236,26 @@ writer: 5
     @staticmethod
     def it_lists_covenfolk_names(capsys):
         cn = Covenfolken()
-        cn.add_covenfolk("weber", "mage")
-        cn.add_covenfolk("yawgma", "mage")
+        cn.add_covenfolk("weber", "magi")
+        cn.add_covenfolk("yawgma", "magi")
         cn.list()
         captured = capsys.readouterr()
         assert captured.out == "['weber', 'yawgma']\n"
 
     @staticmethod
-    def it_calculates_savings_provided():
-        pass
-
-    @staticmethod
     def it_returns_the_total_number_of_covenfolk_matching_classification():
         cn = Covenfolken()
-        cn.add_covenfolk("weber", "mage", "writer", "consumables", 10)
-        cn.add_covenfolk("yawgma", "mage", "hammerer", "buildings", 5)
+        cn.add_covenfolk("weber", "magi", "writer", "consumables", 10)
+        cn.add_covenfolk("yawgma", "magi", "hammerer", "buildings", 5)
         cn.add_covenfolk("dog", "horse", "stables", "buildings", 2)
-        assert cn.total("mage") == 2
+        assert cn.total("magi") == 2
         assert cn.total("horse") == 1
-        assert isinstance(cn.total("mage"), int)
+        assert isinstance(cn.total("magi"), int)
 
     @staticmethod
     def it_returns_the_total_number_of_covenfolk_matching_profession():
         cn = Covenfolken()
-        cn.add_covenfolk("weber", "mage", "writer", "consumables", 10)
-        cn.add_covenfolk("yawgma", "mage", "hammerer", "buildings", 5)
+        cn.add_covenfolk("weber", "magi", "writer", "consumables", 10)
+        cn.add_covenfolk("yawgma", "magi", "hammerer", "buildings", 5)
         cn.add_covenfolk("dog", "horse", "stables", "buildings", 2)
         assert cn.total("writer") == 1
