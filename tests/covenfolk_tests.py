@@ -155,7 +155,7 @@ class DescribeValidateSavingCategory:
                 "laboratories",
                 "provisions",
                 "weapons and armor",
-                "writing materials",
+                "writing",
         ]
 
         for category in categories:

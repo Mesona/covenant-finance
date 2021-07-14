@@ -8,10 +8,10 @@ from collections import defaultdict
 
 base_covenfolk_point_costs = {
         "magi": 5,
-        "nobles": 5,
-        "companions": 3,
-        "crafters": 2,
-        "specialists": 2,
+        "noble": 5,
+        "companion": 3,
+        "crafter": 2,
+        "specialist": 2,
         "dependant": 1,
         "grog": 2,
         "laborer": 2,
@@ -19,7 +19,7 @@ base_covenfolk_point_costs = {
         "teamster": 2,
         "covenfolk": 1,
         "horse": 1,
-},
+}
 
 
 class Covenant:
@@ -30,7 +30,6 @@ class Covenant:
             income_sources = {"source": 100},
             tithes = {},
             treasury = 50.0,
-            covenfolken = Covenfolken(),
             laboratories = {},
             inflation_enabled = True,
             inflation = 0,
@@ -67,34 +66,34 @@ Please select between spring, summer, autumn, and winter.
             point_cost += self.calculate_covenfolk_point_costs(covenfolk.classification) 
         return point_cost
 
-    def calc_servant_minimum(self):
-        covenfolk_roles = ["magi", "nobles", "companions", "crafters", "specialists", "dependants", "grogs", "horses"]
-        covenfolk_points = 0
-
-        for classification in covenfolk_roles:
-            number_of_covenfolk = [folk for folk in self.covenfolken.covenfolk if folk.classification == classification]
-            covenfolk_points += self.calculate_covenfolk_point_costs(classification) * number_of_covenfolk
-
-        servant_minimums = math.ceil(points / 10) * 2
-        return servant_minimums
-
-    def calc_teamster_minimum(self):
-        covenfolk_roles = ["magi", "nobles", "companions", "crafters", "specialists", "dependants", "grogs", "horses", "servants"]
-        covenfolk_points = 0
-
-        for classification in covenfolk_roles:
-            number_of_covenfolk = self.covenfolken.total(classification)
-            covenfolk_points += self.calculate_covenfolk_point_costs(classification) * number_of_covenfolk
-
-        covenfolk_point -= (self.covenfolk.total('laborer') * 2)
-        teamster_minimums = math.ceil(points / 10)
-        return teamster_minimums
-
     def calculate_covenfolk_point_costs(self, classification):
         if self.season in ["spring", "winter"] or classification == "horse":
             return base_covenfolk_point_costs[classification]
         else:
-            return (base_covenfolk_point_costs[classification] * 2)
+            return base_covenfolk_point_costs[classification] * 2
+
+    def calc_servant_minimum(self):
+        covenfolk_roles = ["magi", "noble", "companion", "crafter", "specialist", "dependant", "grog", "horse"]
+        covenfolk_points = 0
+
+        for classification in covenfolk_roles:
+            number_of_matching_covenfolk = self.covenfolken.total(classification)
+            covenfolk_points += self.calculate_covenfolk_point_costs(classification) * number_of_matching_covenfolk
+
+        servant_minimums = math.ceil(covenfolk_points / 10) * 2
+        return servant_minimums
+
+    def calc_teamster_minimum(self):
+        covenfolk_roles = ["magi", "noble", "companion", "crafter", "specialist", "dependant", "grog", "horse", "servant"]
+        covenfolk_points = 0
+
+        for classification in covenfolk_roles:
+            number_of_matching_covenfolk = self.covenfolken.total(classification)
+            covenfolk_points += self.calculate_covenfolk_point_costs(classification) * number_of_matching_covenfolk
+
+        covenfolk_points -= (self.covenfolken.total('laborer') * 2)
+        teamster_minimums = math.ceil(covenfolk_points / 10)
+        return teamster_minimums
 
     def meets_servant_minimum(self):
         servants = self.covenfolken.total("servant")
@@ -107,32 +106,30 @@ Please select between spring, summer, autumn, and winter.
     def update_expenditures(self):
         previous_expenses = self.expenses
         self.expenses = self.calc_expenditures()
-        self.inflation = self.calculate_inflation(previous_expenses)
-
+        self.inflation = self.calculate_inflation(previous_expenses, self.expenses)
 
     def calc_expenditures(self):
         expend = {}
-        expend['buildings'] = self.calc_covenfolk_points() / 10
-        expend['consumables'] = 2 * (self.calc_covenfolk_points() / 10)
-        expend['laboratories'] = self.calc_lab_points() / 10
-        expend['provisions'] = 5 * (self.calc_covenfolk_points() / 10)
-        expend['weapons and armor'] = self.armory.calculate_total_upkeep_points() / 320
-        expend['tithes'] = sum(self.tithes.values())
-        expend['wages'] = 2 * (self.calc_covenfolk_points() / 10)
-        expend['writing'] = self.covenfolken.total("writer") + self.covenfolken.total("magi")
+        expend["buildings"] = round(self.calc_covenfolk_points() / 10, 2)
+        expend["consumables"] = round(2 * (self.calc_covenfolk_points() / 10), 2)
+        expend["laboratories"] = round(self.calc_lab_points() / 10, 2)
+        expend["provisions"] = round(5 * (self.calc_covenfolk_points() / 10))
+        expend["weapons and armor"] = round(self.armory.calculate_total_upkeep_points() / 320, 2)
+        expend["tithes"] = sum(self.tithes.values())
+        expend["wages"] = round(2 * (self.calc_covenfolk_points() / 10), 2)
+        expend["writing"] = self.covenfolken.total("writer") + self.covenfolken.total("magi")
 
         savings = self.covenfolken.calculate_all_savings()
         cost_saving_expenses = self.expenditures_and_savings(expend, savings)
 
-        return sum(cost_saving_expenses.values())
+        return round(sum(cost_saving_expenses.values()), 2)
 
-
-    def calculate_inflation(self, previous_expenses):
+    def calculate_inflation(self, previous_expenses, current_expenses):
         # Page 65 of Covenant book, inflation should only increase if the year's
         # expenditures were greater than the previous year's
         inflation = self.inflation
-        if self.expenses - previous_expenses > 0:
-            inflation = expenses // 100
+        if current_expenses - previous_expenses > 0:
+            inflation = current_expenses // 100
 
         return inflation
 

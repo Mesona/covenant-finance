@@ -5,16 +5,16 @@ import pytest
 
 covenfolken = {
     'magi' : 6,
-    'nobles' : 0,
-    'companions' : 4,
-    'crafters' : 0,
-    'specialists': 3,
-    'dependants': 0,
-    'grogs': 10,
-    'laborers' : 0,
-    'servants' : 12,
-    'teamsters' : 7,
-    'horses': 0
+    'noble' : 0,
+    'companion' : 4,
+    'crafter' : 0,
+    'specialist': 3,
+    'dependant': 0,
+    'grog': 10,
+    'laborer' : 0,
+    'servant' : 12,
+    'teamster' : 7,
+    'horse': 0
 }
 
 def custom_covenant():
@@ -24,7 +24,6 @@ def custom_covenant():
             income_sources = {"source": 250, "source2": 100},
             tithes = {"Lord Farqua": 10},
             treasury = 75.5,
-            covenfolken = Covenfolken(),
             laboratories = {},
             inflation_enabled = False,
             inflation = 10,
@@ -103,9 +102,9 @@ class DescribeCovenant:
         cov = Covenant()
         folk = Covenfolk("george", "magi")
         cov.covenfolken.add_covenfolk(folk)
-        assert cov.calc_expenditures() == 5
+        assert cov.calc_expenditures() == 5.5
         cov.change_season("autumn")
-        assert cov.calc_expenditures() == 10.0
+        assert cov.calc_expenditures() == 11.0
 
     @staticmethod
     def it_calculates_treaury_changes():
@@ -118,67 +117,71 @@ class DescribeCovenant:
     @staticmethod
     def it_calculates_cost_saving_changes():
         cov = Covenant()
-        cov.laboratories.add("route 66")
-        cov.laboratories.add("route 67")
-        cov.laboratories.add("route 68")
-        cov.laboratories.add("route 69")
-        assert cov.calc_expenditures() == 1234
-        cov.covenfolken.add("worker", "crafter", "brickmaker", "laboratories", 2, "common")
-        assert cov.calc_expenditures() == 1232
-        cov.covenfolken.add("worker 2", "crafter", "brickmaker", "laboratories", 10, "rare")
-        assert cov.calc_expenditures() == 1221
+        cov.laboratories.add_lab("route 66")
+        cov.laboratories.add_lab("route 67")
+        cov.laboratories.add_lab("route 68")
+        cov.laboratories.add_lab("route 69")
+        assert cov.calc_expenditures() == 4.0
+        cov.covenfolken.add_covenfolk("worker", "crafter", "brickmaker", "laboratories", 2, "common")
+        assert cov.calc_expenditures() == 5.2
+        cov.covenfolken.add_covenfolk("worker 2", "crafter", "brickmaker", "laboratories", 10, "rare")
+        assert cov.calc_expenditures() == 7.2
 
     @staticmethod
     def it_correctly_factors_cost_saving_caps_per_profession():
         cov = Covenant()
-        cov.laboratories.add("route 66")
-        assert cov.calc_expenditures() == 1234
-        cov.covenfolken.add("worker", "crafter", "brickmaker", "laboratories", 200, "common")
-        assert cov.calc_expenditures() == 1232
+        cov.laboratories.add_lab("route 66", "aye", 5)
+        assert cov.calc_expenditures() == 15.0
+        cov.covenfolken.add_covenfolk("worker", "crafter", "brickmaker", "laboratories", 200, "common")
+        assert cov.calc_expenditures() == 14.0
 
     @staticmethod
     def it_calculates_laboratory_changes():
         cov = Covenant()
-        assert cov.calc_expenditures() == 1234
-        cov.laboratories.add("route 66")
-        assert cov.calc_expenditures() == 1234
+        assert cov.calc_expenditures() == 0.0
+        cov.laboratories.add_lab("route 66")
+        assert cov.calc_expenditures() == 1.0
 
     @staticmethod
     def it_can_verify_too_few_teamsters_exist():
         cov = Covenant()
-        cov.covenfolken.add("Mary", "magi")
-        assert cov.meets_servant_minimum == False
-        cov.covenfolken.add("Todd", "servant")
-        cov.covenfolken.add("Tammy", "servant")
-        assert cov.meets_servant_minimum == True
+        cov.covenfolken.add_covenfolk("Mary", "magi")
+        assert cov.meets_servant_minimum() == False
+        cov.covenfolken.add_covenfolk("Todd", "servant")
+        cov.covenfolken.add_covenfolk("Tammy", "servant")
+        assert cov.meets_servant_minimum() == True
         
     @staticmethod
     def it_can_verify_too_few_servants_exist():
         cov = Covenant()
-        cov.covenfolken.add("Arg", "magi")
-        assert cov.meets_teamster_minimum == False
-        cov.covenfolken.add("Teamster", "teamster")
-        assert cov.meets_teamster_minimum == True
+        cov.covenfolken.add_covenfolk("Arg", "magi")
+        assert cov.meets_teamster_minimum() == False
+        cov.covenfolken.add_covenfolk("Teamster", "teamster")
+        assert cov.meets_teamster_minimum() == True
 
     @staticmethod
     def it_correctly_factors_in_laborers_for_teamster_requirements():
         cov = Covenant()
-        cov.covenfolken.add("Arg", "magi")
-        cov.covenfolken.add("gle", "magi")
-        cov.covenfolken.add("Barg", "magi")
-        assert cov.meets_teamster_minimum == False
-        cov.covenfolken.add("le", "dependant")
-        cov.covenfolken.add("woo", "dependant")
-        cov.covenfolken.add("tem", "teamster")
-        assert cov.meets_teamster_minimum == False
-        cov.covenfolken.add("lab", "laborer")
-        cov.covenfolken.add("orer", "laborer")
-        assert cov.meets_teamster_minimum == False
+        cov.covenfolken.add_covenfolk("Arg", "magi")
+        cov.covenfolken.add_covenfolk("gle", "magi")
+        cov.covenfolken.add_covenfolk("Barg", "magi")
+        assert cov.meets_teamster_minimum() == False
+        cov.covenfolken.add_covenfolk("le", "dependant")
+        cov.covenfolken.add_covenfolk("woo", "dependant")
+        cov.covenfolken.add_covenfolk("tem", "teamster")
+        assert cov.meets_teamster_minimum() == False
+        cov.covenfolken.add_covenfolk("lab", "laborer")
+        cov.covenfolken.add_covenfolk("orer", "laborer")
+        assert cov.meets_teamster_minimum() == False
 
     @staticmethod
-    def inflation_increases():
-        pass
+    def it_correctly_calculates_inflation():
+        cov = Covenant()
+        cov.inflation = 0
+        assert cov.calculate_inflation(100, 200) == 2
 
     @staticmethod
-    def inflation_does_not_increase_when_expenses_remain_low():
-        pass
+    def it_does_not_increase_inflation_if_expenses_lowered():
+        cov = Covenant()
+        cov.inflation = 5
+        assert cov.calculate_inflation(300, 150) == 5
