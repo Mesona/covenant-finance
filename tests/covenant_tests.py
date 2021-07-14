@@ -185,3 +185,56 @@ class DescribeCovenant:
         cov = Covenant()
         cov.inflation = 5
         assert cov.calculate_inflation(300, 150) == 5
+
+    @staticmethod
+    def it_calculates_armory_increases():
+        cov = Covenant()
+        cov.armory.add_equipment("sword", "weapon", "expensive")
+        assert cov.calc_expenditures() == 0.05
+        cov.armory.add_equipment("Missle", "heavy siege", "expensive")
+        cov.armory.add_equipment("Missle", "heavy siege", "expensive")
+        cov.armory.add_equipment("Missle", "heavy siege", "expensive")
+        cov.armory.add_equipment("Missle", "heavy siege", "expensive")
+        cov.armory.add_equipment("Missle", "heavy siege", "expensive")
+        cov.armory.add_equipment("Missle", "heavy siege", "expensive")
+        cov.armory.add_equipment("Missle", "heavy siege", "expensive")
+        cov.armory.add_equipment("Missle", "heavy siege", "expensive")
+        cov.armory.add_equipment("Missle", "heavy siege", "expensive")
+        cov.armory.add_equipment("Missle", "heavy siege", "expensive")
+        assert cov.calc_expenditures() == 1.05
+
+
+class DescribeSaveCovenant:
+    @staticmethod
+    def it_saves_covenant():
+        from covenant import save_covenant
+        cov = Covenant()
+        cov.inflation = 100
+        cov.covenfolken.add_covenfolk("Barg", "magi")
+        cov.covenfolken.add_covenfolk("le", "dependant")
+        cov.armory.add_equipment("earthquake machine", "heavy siege", "expensive")
+        cov.laboratories.add_lab("Haunted mansion")
+        save_covenant(cov, "cov.json")
+        with open("cov.json", "r+") as f:
+            cov_json = f.readlines()
+            # TODO: find a better way to assert this succeeds without using load
+            assert len(cov_json) > 1
+
+
+class DescribeLoadCovenant:
+    @staticmethod
+    def it_loads_covenant():
+        from covenant import save_covenant, load_covenant
+        cov = Covenant()
+        cov.inflation = 100
+        cov.covenfolken.add_covenfolk("Barg", "magi")
+        cov.covenfolken.add_covenfolk("le", "dependant")
+        cov.armory.add_equipment("earthquake machine", "heavy siege", "expensive")
+        cov.laboratories.add_lab("Haunted mansion")
+        save_covenant(cov, "cov.json")
+        loaded = load_covenant("cov.json")
+        assert loaded.covenfolken.covenfolk["Barg"]
+        assert loaded.armory.heavy_siege["earthquake machine"] == {"expensive": 1}
+        assert loaded.armory.weapons["pistol"] == {}
+        assert loaded.laboratories.labs["Haunted mansion"].size == 0
+        assert loaded.expenses == 9999999

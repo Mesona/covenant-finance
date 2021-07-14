@@ -47,7 +47,6 @@ cost_conversion = {
 
 
 class Armory:
-
     def __init__(self):
         from collections import defaultdict
         self.weapons = defaultdict(lambda: defaultdict(int))

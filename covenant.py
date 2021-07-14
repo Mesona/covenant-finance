@@ -22,6 +22,25 @@ base_covenfolk_point_costs = {
 }
 
 
+def save_covenant(covenant, path):
+    import jsonpickle
+    if covenant.expenses == float("inf"):
+        covenant.expenses = 9999999
+    dump = jsonpickle.encode(covenant, indent=4)
+    with open(path, "w+") as f:
+        f.write(dump)
+
+    print(f"Covenant successfully saved to {path}")
+        
+
+def load_covenant(path):
+    import jsonpickle
+    with open(path, "r") as f:
+        covenant = jsonpickle.loads(f.read())
+    print(f"Covenant successfully loaded from {path}")
+    return covenant
+
+
 class Covenant:
     def __init__(
             self,
