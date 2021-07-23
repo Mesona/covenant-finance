@@ -5,6 +5,7 @@ from covenfolk import Covenfolken
 from armory import Armory
 from laboratory import Laboratories
 from collections import defaultdict
+from models import CovenantModel
 
 base_covenfolk_point_costs = {
         "magi": 5,
@@ -35,6 +36,7 @@ def save_covenant(covenant, path):
 
 def load_covenant(path):
     import jsonpickle
+    cov = CovenantModel.query.filter(CovenantModel.
     with open(path, "r") as f:
         covenant = jsonpickle.loads(f.read())
     print(f"Covenant successfully loaded from {path}")
