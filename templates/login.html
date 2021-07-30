@@ -1,0 +1,21 @@
+<html>
+<head>
+    {% with messages = get_flashed_messages() %}  
+    {% if messages %}  
+          {% for message in messages %}  
+               <p style="text-align: center; color: #9C27B0;">{{ message }}</p>  
+          {% endfor %}  
+    {% endif %}  
+    {% endwith %}
+</head>
+<body>
+    <div class="main">
+        <p class="sign" align="center">Login</p>
+        <form class="form1" action="{{url_for('authenticate')}}" method="POST">
+            <input class="un " type="text" align="center" placeholder="Username" name="username" required>
+            <input class="pass" type="password" align="center" placeholder="Password" name="password" required>
+            <button class="submit" type="submit">Login</button>
+        </form>
+    </div>   
+</body>
+</html>
