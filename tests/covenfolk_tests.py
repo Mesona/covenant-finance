@@ -248,9 +248,9 @@ writer: 5
         cn.add_covenfolk("weber", "magi", "writer", "consumables", 10)
         cn.add_covenfolk("yawgma", "magi", "hammerer", "buildings", 5)
         cn.add_covenfolk("dog", "horse", "stables", "buildings", 2)
-        assert cn.total("magi") == 2
-        assert cn.total("horse") == 1
-        assert isinstance(cn.total("magi"), int)
+        assert cn.total_count_of("magi") == 2
+        assert cn.total_count_of("horse") == 1
+        assert isinstance(cn.total_count_of("magi"), int)
 
     @staticmethod
     def it_returns_the_total_number_of_covenfolk_matching_profession():
@@ -258,4 +258,4 @@ writer: 5
         cn.add_covenfolk("weber", "magi", "writer", "consumables", 10)
         cn.add_covenfolk("yawgma", "magi", "hammerer", "buildings", 5)
         cn.add_covenfolk("dog", "horse", "stables", "buildings", 2)
-        assert cn.total("writer") == 1
+        assert cn.total_count_of("writer") == 1

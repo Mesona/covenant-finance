@@ -4,11 +4,33 @@
    <title>Home</title>
 </head>
 <body>
-   <form action="{{url_for('logout')}}" >
-       <div class="main">
-           <h2 style="text-align: center; margin-top: 25px; color: rgb(85, 12, 124); padding-top: 25px;">Welcome {{username}}</h2>
-           <button class="submit" type="submit" style="margin-top: 25px;">Logout</button>
-       </div>
-   </form>
+    <div>
+        <h6>Welcome, {{username}}</h6>
+    </div>
+    <div>
+        <h4>Covenants:</h4>
+    </div>
+    <div id = "covList">
+    </div>
+    <script>
+        let covs = {{covenants}}
+        let covList = "<ul>"
+        covenants.forEach(function(covs) {
+            covList += "<li>" + covs.name + "</li>";
+        });
+        covList += "</ul>"
+        document.getElementById("covList").innerHTML = covList;
+    </script>
+
+    <a href="create_covenant">
+        <button>Create new Covenant</button>
+    </a>
+    
+    <form action="{{url_for('logout')}}" >
+         <div class="main">
+             <h2 style="text-align: center; margin-top: 25px; color: rgb(85, 12, 124); padding-top: 25px;">Welcome {{username}}</h2>
+             <button class="submit" type="submit" style="margin-top: 25px;">Logout</button>
+         </div>
+    </form>
 </body>
 </html>

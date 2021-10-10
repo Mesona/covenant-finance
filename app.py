@@ -11,8 +11,8 @@ import psycopg2
 
 app = Flask(__name__)
 app.config["SESSION_PERMANENT"] = False
-app.secret_key = SECRET_KEY
 app.config["SESSION_TYPE"] = "filesystem"
+app.secret_key = SECRET_KEY
 Session(app)
 bcypt = Bcrypt(app)
 
@@ -96,7 +96,16 @@ def before_request():
 @app.route("/home")
 def home():
     if g.username:
-        return render_template("home.html")
+        connection = create_connection()
+        cursor = create_cursor(connection)
+        user_id = cursor.execute("SELECT id FROM login WHERE username=%s", [g.username])
+
+        try:
+            covenants = cursor.execute("SELECT * FROM covenant WHERE login_id=%s", [user_id])
+        except:
+            covenants = {}
+
+        return render_template("home.html", username = g.username, covenants = covenants)
     else:
         return render_template("login.html")
  
@@ -110,12 +119,12 @@ def authenticate():
         password = request.form["password"]   
  
         if session.get("connection") == None:
-            session["connection"] = create_connection()
-            session["cursor"] = create_cursor(session["connection"])
+            connection = create_connection()
+            cursor = create_cursor(connection)
 
-        session["cursor"].execute("SELECT username,password FROM login WHERE username=%s",[username])
+        cursor.execute("SELECT username,password FROM login WHERE username=%s",[username])
 
-        user = session["cursor"].fetchone()
+        user = cursor.fetchone()
         username = user[0]
         hashed_pw = user[1]
  
@@ -132,9 +141,9 @@ def authenticate():
 
 
 
-@app.route('/form')
-def form():
-    return render_template('form.html')
+@app.route('/register')
+def register():
+    return render_template('register.html')
 
 
 @app.route('/login', methods = ['POST', 'GET'])
@@ -154,7 +163,7 @@ def login():
         connection.commit()
 
         close_connections(connection, cursor)
-        return f"Done!!"
+        return redirect(url_for("home"))
 
 
 if __name__ == "__main__":

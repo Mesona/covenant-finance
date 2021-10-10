@@ -5,21 +5,37 @@ from covenfolk import Covenfolken
 from armory import Armory
 from laboratory import Laboratories
 from collections import defaultdict
-from models import CovenantModel
+#from models import CovenantModel
 
 base_covenfolk_point_costs = {
-        "magi": 5,
-        "noble": 5,
-        "companion": 3,
-        "crafter": 2,
-        "specialist": 2,
-        "dependant": 1,
-        "grog": 2,
-        "laborer": 2,
-        "servant": 2,
-        "teamster": 2,
-        "covenfolk": 1,
-        "horse": 1,
+        "cheap": {
+            "magi": 5,
+            "noble": 5,
+            "companion": 3,
+            "crafter": 2,
+            "specialist": 2,
+            "dependant": 1,
+            "grog": 2,
+            "laborer": 2,
+            "servant": 2,
+            "teamster": 2,
+            "covenfolk": 1,
+            "horse": 1,
+        },
+        "expensive": {
+            "magi": 10,
+            "noble": 10,
+            "companion": 5,
+            "crafter": 3,
+            "specialist": 3,
+            "dependant": 2,
+            "grog": 3,
+            "laborer": 3,
+            "servant": 3,
+            "teamster": 3,
+            "covenfolk": 2,
+            "horse": 1,
+        }
 }
 
 
@@ -36,9 +52,10 @@ def save_covenant(covenant, path):
 
 def load_covenant(path):
     import jsonpickle
-    cov = CovenantModel.query.filter(CovenantModel.
+
     with open(path, "r") as f:
         covenant = jsonpickle.loads(f.read())
+
     print(f"Covenant successfully loaded from {path}")
     return covenant
 
@@ -89,16 +106,16 @@ Please select between spring, summer, autumn, and winter.
 
     def calculate_covenfolk_point_costs(self, classification):
         if self.season in ["spring", "winter"] or classification == "horse":
-            return base_covenfolk_point_costs[classification]
+            return base_covenfolk_point_costs["cheap"][classification]
         else:
-            return base_covenfolk_point_costs[classification] * 2
+            return base_covenfolk_point_costs["expensive"][classification]
 
     def calc_servant_minimum(self):
         covenfolk_roles = ["magi", "noble", "companion", "crafter", "specialist", "dependant", "grog", "horse"]
         covenfolk_points = 0
 
         for classification in covenfolk_roles:
-            number_of_matching_covenfolk = self.covenfolken.total(classification)
+            number_of_matching_covenfolk = self.covenfolken.total_count_of(classification)
             covenfolk_points += self.calculate_covenfolk_point_costs(classification) * number_of_matching_covenfolk
 
         servant_minimums = math.ceil(covenfolk_points / 10) * 2
@@ -109,19 +126,19 @@ Please select between spring, summer, autumn, and winter.
         covenfolk_points = 0
 
         for classification in covenfolk_roles:
-            number_of_matching_covenfolk = self.covenfolken.total(classification)
+            number_of_matching_covenfolk = self.covenfolken.total_count_of(classification)
             covenfolk_points += self.calculate_covenfolk_point_costs(classification) * number_of_matching_covenfolk
 
-        covenfolk_points -= (self.covenfolken.total('laborer') * 2)
+        covenfolk_points -= (self.covenfolken.total_count_of('laborer') * 2)
         teamster_minimums = math.ceil(covenfolk_points / 10)
         return teamster_minimums
 
     def meets_servant_minimum(self):
-        servants = self.covenfolken.total("servant")
+        servants = self.covenfolken.total_count_of("servant")
         return servants >= self.calc_servant_minimum()
 
     def meets_teamster_minimum(self):
-        teamsters = self.covenfolken.total("teamster")
+        teamsters = self.covenfolken.total_count_of("teamster")
         return teamsters >= self.calc_teamster_minimum()
 
     def update_expenditures(self):
@@ -138,7 +155,7 @@ Please select between spring, summer, autumn, and winter.
         expend["weapons and armor"] = round(self.armory.calculate_total_upkeep_points() / 320, 2)
         expend["tithes"] = sum(self.tithes.values())
         expend["wages"] = round(2 * (self.calc_covenfolk_points() / 10), 2)
-        expend["writing"] = self.covenfolken.total("writer") + self.covenfolken.total("magi")
+        expend["writing"] = self.covenfolken.total_count_of("writer") + self.covenfolken.total_count_of("magi")
 
         savings = self.covenfolken.calculate_all_savings()
         cost_saving_expenses = self.expenditures_and_savings(expend, savings)

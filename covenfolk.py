@@ -79,7 +79,7 @@ class Covenfolken:
 
         return provided_savings
 
-    def total(self, class_or_profession):
+    def total_count_of(self, class_or_profession):
         individuals = [person for person in self.covenfolk.values() if person.classification == class_or_profession]
         if individuals == []:
             individuals = [person for person in self.covenfolk.values() if person.profession == class_or_profession]
