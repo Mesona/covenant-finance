@@ -1,7 +1,12 @@
-from covenfolk import Covenfolken, Covenfolk
+# pylint: disable=missing-module-docstring
+# pylint: disable=missing-function-docstring
+
+import pytest
+
+from covenfolk import Covenfolk
 from covenant import Covenant
 from armory import Armory
-import pytest
+from sample_covenants import semita
 
 covenfolken = {
     'magi' : 6,
@@ -42,7 +47,7 @@ class DescribeCovenant:
         assert cov.covenfolken.covenfolk == {}
         assert cov.laboratories.labs == {}
         assert isinstance(cov.armory, Armory)
-        assert cov.inflation_enabled == True
+        assert cov.inflation_enabled is True
         assert cov.inflation == 0
 
     @staticmethod
@@ -54,8 +59,23 @@ class DescribeCovenant:
         assert cov.tithes == {"Lord Farqua": 10}
         assert cov.treasury == 75.5
         assert cov.covenfolken.covenfolk == {}
-        assert cov.inflation_enabled == False
+        assert cov.inflation_enabled is False
         assert cov.inflation == 10
+
+    @staticmethod
+    def it_can_initialize_semita():
+        semita()
+
+    @staticmethod
+    def it_calculates_semita_servant_requirements_same_as_book():
+        cov = semita()
+        assert cov.calc_servant_minimum() == 20
+
+    @staticmethod
+    def it_calculates_semita_teamster_requirements_same_as_book():
+        cov = semita()
+        assert cov.calc_teamster_minimum() == 4
+        assert False
 
     @staticmethod
     def it_correctly_capitalizes_season():
@@ -65,15 +85,15 @@ class DescribeCovenant:
     @staticmethod
     def it_does_not_accept_custom_seaons():
         with pytest.raises(ValueError):
-            cov = Covenant(season = "flamebroiled")
+            Covenant(season = "flamebroiled")
 
     @staticmethod
     def it_errors_when_bad_income_sources_are_added():
         with pytest.raises(TypeError):
-            cov = Covenant(income_sources = {"source": "abc"})
+            Covenant(income_sources = {"source": "abc"})
 
         with pytest.raises(TypeError):
-            cov = Covenant(income_sources = {1: 200})
+            Covenant(income_sources = {1: 200})
 
     @staticmethod
     def it_calculates_income_source_changes():

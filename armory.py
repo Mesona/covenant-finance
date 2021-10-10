@@ -54,6 +54,7 @@ class Armory:
         self.partial = defaultdict(lambda: defaultdict(int))
         self.light_siege = defaultdict(lambda: defaultdict(int))
         self.heavy_siege = defaultdict(lambda: defaultdict(int))
+        self.magic = defaultdict(lambda: defaultdict(int))
 
     def select_equipment_type(self, equipment_type):
         equipment_type = equipment_type.replace(" ", "_")

@@ -109,7 +109,7 @@ class Covenfolken:
     def remove_covenfolk(self, name):
         self.covenfolk.pop(name)
 
-    def display(self):
+    def display_covenfolk(self):
         for covenfolk in self.covenfolk.values():
             print(f"{covenfolk.name}: {covenfolk.classification}")
             if covenfolk.saving_category:

@@ -4,6 +4,7 @@ from covenant import Covenant
 
 
 def semita():
+    """A sample covenant laid out on page 68 of the covenants book."""
     cov = Covenant(
         name = 'Semita Errabunda',
         season = 'spring',

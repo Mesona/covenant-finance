@@ -15,7 +15,7 @@ base_covenfolk_point_costs = {
             "crafter": 2,
             "specialist": 2,
             "dependant": 1,
-            "grog": 2,
+            "grog": 1,
             "laborer": 2,
             "servant": 2,
             "teamster": 2,
@@ -29,7 +29,7 @@ base_covenfolk_point_costs = {
             "crafter": 3,
             "specialist": 3,
             "dependant": 2,
-            "grog": 3,
+            "grog": 2,
             "laborer": 3,
             "servant": 3,
             "teamster": 3,
@@ -117,6 +117,8 @@ Please select between spring, summer, autumn, and winter.
         for classification in covenfolk_roles:
             number_of_matching_covenfolk = self.covenfolken.total_count_of(classification)
             covenfolk_points += self.calculate_covenfolk_point_costs(classification) * number_of_matching_covenfolk
+            test = self.calculate_covenfolk_point_costs(classification) * number_of_matching_covenfolk
+            print(f"VALUE OF {classification}: {test}")
 
         servant_minimums = math.ceil(covenfolk_points / 10) * 2
         return servant_minimums
