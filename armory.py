@@ -1,8 +1,18 @@
 #!/usr/bin/env python3
 
-qualities = ["inexpensive", "standard", "expensive"]
-types = ["weapon", "partial", "full", "light siege", "heavy siege"]
+from collections import defaultdict
 
+qualities = ["inexpensive", "standard", "expensive", "magic"]
+types = ["weapon", "partial", "full", "light siege", "heavy siege", "magic"]
+
+savings_categories = [
+        "buildings",
+        "consumables",
+        "laboratories",
+        "provisions",
+        "weapons and armor",
+        "writing",
+]
 
 def valid_quality(quality):
     if quality.lower() in qualities:
@@ -43,6 +53,9 @@ cost_conversion = {
                 "standard": 0,
                 "expensive": 32
         },
+        "magic": {
+            "magic": 0,
+        }
 }
 
 
@@ -54,7 +67,28 @@ class Armory:
         self.partial = defaultdict(lambda: defaultdict(int))
         self.light_siege = defaultdict(lambda: defaultdict(int))
         self.heavy_siege = defaultdict(lambda: defaultdict(int))
-        self.magic = defaultdict(lambda: defaultdict(int))
+        self.magic = []
+
+    def calculate_all_savings(self) -> dict:
+        """Generates a dictionary of all the covenant savings this armory provides."""
+        provided_savings = {}
+
+        for category in savings_categories:
+            provided_savings[category] = self.calculate_savings_of(category)
+
+        return provided_savings
+
+    def calculate_savings_of(self, saving_category: str) -> defaultdict(int):
+        """Finds magic items of corresponding saving_category and sums their savings."""
+        matching_items = [item for item in self.magic if item.saving_category == saving_category]
+        potential_savings = defaultdict(int)
+
+        for item in matching_items:
+            current_saving = item.saving_category
+            potential_savings[current_saving] += item.saving_value
+
+        return potential_savings
+
 
     def select_equipment_type(self, equipment_type):
         equipment_type = equipment_type.replace(" ", "_")
@@ -68,16 +102,42 @@ class Armory:
             return self.light_siege
         elif equipment_type == "heavy_siege":
             return self.heavy_siege
+        elif equipment_type == "magic":
+            return self.magic
 
-    def add_equipment(self, name, equipment_type, quality):
+    def add_equipment(
+            self,
+            name,
+            equipment_type,
+            quality,
+            saving_category=None,
+            saving_value=0,
+            description=""
+        ):
         if not valid_quality(quality):
             raise ValueError(f"Quality of {quality} is not recognized!")
 
         if not valid_equipment_type(equipment_type):
             raise ValueError(f"Equipment type {equipment_type} not recognized!")
 
+        if saving_category and equipment_type != "magic":
+            raise ValueError(f"Only 'magic' items can provide savings, not {equipment_type}!")
+
+        if saving_category.lower() not in savings_categories:
+            raise ValueError(f"{saving_category} is not one of the listed saivng categories!")
+
         et = self.select_equipment_type(equipment_type)
-        et[name][quality] += 1
+        if equipment_type == "magic":
+            self.magic.append(
+                    {
+                        "name": name,
+                        "saving_category": saving_category,
+                        "saving_value": saving_value,
+                        "description": description,
+                    }
+            )
+        else:
+            et[name][quality] += 1
 
     def remove_equipment(self, name, equipment_type, quality):
         if not valid_quality(quality):

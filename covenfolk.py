@@ -55,7 +55,7 @@ class Covenfolken:
         for folk in matching_folk:
             if saving_category == "provisions" and folk.classification == "laborer":
                 potential_savings["laborer"] += 1
-                continue 
+                continue
 
             current_profession = folk.profession
             provided_savings = 1 + (folk.skill // (1 if folk.rarity == "rare" else 2))

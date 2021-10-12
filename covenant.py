@@ -159,7 +159,9 @@ Please select between spring, summer, autumn, and winter.
         expend["wages"] = round(2 * (self.calc_covenfolk_points() / 10), 2)
         expend["writing"] = self.covenfolken.total_count_of("writer") + self.covenfolken.total_count_of("magi")
 
-        savings = self.covenfolken.calculate_all_savings()
+        covenfolken_savings = self.covenfolken.calculate_all_savings()
+        armory_savings = self.armory.calculate_all_savings()
+        savings = {saving: covenfolken_savings.get(saving, 0) + armory_savings.get(saving, 0) for saving in set(covenfolken_savings) | set(armory_savings)}
         cost_saving_expenses = self.expenditures_and_savings(expend, savings)
 
         return round(sum(cost_saving_expenses.values()), 2)
