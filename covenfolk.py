@@ -11,7 +11,6 @@ def validate_classification(classification):
             "dependant",
             "grog",
             "laborer",
-            "servant",
             "teamster",
             "horse",
     ]

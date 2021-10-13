@@ -16,8 +16,7 @@ covenfolken = {
     'specialist': 3,
     'dependant': 0,
     'grog': 10,
-    'laborer' : 0,
-    'servant' : 12,
+    'laborer' : 12,
     'teamster' : 7,
     'horse': 0
 }
@@ -67,9 +66,9 @@ class DescribeCovenant:
         semita()
 
     @staticmethod
-    def it_calculates_semita_servant_requirements_same_as_book():
+    def it_calculates_semita_laborer_requirements_same_as_book():
         cov = semita()
-        assert cov.calc_servant_minimum() == 20
+        assert cov.calc_laborer_minimum() == 16
 
     @staticmethod
     def it_calculates_semita_teamster_requirements_same_as_book():
@@ -166,13 +165,13 @@ class DescribeCovenant:
     def it_can_verify_too_few_teamsters_exist():
         cov = Covenant()
         cov.covenfolken.add_covenfolk("Mary", "magi")
-        assert cov.meets_servant_minimum() == False
-        cov.covenfolken.add_covenfolk("Todd", "servant")
-        cov.covenfolken.add_covenfolk("Tammy", "servant")
-        assert cov.meets_servant_minimum() == True
+        assert cov.meets_laborer_minimum() == False
+        cov.covenfolken.add_covenfolk("Todd", "laborer")
+        cov.covenfolken.add_covenfolk("Tammy", "laborer")
+        assert cov.meets_laborer_minimum() == True
         
     @staticmethod
-    def it_can_verify_too_few_servants_exist():
+    def it_can_verify_too_few_laborers_exist():
         cov = Covenant()
         cov.covenfolken.add_covenfolk("Arg", "magi")
         assert cov.meets_teamster_minimum() == False

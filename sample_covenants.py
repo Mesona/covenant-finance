@@ -56,16 +56,10 @@ def semita():
             "grog",
         )
 
-    for i in range(40):
-        cov.covenfolken.add_covenfolk(
-            f"laborers{i}",
-            "laborer",
-        )
-
     for i in range(16):
         cov.covenfolken.add_covenfolk(
-            f"servant{i}",
-            "servant",
+            f"laborer{i}",
+            "laborer",
         )
 
     for i in range(4):
@@ -108,6 +102,24 @@ def semita():
         cov.armory.add_equipment("axe", "weapon", "standard")
         cov.armory.add_equipment("longsword", "weapon", "standard")
 
+    cov.armory.add_equipment(
+            "Magic broom",
+            "magic",
+            "magic",
+            "laborers",
+            2,
+            "Does the work of 2 laborers"
+        )
+
+    cov.armory.add_equipment(
+            "Magic broom",
+            "magic",
+            "magic",
+            "laborers",
+            2,
+            "Does the work of 2 laborers"
+        )
+
     return cov
 
 
@@ -128,7 +140,6 @@ def semita():
 #            'dependants': 25,
 #            'grogs': 12,
 #            'laborers' : 30,
-#            'servants' : 38,
 #            'teamsters' : 15,
 #            'horses': 6
 #        },

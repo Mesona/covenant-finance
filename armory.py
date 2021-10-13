@@ -12,6 +12,7 @@ savings_categories = [
         "provisions",
         "weapons and armor",
         "writing",
+        "laborers",
 ]
 
 def valid_quality(quality):
@@ -78,19 +79,20 @@ class Armory:
 
         return provided_savings
 
-    def calculate_savings_of(self, saving_category: str) -> defaultdict(int):
+    def calculate_savings_of(self, saving_category: str) -> int:
         """Finds magic items of corresponding saving_category and sums their savings."""
-        matching_items = [item for item in self.magic if item.saving_category == saving_category]
-        potential_savings = defaultdict(int)
+        matching_items = [item for item in self.magic if item["saving_category"] == saving_category]
+        potential_savings = 0
 
         for item in matching_items:
-            current_saving = item.saving_category
-            potential_savings[current_saving] += item.saving_value
+            current_saving = item["saving_category"]
+            potential_savings += item["saving_value"]
 
         return potential_savings
 
 
-    def select_equipment_type(self, equipment_type):
+    def select_equipment_type(self, equipment_type: str):
+        """Returns all of the selected equipment type."""
         equipment_type = equipment_type.replace(" ", "_")
         if equipment_type == "weapon":
             return self.weapons
@@ -104,16 +106,19 @@ class Armory:
             return self.heavy_siege
         elif equipment_type == "magic":
             return self.magic
+        else:
+            raise ValueError(f"Invalid equipment type of {equipment_type}!")
 
     def add_equipment(
             self,
-            name,
-            equipment_type,
-            quality,
-            saving_category=None,
+            name: str,
+            equipment_type: str,
+            quality: str,
+            saving_category="",
             saving_value=0,
             description=""
-        ):
+        ) -> None:
+        """Adds a single piece of equipment to an Armory instance."""
         if not valid_quality(quality):
             raise ValueError(f"Quality of {quality} is not recognized!")
 
@@ -123,7 +128,7 @@ class Armory:
         if saving_category and equipment_type != "magic":
             raise ValueError(f"Only 'magic' items can provide savings, not {equipment_type}!")
 
-        if saving_category.lower() not in savings_categories:
+        if equipment_type == "magic" and saving_category.lower() not in savings_categories:
             raise ValueError(f"{saving_category} is not one of the listed saivng categories!")
 
         et = self.select_equipment_type(equipment_type)
@@ -139,7 +144,15 @@ class Armory:
         else:
             et[name][quality] += 1
 
-    def remove_equipment(self, name, equipment_type, quality):
+        return "Successfully added equipment!"
+
+    def remove_equipment(
+            self,
+            name: str,
+            equipment_type: str,
+            quality: str
+        ) -> str:
+        """Removes a single piece of equipment from an Armory instance."""
         if not valid_quality(quality):
             raise ValueError(f"Quality of {quality} is not recognized!")
 
@@ -152,7 +165,14 @@ class Armory:
         else:
             raise ValueError("Cannot have negative quantities!")
 
-    def calculate_upkeep_points_of(self, equipment_type):
+        return "Successfully removed equipment!"
+
+    def calculate_upkeep_points_of(self, equipment_type: str) -> int:
+        """
+        Returns the total upkeep cost of all equipment that falls under a
+        specified equipment type.
+        """
+
         points = 0
 
         et = self.select_equipment_type(equipment_type)
@@ -164,7 +184,12 @@ class Armory:
 
         return points
 
-    def calculate_total_upkeep_points(self):
+    def calculate_total_upkeep_points(self) -> int:
+        """
+        Returns the total upkeep point value of all items within a single
+        Armroy instance.
+        """
+
         total_points = 0
         for equipment_type in types:
             total_points += self.calculate_upkeep_points_of(equipment_type)

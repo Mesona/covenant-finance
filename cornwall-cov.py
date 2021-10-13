@@ -19,8 +19,7 @@ def gglynn(covenant):
             'specialists': 4,
             'dependants': 25,
             'grogs': 12,
-            'laborers' : 30,
-            'servants' : 38,
+            'laborers' : 38,
             'teamsters' : 15,
             'horses': 6
             }

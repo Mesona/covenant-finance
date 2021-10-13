@@ -16,9 +16,8 @@ base_covenfolk_point_costs = {
             "specialist": 2,
             "dependant": 1,
             "grog": 1,
-            "laborer": 2,
-            "servant": 2,
-            "teamster": 2,
+            "laborer": 1,
+            "teamster": 1,
             "covenfolk": 1,
             "horse": 1,
         },
@@ -30,9 +29,8 @@ base_covenfolk_point_costs = {
             "specialist": 3,
             "dependant": 2,
             "grog": 2,
-            "laborer": 3,
-            "servant": 3,
-            "teamster": 3,
+            "laborer": 2,
+            "teamster": 2,
             "covenfolk": 2,
             "horse": 1,
         }
@@ -110,7 +108,7 @@ Please select between spring, summer, autumn, and winter.
         else:
             return base_covenfolk_point_costs["expensive"][classification]
 
-    def calc_servant_minimum(self):
+    def calc_laborer_minimum(self):
         covenfolk_roles = ["magi", "noble", "companion", "crafter", "specialist", "dependant", "grog", "horse"]
         covenfolk_points = 0
 
@@ -118,26 +116,34 @@ Please select between spring, summer, autumn, and winter.
             number_of_matching_covenfolk = self.covenfolken.total_count_of(classification)
             covenfolk_points += self.calculate_covenfolk_point_costs(classification) * number_of_matching_covenfolk
             test = self.calculate_covenfolk_point_costs(classification) * number_of_matching_covenfolk
-            print(f"VALUE OF {classification}: {test}")
 
-        servant_minimums = math.ceil(covenfolk_points / 10) * 2
-        return servant_minimums
+        laborer_minimums = math.ceil(covenfolk_points / 10) * 2
+        laborer_savings = self.armory.calculate_savings_of("laborers")
+        laborer_minimums = laborer_minimums - laborer_savings
+        return laborer_minimums
 
     def calc_teamster_minimum(self):
-        covenfolk_roles = ["magi", "noble", "companion", "crafter", "specialist", "dependant", "grog", "horse", "servant"]
+        covenfolk_roles = ["magi", "noble", "companion", "crafter", "specialist", "dependant", "grog", "horse", "laborer"]
         covenfolk_points = 0
 
         for classification in covenfolk_roles:
             number_of_matching_covenfolk = self.covenfolken.total_count_of(classification)
             covenfolk_points += self.calculate_covenfolk_point_costs(classification) * number_of_matching_covenfolk
+            print("CURRENT CLASSIFICATION:", classification)
+            print("NUMBER OF MATCHING:", number_of_matching_covenfolk)
+            print("CURRENT POINT TOTAL:", covenfolk_points)
 
-        covenfolk_points -= (self.covenfolken.total_count_of('laborer') * 2)
+        laborer_total = self.covenfolken.total_count_of("laborer")
+        # If there are magic items counting against required laborers, they
+        # also count against the teamster requirements
+        laborer_total += self.armory.calculate_savings_of("laborers")
+        covenfolk_points -= (laborer_total * 2)
         teamster_minimums = math.ceil(covenfolk_points / 10)
         return teamster_minimums
 
-    def meets_servant_minimum(self):
-        servants = self.covenfolken.total_count_of("servant")
-        return servants >= self.calc_servant_minimum()
+    def meets_laborer_minimum(self):
+        laborers = self.covenfolken.total_count_of("laborer")
+        return laborers >= self.calc_laborer_minimum()
 
     def meets_teamster_minimum(self):
         teamsters = self.covenfolken.total_count_of("teamster")

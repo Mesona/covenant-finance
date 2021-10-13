@@ -13,9 +13,9 @@ def demo_folk():
 class DescribeCovenfolk:
     @staticmethod
     def it_initializes_with_default_values():
-        folk = Covenfolk("Jimmy", "servant")
+        folk = Covenfolk("Jimmy", "laborer")
         assert folk.name == "Jimmy"
-        assert folk.classification == "servant"
+        assert folk.classification == "laborer"
         assert folk.saving_category == ""
         assert folk.profession == ""
         assert folk.skill == 0
@@ -132,7 +132,7 @@ class DescribeValidateProfession:
                 "dependant",
                 "grog",
                 "laborer",
-                "servant",
+                "laborer",
                 "teamster",
                 "horse",
         ]
