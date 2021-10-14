@@ -66,15 +66,14 @@ class DescribeCovenant:
         semita()
 
     @staticmethod
-    def it_calculates_semita_laborer_requirements_same_as_book():
+    def it_calculates_semita_servant_requirements_same_as_book():
         cov = semita()
-        assert cov.calc_laborer_minimum() == 16
+        assert cov.calculate_servant_minimum() == 16
 
     @staticmethod
     def it_calculates_semita_teamster_requirements_same_as_book():
         cov = semita()
-        assert cov.calc_teamster_minimum() == 4
-        assert False
+        assert cov.calculate_teamster_minimum() == 4
 
     @staticmethod
     def it_correctly_capitalizes_season():
@@ -121,9 +120,9 @@ class DescribeCovenant:
         cov = Covenant()
         folk = Covenfolk("george", "magi")
         cov.covenfolken.add_covenfolk(folk)
-        assert cov.calc_expenditures() == 5.5
+        assert cov.calculate_expenditures() == 5.5
         cov.change_season("autumn")
-        assert cov.calc_expenditures() == 11.0
+        assert cov.calculate_expenditures() == 11.0
 
     @staticmethod
     def it_calculates_treaury_changes():
@@ -140,26 +139,26 @@ class DescribeCovenant:
         cov.laboratories.add_lab("route 67")
         cov.laboratories.add_lab("route 68")
         cov.laboratories.add_lab("route 69")
-        assert cov.calc_expenditures() == 4.0
+        assert cov.calculate_expenditures() == 4.0
         cov.covenfolken.add_covenfolk("worker", "crafter", "brickmaker", "laboratories", 2, "common")
-        assert cov.calc_expenditures() == 5.2
+        assert cov.calculate_expenditures() == 5.2
         cov.covenfolken.add_covenfolk("worker 2", "crafter", "brickmaker", "laboratories", 10, "rare")
-        assert cov.calc_expenditures() == 7.2
+        assert cov.calculate_expenditures() == 7.2
 
     @staticmethod
     def it_correctly_factors_cost_saving_caps_per_profession():
         cov = Covenant()
         cov.laboratories.add_lab("route 66", "aye", 5)
-        assert cov.calc_expenditures() == 15.0
+        assert cov.calculate_expenditures() == 15.0
         cov.covenfolken.add_covenfolk("worker", "crafter", "brickmaker", "laboratories", 200, "common")
-        assert cov.calc_expenditures() == 14.0
+        assert cov.calculate_expenditures() == 14.0
 
     @staticmethod
     def it_calculates_laboratory_changes():
         cov = Covenant()
-        assert cov.calc_expenditures() == 0.0
+        assert cov.calculate_expenditures() == 0.0
         cov.laboratories.add_lab("route 66")
-        assert cov.calc_expenditures() == 1.0
+        assert cov.calculate_expenditures() == 1.0
 
     @staticmethod
     def it_can_verify_too_few_teamsters_exist():
@@ -209,7 +208,7 @@ class DescribeCovenant:
     def it_calculates_armory_increases():
         cov = Covenant()
         cov.armory.add_equipment("sword", "weapon", "expensive")
-        assert cov.calc_expenditures() == 0.05
+        assert cov.calculate_expenditures() == 0.05
         cov.armory.add_equipment("Missle", "heavy siege", "expensive")
         cov.armory.add_equipment("Missle", "heavy siege", "expensive")
         cov.armory.add_equipment("Missle", "heavy siege", "expensive")
@@ -220,7 +219,7 @@ class DescribeCovenant:
         cov.armory.add_equipment("Missle", "heavy siege", "expensive")
         cov.armory.add_equipment("Missle", "heavy siege", "expensive")
         cov.armory.add_equipment("Missle", "heavy siege", "expensive")
-        assert cov.calc_expenditures() == 1.05
+        assert cov.calculate_expenditures() == 1.05
 
 
 class DescribeSaveCovenant:

@@ -16,7 +16,7 @@ class DescribeCovenfolk:
         folk = Covenfolk("Jimmy", "laborer")
         assert folk.name == "Jimmy"
         assert folk.classification == "laborer"
-        assert folk.saving_category == ""
+        assert folk.saving_category == "provisions"
         assert folk.profession == ""
         assert folk.skill == 0
         assert folk.rarity == ""
@@ -223,7 +223,7 @@ class DescribeCovenfolken:
         cn = Covenfolken()
         cn.add_covenfolk("weber", "magi")
         cn.add_covenfolk("a", "magi", "writer", "consumables", 5)
-        cn.display()
+        cn.display_covenfolk()
         captured = capsys.readouterr()
         assert captured.out == """weber: magi
 

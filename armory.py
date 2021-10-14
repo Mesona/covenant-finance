@@ -12,7 +12,7 @@ savings_categories = [
         "provisions",
         "weapons and armor",
         "writing",
-        "laborers",
+        "servants",
 ]
 
 def valid_quality(quality):

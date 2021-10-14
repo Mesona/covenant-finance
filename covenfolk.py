@@ -11,6 +11,7 @@ def validate_classification(classification):
             "dependant",
             "grog",
             "laborer",
+            "servant",
             "teamster",
             "horse",
     ]
@@ -53,7 +54,7 @@ class Covenfolken:
 
         for folk in matching_folk:
             if saving_category == "provisions" and folk.classification == "laborer":
-                potential_savings["laborer"] += 1
+                potential_savings["provisions"] += 1
                 continue
 
             current_profession = folk.profession

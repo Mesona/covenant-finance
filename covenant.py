@@ -17,6 +17,7 @@ base_covenfolk_point_costs = {
             "dependant": 1,
             "grog": 1,
             "laborer": 1,
+            "servant": 1,
             "teamster": 1,
             "covenfolk": 1,
             "horse": 1,
@@ -30,6 +31,7 @@ base_covenfolk_point_costs = {
             "dependant": 2,
             "grog": 2,
             "laborer": 2,
+            "servant": 2,
             "teamster": 2,
             "covenfolk": 2,
             "horse": 1,
@@ -96,7 +98,7 @@ Please select between spring, summer, autumn, and winter.
         self.inflation = inflation
         self.expenses = float("inf")  # Prevents inflation from taking effect the first year
             
-    def calc_covenfolk_points(self):
+    def calculate_covenfolk_points(self):
         point_cost = 0
         for covenfolk in self.covenfolken.covenfolk.values():
             point_cost += self.calculate_covenfolk_point_costs(covenfolk.classification) 
@@ -108,7 +110,7 @@ Please select between spring, summer, autumn, and winter.
         else:
             return base_covenfolk_point_costs["expensive"][classification]
 
-    def calc_laborer_minimum(self):
+    def calculate_servant_minimum(self):
         covenfolk_roles = ["magi", "noble", "companion", "crafter", "specialist", "dependant", "grog", "horse"]
         covenfolk_points = 0
 
@@ -117,13 +119,13 @@ Please select between spring, summer, autumn, and winter.
             covenfolk_points += self.calculate_covenfolk_point_costs(classification) * number_of_matching_covenfolk
             test = self.calculate_covenfolk_point_costs(classification) * number_of_matching_covenfolk
 
-        laborer_minimums = math.ceil(covenfolk_points / 10) * 2
+        servant_minimums = math.ceil(covenfolk_points / 10) * 2
         laborer_savings = self.armory.calculate_savings_of("laborers")
-        laborer_minimums = laborer_minimums - laborer_savings
-        return laborer_minimums
+        servant_minimums = servant_minimums - laborer_savings
+        return servant_minimums
 
-    def calc_teamster_minimum(self):
-        covenfolk_roles = ["magi", "noble", "companion", "crafter", "specialist", "dependant", "grog", "horse", "laborer"]
+    def calculate_teamster_minimum(self):
+        covenfolk_roles = ["magi", "noble", "companion", "crafter", "specialist", "dependant", "grog", "horse", "servant"]
         covenfolk_points = 0
 
         for classification in covenfolk_roles:
@@ -133,36 +135,32 @@ Please select between spring, summer, autumn, and winter.
             print("NUMBER OF MATCHING:", number_of_matching_covenfolk)
             print("CURRENT POINT TOTAL:", covenfolk_points)
 
-        laborer_total = self.covenfolken.total_count_of("laborer")
-        # If there are magic items counting against required laborers, they
-        # also count against the teamster requirements
-        laborer_total += self.armory.calculate_savings_of("laborers")
-        covenfolk_points -= (laborer_total * 2)
+        covenfolk_points -= (self.covenfolken.total_count_of("laborer") * 2)
         teamster_minimums = math.ceil(covenfolk_points / 10)
         return teamster_minimums
 
     def meets_laborer_minimum(self):
         laborers = self.covenfolken.total_count_of("laborer")
-        return laborers >= self.calc_laborer_minimum()
+        return laborers >= self.calculate_servant_minimum()
 
     def meets_teamster_minimum(self):
         teamsters = self.covenfolken.total_count_of("teamster")
-        return teamsters >= self.calc_teamster_minimum()
+        return teamsters >= self.calculate_teamster_minimum()
 
     def update_expenditures(self):
         previous_expenses = self.expenses
-        self.expenses = self.calc_expenditures()
+        self.expenses = self.calculate_expenditures()
         self.inflation = self.calculate_inflation(previous_expenses, self.expenses)
 
-    def calc_expenditures(self):
+    def calculate_expenditures(self):
         expend = {}
-        expend["buildings"] = round(self.calc_covenfolk_points() / 10, 2)
-        expend["consumables"] = round(2 * (self.calc_covenfolk_points() / 10), 2)
-        expend["laboratories"] = round(self.calc_lab_points() / 10, 2)
-        expend["provisions"] = round(5 * (self.calc_covenfolk_points() / 10))
+        expend["buildings"] = round(self.calculate_covenfolk_points() / 10, 2)
+        expend["consumables"] = round(2 * (self.calculate_covenfolk_points() / 10), 2)
+        expend["laboratories"] = round(self.calculate_lab_points() / 10, 2)
+        expend["provisions"] = round(5 * (self.calculate_covenfolk_points() / 10))
         expend["weapons and armor"] = round(self.armory.calculate_total_upkeep_points() / 320, 2)
         expend["tithes"] = sum(self.tithes.values())
-        expend["wages"] = round(2 * (self.calc_covenfolk_points() / 10), 2)
+        expend["wages"] = round(2 * (self.calculate_covenfolk_points() / 10), 2)
         expend["writing"] = self.covenfolken.total_count_of("writer") + self.covenfolken.total_count_of("magi")
 
         covenfolken_savings = self.covenfolken.calculate_all_savings()
@@ -206,7 +204,7 @@ Please select between spring, summer, autumn, and winter.
         return expenses
 
 
-    def calc_lab_points(self):
+    def calculate_lab_points(self):
         points = 0
         for lab in self.laboratories.labs.values():
             points += lab.points
@@ -223,7 +221,7 @@ Please select between spring, summer, autumn, and winter.
 
     def display_finances(self):
         # TODO: this is broken
-        for key, val in self.calc_expenditures().items():
+        for key, val in self.calculate_expenditures().items():
             print(key.ljust(15) + str(val).rjust(8))
         print ('Total:'.ljust(15) + str(self.total_expenditure()).rjust(8))
         print('\nTotal income:' + str(self.total_income()).rjust(10))
