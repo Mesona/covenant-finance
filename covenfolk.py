@@ -50,16 +50,16 @@ class Covenfolken:
         from collections import defaultdict
 
         matching_folk = [person for person in self.covenfolk.values() if person.saving_category == saving_category]
-        laborers = [person for person in self.covenfolk.values() if person.classification == "laborer"]
-        potential_savings = 0
+        potential_savings = defaultdict(int)
 
         for folk in matching_folk:
             if saving_category == "provisions" and folk.classification == "laborer":
-                potential_savings += 1
+                potential_savings["laborer"] += 1
                 continue
 
+            current_profession = folk.profession
             provided_savings = 1 + (folk.skill // (1 if folk.rarity == "rare" else 2))
-            potential_savings += provided_savings
+            potential_savings[current_profession] += provided_savings
 
         return potential_savings
 

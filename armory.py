@@ -82,10 +82,10 @@ class Armory:
     def calculate_savings_of(self, saving_category: str) -> int:
         """Finds magic items of corresponding saving_category and sums their savings."""
         matching_items = [item for item in self.magic if item["saving_category"] == saving_category]
-        potential_savings = 0
+        potential_savings = defaultdict(int)
 
         for item in matching_items:
-            potential_savings += item["saving_value"]
+            potential_savings[item["saving_category"]] += item["saving_value"]
 
         return potential_savings
 

@@ -165,8 +165,6 @@ Please select between spring, summer, autumn, and winter.
 
         covenfolken_savings = self.covenfolken.calculate_all_savings()
         armory_savings = self.armory.calculate_all_savings()
-        print("CS:", covenfolken_savings)
-        print("AS:", armory_savings)
         savings = {saving: covenfolken_savings.get(saving, 0) + armory_savings.get(saving, 0) for saving in set(covenfolken_savings) | set(armory_savings)}
         cost_saving_expenses = self.expenditures_and_savings(expend, savings)
 
