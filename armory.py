@@ -5,7 +5,7 @@ from collections import defaultdict
 EQUIPMENT_QUALITIES = ["inexpensive", "standard", "expensive", "magic"]
 EQUIPMENT_TYPES = ["weapon", "partial", "full", "light siege", "heavy siege", "magic"]
 
-savings_categories = [
+SAVINGS_CATEGORIES = [
         "buildings",
         "consumables",
         "laboratories",
@@ -72,23 +72,23 @@ class Armory:
 
     def calculate_all_savings(self) -> dict:
         """Generates a dictionary of all the covenant savings this armory provides."""
-        provided_savings = {}
+        provided_savings = defaultdict()
 
-        for category in savings_categories:
-            provided_savings[category] = self.calculate_savings_of(category)
+        for category in SAVINGS_CATEGORIES:
+            provided_savings[category] = {}
+            provided_savings[category]["magic"] = self.calculate_savings_of(category)
 
         return provided_savings
 
     def calculate_savings_of(self, saving_category: str) -> int:
         """Finds magic items of corresponding saving_category and sums their savings."""
         matching_items = [item for item in self.magic if item["saving_category"] == saving_category]
-        potential_savings = defaultdict(int)
+        potential_savings = 0
 
         for item in matching_items:
-            potential_savings[item["saving_category"]] += item["saving_value"]
+            potential_savings += item["saving_value"]
 
         return potential_savings
-
 
     def select_equipment_type(self, equipment_type: str):
         """Returns all of the selected equipment type."""
@@ -127,7 +127,7 @@ class Armory:
         if saving_category and equipment_type != "magic":
             raise ValueError(f"Only 'magic' items can provide savings, not {equipment_type}!")
 
-        if equipment_type == "magic" and saving_category.lower() not in savings_categories:
+        if equipment_type == "magic" and saving_category.lower() not in SAVINGS_CATEGORIES:
             raise ValueError(f"{saving_category} is not one of the listed saivng categories!")
 
         et = self.select_equipment_type(equipment_type)

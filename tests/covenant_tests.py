@@ -133,7 +133,7 @@ class DescribeCovenant:
         assert cov.treasury == -40.0
 
     @staticmethod
-    def it_calculates_cost_saving_changes():
+    def it_calculates_lab_cost_saving_changes():
         cov = Covenant()
         cov.laboratories.add_lab("route 66")
         cov.laboratories.add_lab("route 67")

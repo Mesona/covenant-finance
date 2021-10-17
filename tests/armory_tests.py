@@ -196,3 +196,63 @@ class DescribeArmory:
 
         armory.add_equipment("trebuchet", "heavy siege", "expensive")
         assert armory.calculate_total_upkeep_points() == 388
+
+    @staticmethod
+    def it_can_calculate_savings_of_individual_categories():
+        armory = Armory()
+        armory.add_equipment(
+                "magic shovel",
+                "magic",
+                "magic",
+                "servants",
+                3,
+        )
+        armory.add_equipment(
+                "magic shovel",
+                "magic",
+                "magic",
+                "servants",
+                2,
+        )
+
+        assert armory.calculate_savings_of("servants") == {"servants": 5}
+
+        armory.add_equipment(
+                "magic trowel",
+                "magic",
+                "magic",
+                "buildings",
+                1,
+        )
+
+        assert armory.calculate_savings_of("buildings") == {"buildings": 1}
+
+    @staticmethod
+    def it_can_calculate_all_savings():
+        armory = Armory()
+        armory.add_equipment(
+                "magic shovel",
+                "magic",
+                "magic",
+                "servants",
+                3,
+        )
+        armory.add_equipment(
+                "magic shovel",
+                "magic",
+                "magic",
+                "servants",
+                2,
+        )
+
+        armory.add_equipment(
+                "magic trowel",
+                "magic",
+                "magic",
+                "buildings",
+                1,
+        )
+
+        all_savings = armory.calculate_all_savings()
+        assert all_savings["buildings"] == {"magic": 1}
+        assert all_savings["servants"] == {"magic": 5}
