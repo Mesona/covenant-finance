@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
 import pytest
-from armory import Armory, valid_equipment_type, valid_quality, qualities, types
+from armory import Armory, valid_equipment_type, valid_quality, EQUIPMENT_QUALITIES
 
 class DescribeValidQuality:
 
     @staticmethod
     def it_returns_true_on_expected_qualities():
-        for quality in qualities:
+        for quality in EQUIPMENT_QUALITIES:
             assert valid_quality(quality)
 
     @staticmethod
@@ -18,17 +18,17 @@ class DescribeValidQuality:
 
     @staticmethod
     def it_is_not_case_sensitive():
-        for quality in qualities:
+        for quality in EQUIPMENT_QUALITIES:
             assert valid_quality(quality.upper())
         
         assert valid_quality("StAnDaRd")
 
 
 class DescribeValidEquipmentType:
-    types = ["weapon", "partial", "full", "light siege", "heavy siege"]
 
     @staticmethod
     def it_returns_true_on_expected_types():
+        types = ["weapon", "partial", "full", "light siege", "heavy siege"]
         for t in types:
             assert valid_equipment_type(t)
 
@@ -39,6 +39,7 @@ class DescribeValidEquipmentType:
 
     @staticmethod
     def it_is_not_case_sensitive():
+        types = ["weapon", "partial", "full", "light siege", "heavy siege"]
         for t in types:
             assert valid_equipment_type(t.upper())
 

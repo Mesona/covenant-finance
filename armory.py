@@ -2,8 +2,8 @@
 
 from collections import defaultdict
 
-qualities = ["inexpensive", "standard", "expensive", "magic"]
-types = ["weapon", "partial", "full", "light siege", "heavy siege", "magic"]
+EQUIPMENT_QUALITIES = ["inexpensive", "standard", "expensive", "magic"]
+EQUIPMENT_TYPES = ["weapon", "partial", "full", "light siege", "heavy siege", "magic"]
 
 savings_categories = [
         "buildings",
@@ -16,13 +16,13 @@ savings_categories = [
 ]
 
 def valid_quality(quality):
-    if quality.lower() in qualities:
+    if quality.lower() in EQUIPMENT_QUALITIES:
         return True
 
     return False
 
 def valid_equipment_type(equipment_type):
-    if equipment_type.lower() in types:
+    if equipment_type.lower() in EQUIPMENT_TYPES:
         return True
 
     return False
@@ -85,7 +85,6 @@ class Armory:
         potential_savings = 0
 
         for item in matching_items:
-            current_saving = item["saving_category"]
             potential_savings += item["saving_value"]
 
         return potential_savings
@@ -175,9 +174,12 @@ class Armory:
 
         points = 0
 
+        equipment_qualities = EQUIPMENT_QUALITIES.copy()
+        equipment_qualities.remove("magic")
+
         et = self.select_equipment_type(equipment_type)
         for equipment in et.keys():
-            for quality in qualities:
+            for quality in equipment_qualities:
                 this_amount = et[equipment][quality]
                 this_cost = cost_conversion[equipment_type][quality]
                 points += this_amount * this_cost
@@ -189,9 +191,11 @@ class Armory:
         Returns the total upkeep point value of all items within a single
         Armroy instance.
         """
+        equipment_types = EQUIPMENT_TYPES.copy()
+        equipment_types.remove("magic")
 
         total_points = 0
-        for equipment_type in types:
+        for equipment_type in equipment_types:
             total_points += self.calculate_upkeep_points_of(equipment_type)
 
         return total_points
