@@ -72,7 +72,7 @@ class Armory:
 
     def calculate_all_savings(self) -> dict:
         """Generates a dictionary of all the covenant savings this armory provides."""
-        provided_savings = defaultdict()
+        provided_savings = {}
 
         for category in SAVINGS_CATEGORIES:
             provided_savings[category] = {}

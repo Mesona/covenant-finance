@@ -215,7 +215,7 @@ class DescribeArmory:
                 2,
         )
 
-        assert armory.calculate_savings_of("servants") == {"servants": 5}
+        assert armory.calculate_savings_of("servants") == 5
 
         armory.add_equipment(
                 "magic trowel",
@@ -225,7 +225,7 @@ class DescribeArmory:
                 1,
         )
 
-        assert armory.calculate_savings_of("buildings") == {"buildings": 1}
+        assert armory.calculate_savings_of("buildings") == 1
 
     @staticmethod
     def it_can_calculate_all_savings():

@@ -120,7 +120,7 @@ Please select between spring, summer, autumn, and winter.
             test = self.calculate_covenfolk_point_costs(classification) * number_of_matching_covenfolk
 
         servant_minimums = math.ceil(covenfolk_points / 10) * 2
-        laborer_savings = self.armory.calculate_savings_of("laborers")
+        laborer_savings = self.armory.calculate_savings_of("servants")
         servant_minimums = servant_minimums - laborer_savings
         return servant_minimums
 
@@ -165,9 +165,18 @@ Please select between spring, summer, autumn, and winter.
 
         covenfolken_savings = self.covenfolken.calculate_all_savings()
         armory_savings = self.armory.calculate_all_savings()
-        print("CS:", covenfolken_savings)
-        print("AS:", armory_savings)
-        savings = {saving: covenfolken_savings.get(saving, 0) + armory_savings.get(saving, 0) for saving in set(covenfolken_savings) | set(armory_savings)}
+
+        savings = defaultdict(lambda: defaultdict())
+        def merge(d, new_d):
+            for k, v in new_d.items():
+                if isinstance(v, dict):
+                    merge(d[k], v)
+                else:
+                    d[k] = d.setdefault(k, 0) + v
+
+        merge(savings, armory_savings)
+        merge(savings, covenfolken_savings)
+
         cost_saving_expenses = self.expenditures_and_savings(expend, savings)
 
         return round(sum(cost_saving_expenses.values()), 2)
@@ -195,6 +204,9 @@ Please select between spring, summer, autumn, and winter.
 
         # TODO: Break this into own method or function
         for category in categories:
+            if category == "servants":
+                continue
+
             this_expense = expenses[category]
             this_saving = savings[category]
             max_saving = this_expense * maximum_cost_savings[category]
