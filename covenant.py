@@ -71,6 +71,7 @@ class Covenant:
             laboratories = {},
             inflation_enabled = True,
             inflation = 0,
+            current_year = 1220,
         ):
         self.name = name
 
@@ -97,6 +98,7 @@ Please select between spring, summer, autumn, and winter.
         self.inflation_enabled = inflation_enabled
         self.inflation = inflation
         self.expenses = float("inf")  # Prevents inflation from taking effect the first year
+        self.current_year = int(current_year)
             
     def calculate_covenfolk_points(self):
         point_cost = 0
