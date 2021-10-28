@@ -1,0 +1,24 @@
+<script src="clone_row.js"></script>
+<html>
+    <body>
+        <div class="main">
+            CREATE COVENANT
+            <form class="create_covenent_initial" action="{{url_for('create_covenant_landing')}}" method="POST">
+                <input class="create_covenant_input" name="covenant_name" type="text" required>
+                <input class="create_covenant_input" name="covenant_season" type="text" required>
+                <input class="create_covenant_input" name="covenant_income_sources_names" type="text" required>
+                <input class="create_covenant_input" name="covenant_income_sources_values" type="number" required>
+                <input class="create_covenant_input" name="covenant_tithes" type="text" required>
+                <input class="create_covenant_input" name="covenant_treasury" type="text" required>
+                <input class="create_covenant_input" name="covenant_inflation_enabled" type="radio" value="Yes" required>
+                <label for="Yes">Yes</label>
+                <label for="No">No</label>
+                <a href="javascript:void(0);" style="font-size:18px;width:33%;" id="addMore2" title="add_income_source"><span class="glyphicon glyphicon-plus"></span></a>
+                <br>
+                <input class="create_covenant_input" name="covenant_inflation_enabled" type="radio" value="No" required>
+                <input class="create_covenant_input" name="covenant_initial_inflation" type="text" required>
+                <input class="create_covenant_input" name="starting_year" type="text" required>
+            </form>
+        </div>
+    </body>
+</html>

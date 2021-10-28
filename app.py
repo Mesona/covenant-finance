@@ -177,7 +177,15 @@ def create_covenant():
     if request.method == "POST":
         name = request.form["covenant_name"]
         season = request.form["covenant_season"]
-        income_sources = request.form["covenant_income_sources"]
+        income_source_names = request.form["covenant_income_sources_names"]
+
+        income_source_values = request.form["covenant_income_sources_values"]
+        income_sources = {}
+        for i in range(len(income_source_names)):
+            income_source_name = income_source_names[i]
+            income_source_value = income_source_values[i]
+            income_sources[income_source_name] = income_source_value
+
         tithes = request.form["covenant_tithes"]
         treasury = request.form["covenant_treasury"]
         inflation_enabled = request.form["covenant_inflation_enabled"]
@@ -260,7 +268,6 @@ def create_covenant_armory():
                 quality, saving_category, saving_value, description)
 
         return render_template("create_covenant_landing.html")
-
 
 
 if __name__ == "__main__":
