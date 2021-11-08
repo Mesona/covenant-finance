@@ -1,24 +1,62 @@
-<script src="clone_row.js"></script>
 <html>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    </head>
+		<style>
+				.input-wrapper div {
+						margin-bottom: 10px;
+				}
+				.remove_input {
+						margin-top: 10px;
+						margin-left: 15px;
+						vertical-align: text-bottom;
+				}
+				.add_input {
+						margin-top: 1000px;
+						margin-left: 10px;
+						vertical-align: text-bottom;
+				}
+		</style>
     <body>
         <div class="main">
             CREATE COVENANT
             <form class="create_covenent_initial" action="{{url_for('create_covenant_landing')}}" method="POST">
-                <input class="create_covenant_input" name="covenant_name" type="text" required>
-                <input class="create_covenant_input" name="covenant_season" type="text" required>
-                <input class="create_covenant_input" name="covenant_income_sources_names" type="text" required>
-                <input class="create_covenant_input" name="covenant_income_sources_values" type="number" required>
-                <input class="create_covenant_input" name="covenant_tithes" type="text" required>
-                <input class="create_covenant_input" name="covenant_treasury" type="text" required>
+                <input class="create_covenant_input" placeholder="Covenant Name" name="covenant_name" type="text" required><br>
+                <input class="create_covenant_input" placeholder="Covenant Season" name="covenant_season" type="text" required><br>
+                <div class="income_sources_wrapper">
+                    <input class="create_covenant_input" placeholder="Income Source" name="covenant_income_sources_names" type="text" required><input class="create_covenant_input" placeholder="Income Source Annual Value" name="covenant_income_sources_values" type="number" required>
+                    <a href="javascript:void(0);" class="add_input" title="Add input"><img width=20 height=20 src="/static/icon_plus.png"/></a><br>
+                </div>
+                <input class="create_covenant_input" placeholder="Tithes" name="covenant_tithes" type="text" required><br>
+                <input class="create_covenant_input" placeholder="Starting Treasury Amount" name="covenant_treasury" type="text" required><br>
+                <input class="create_covenant_input" placeholder="Starting year" name="starting_year" type="text" required><br>
+                <p>Enable Inflation?</p>
                 <input class="create_covenant_input" name="covenant_inflation_enabled" type="radio" value="Yes" required>
                 <label for="Yes">Yes</label>
-                <label for="No">No</label>
-                <a href="javascript:void(0);" style="font-size:18px;width:33%;" id="addMore2" title="add_income_source"><span class="glyphicon glyphicon-plus"></span></a>
-                <br>
                 <input class="create_covenant_input" name="covenant_inflation_enabled" type="radio" value="No" required>
-                <input class="create_covenant_input" name="covenant_initial_inflation" type="text" required>
-                <input class="create_covenant_input" name="starting_year" type="text" required>
+                <label for="No">No</label></br><br>
+                <input class="create_covenant_input" placeholder="Covenant starting inflation value" name="covenant_initial_inflation" type="text" required><br>
             </form>
         </div>
+    <script>
+        $(document).ready(function(){
+            var max_input_fields = 10;
+            var add_input = $('.add_input');
+            var input_wrapper = $('.income_sources_wrapper');
+            var new_input = '<div><input class="create_covenant_input" placeholder="Income Source" name="covenant_income_sources_names" type="text" required><input class="create_covenant_input" placeholder="Income Source Annual Value" name="covenant_income_sources_values" type="number" required><a href="javascript:void(0);" class="remove_input" title="Remove input"><img height=20 width=20 src="/static/icon_minus.png" /></a><br></div>';
+            var add_input_count = 1; 
+            $(add_input).click(function(){
+                if(add_input_count < max_input_fields){
+                    add_input_count++; 
+                    $(input_wrapper).append(new_input); 
+                }
+            });
+            $(input_wrapper).on('click', '.remove_input', function(e){
+                e.preventDefault();
+                $(this).parent('div').remove();
+                add_input_count--;
+            });
+        });
+    </script>
     </body>
 </html>
