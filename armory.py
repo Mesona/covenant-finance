@@ -63,11 +63,11 @@ cost_conversion = {
 class Armory:
     def __init__(self):
         from collections import defaultdict
-        self.weapons = defaultdict(lambda: defaultdict(int))
-        self.full = defaultdict(lambda: defaultdict(int))
-        self.partial = defaultdict(lambda: defaultdict(int))
-        self.light_siege = defaultdict(lambda: defaultdict(int))
-        self.heavy_siege = defaultdict(lambda: defaultdict(int))
+        self.weapons = defaultdict(dict)
+        self.full = defaultdict(dict)
+        self.partial = defaultdict(dict)
+        self.light_siege = defaultdict(dict)
+        self.heavy_siege = defaultdict(dict)
         self.magic = []
 
     def calculate_all_savings(self) -> dict:
@@ -141,6 +141,9 @@ class Armory:
                     }
             )
         else:
+            if not et[name]:
+                et[name] = defaultdict(int)
+
             et[name][quality] += 1
 
         return "Successfully added equipment!"
@@ -159,6 +162,9 @@ class Armory:
             raise ValueError(f"Equipment type {equipment_type} not recognized!")
 
         et = self.select_equipment_type(equipment_type)
+        if not et[name]:
+            et[name] = defaultdict(int)
+
         if et[name][quality] >= 1:
             et[name][quality] -= 1
         else:

@@ -11,6 +11,7 @@ from covenant import Covenant
 from laboratory import Laboratories
 from covenfolk import Covenfolken
 from armory import Armory
+import logging
 
 
 app = Flask(__name__)
@@ -19,6 +20,10 @@ app.config["SESSION_TYPE"] = "filesystem"
 app.secret_key = SECRET_KEY
 Session(app)
 bcypt = Bcrypt(app)
+
+logger = logging.getLogger('werkzeug') # grabs underlying WSGI logger
+handler = logging.FileHandler('test.log') # creates handler for the log file
+logger.addHandler(handler) # adds handler to the werkzeug WSGI logger
 
 
 ######################################
@@ -169,10 +174,26 @@ def login():
         close_connections(connection, cursor)
         return redirect(url_for("home"))
 
-@app.route("/create_covenant", methods = ["POST", "GET"])
+@app.route("/create_covenant", methods = ["GET"])
 def create_covenant():
     if request.method == "GET":
+        logging.info("WE HERE")
+        app.logger.debug("IN CREATE COVENANT")
+        session["new_covenant"] = {"name": "plz no", "income_sources": 999}
         return render_template("create_covenant.html")
+
+@app.route("/create_covenant_landing", methods = ["POST", "GET"])
+def create_covenant_landing():
+    """Shows the current state of the covenant being built. Should have buttons to add equipment, add labs, add covenfolk."""
+    if request.method == "GET":
+        #app.new_covenant.laboratories = Laboratories()
+        #app.new_covenant.covenfolk = Covenfolken()
+        #app.new_covenant.armory = Armory()
+        cov = {}
+        cov = session["new_covenant"]
+        app.logger.debug("IN CREATE COVENANT LANDING GET")
+        return render_template("create_covenant_landing.html")
+
 
     if request.method == "POST":
         name = request.form["covenant_name"]
@@ -183,7 +204,7 @@ def create_covenant():
         income_sources = {}
         for i in range(len(income_source_names)):
             income_source_name = income_source_names[i]
-            income_source_value = income_source_values[i]
+            income_source_value = float(income_source_values[i])
             income_sources[income_source_name] = income_source_value
 
         tithes = request.form["covenant_tithes"]
@@ -191,25 +212,18 @@ def create_covenant():
         inflation_enabled = request.form["covenant_inflation_enabled"]
         inflation = request.form["covenant_initial_inflation"]
         current_year = request.form["starting_year"]
+        app.logger.debug("HERE 1")
         covenant = Covenant(name, season, income_sources, tithes, treasury,
                 inflation_enabled, inflation, current_year)
-        app.new_covenant = covenant
+        covenant.laboratories = Laboratories()
+        covenant.covenfolk = Covenfolken()
+        covenant.armory = Armory()
+        app.logger.debug("HERE 2")
+        session['new_covenant'] = covenant
+        logging.info(f"APP.NEW_COVENANT: {session['new_covenant']}")
+        app.logger.debug(f"COV: {covenant}")
 
         return render_template("create_covenant_landing.html")
-
-@app.route("/create_covenant_landing", methods = ["POST", "GET"])
-def create_covenant_landing():
-    """Shows the current state of the covenant being built. Should have buttons to add equipment, add labs, add covenfolk."""
-    if request.method == "GET":
-        app.new_covenant.laboratories = Laboratories()
-        app.new_covenant.covenfolk = Covenfolken()
-        app.new_covenant.armory = Armory()
-        return render_template("create_covenant_landing.html")
-
-    if request.method == "POST":
-        # Attempt to save cov into DB, assigned to user. Validate cov is configured correctly
-        # Reset app.new_covenant
-        pass
 
 
 @app.route("/create_covenant_laboratories", methods = ["POST", "GET"])
