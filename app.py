@@ -148,6 +148,64 @@ def authenticate():
     else:
         return render_template("login.html")
 
+@app.route("/process_new_covenant", methods=["POST"])
+def process_new_covenant():
+    # Init
+    if session["new_covenant"]:
+        covenant = session["new_covenant"]
+    else:
+        covenant = Covenant()
+
+    # Create covenant core
+    covenant["name"] = request.form["covenant_name"]
+    covenant["season"] = request.form["covenant_season"]
+
+    #income_source_names = request.form["covenant_income_sources_names"]
+    income_source_names = zip(request.form.getlist('covenant_income_source_names'))
+    app.logger.debug(zip(request.form.getlist('income_source_names')))
+    app.logger.debug(f"income_source_names: {income_source_names}")
+    income_source_values = zip(request.form.getlist('covenant_income_source_values'))
+    #income_source_values = request.form["covenant_income_sources_values"]
+    app.logger.debug(f"income_source_values: {income_source_values}")
+    income_sources = {}
+    #for i in range(len(income_source_names)):
+    #    income_source_name = income_source_names[i]
+    #    income_source_value = float(income_source_values[i])
+    #    income_sources[income_source_name] = income_source_value
+    app.logger.debug(f"TEST: {request.form.getlist('covenant_income_source_names')}")
+    for income_source, income_value in zip(
+            request.form.getlist('income_source_names'),
+            request.form.getlist('income_source_values'),
+        ):
+        app.logger.debug(f"IS: {income_source}, IV: {income_value}")
+        income_sources[income_source] = income_value
+
+    covenant["income_sources"] = income_sources
+    covenant["tithes"] = request.form["covenant_tithes"]
+    covenant["treasury"] = request.form["covenant_treasury"]
+    covenant["inflation_enabled"] = request.form["covenant_inflation_enabled"]
+    covenant["inflation"] = request.form["covenant_initial_inflation"]
+    covenant["current_year"] = request.form["starting_year"]
+
+    # Covenfolk content
+    covenfolken = Covenfolken()
+
+    # Armory content
+    armory = Armory()
+
+    # Laboratory content
+    labs = Laboratories()
+
+    # Combo section
+    covenant["laboratories"] = labs
+    covenant["covenfolk"] = covenfolken
+    covenant["armory"] = armory
+    app.logger.debug("HERE 2")
+    session['new_covenant'] = covenant
+    app.logger.debug(f"APP.NEW_COVENANT: {session['new_covenant']}")
+    #app.logger.debug(f"COV: {covenant}")
+    return render_template("create_covenant_landing.html")
+
 
 
 @app.route('/register')
@@ -177,52 +235,15 @@ def login():
 @app.route("/create_covenant", methods = ["GET"])
 def create_covenant():
     if request.method == "GET":
-        logging.info("WE HERE")
-        app.logger.debug("IN CREATE COVENANT")
-        session["new_covenant"] = {"name": "plz no", "income_sources": 999}
         return render_template("create_covenant.html")
 
 @app.route("/create_covenant_landing", methods = ["POST", "GET"])
 def create_covenant_landing():
     """Shows the current state of the covenant being built. Should have buttons to add equipment, add labs, add covenfolk."""
     if request.method == "GET":
-        #app.new_covenant.laboratories = Laboratories()
-        #app.new_covenant.covenfolk = Covenfolken()
-        #app.new_covenant.armory = Armory()
-        cov = {}
-        cov = session["new_covenant"]
-        app.logger.debug("IN CREATE COVENANT LANDING GET")
         return render_template("create_covenant_landing.html")
 
-
-    if request.method == "POST":
-        name = request.form["covenant_name"]
-        season = request.form["covenant_season"]
-        income_source_names = request.form["covenant_income_sources_names"]
-
-        income_source_values = request.form["covenant_income_sources_values"]
-        income_sources = {}
-        for i in range(len(income_source_names)):
-            income_source_name = income_source_names[i]
-            income_source_value = float(income_source_values[i])
-            income_sources[income_source_name] = income_source_value
-
-        tithes = request.form["covenant_tithes"]
-        treasury = request.form["covenant_treasury"]
-        inflation_enabled = request.form["covenant_inflation_enabled"]
-        inflation = request.form["covenant_initial_inflation"]
-        current_year = request.form["starting_year"]
-        app.logger.debug("HERE 1")
-        covenant = Covenant(name, season, income_sources, tithes, treasury,
-                inflation_enabled, inflation, current_year)
-        covenant.laboratories = Laboratories()
-        covenant.covenfolk = Covenfolken()
-        covenant.armory = Armory()
-        app.logger.debug("HERE 2")
-        session['new_covenant'] = covenant
-        logging.info(f"APP.NEW_COVENANT: {session['new_covenant']}")
-        app.logger.debug(f"COV: {covenant}")
-
+    elif request.method == "POST":
         return render_template("create_covenant_landing.html")
 
 
