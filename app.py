@@ -160,24 +160,11 @@ def process_new_covenant():
     covenant["name"] = request.form["covenant_name"]
     covenant["season"] = request.form["covenant_season"]
 
-    #income_source_names = request.form["covenant_income_sources_names"]
-    income_source_names = zip(request.form.getlist('covenant_income_source_names'))
-    app.logger.debug(zip(request.form.getlist('income_source_names')))
-    app.logger.debug(f"income_source_names: {income_source_names}")
-    income_source_values = zip(request.form.getlist('covenant_income_source_values'))
-    #income_source_values = request.form["covenant_income_sources_values"]
-    app.logger.debug(f"income_source_values: {income_source_values}")
     income_sources = {}
-    #for i in range(len(income_source_names)):
-    #    income_source_name = income_source_names[i]
-    #    income_source_value = float(income_source_values[i])
-    #    income_sources[income_source_name] = income_source_value
-    app.logger.debug(f"TEST: {request.form.getlist('covenant_income_source_names')}")
     for income_source, income_value in zip(
-            request.form.getlist('income_source_names'),
-            request.form.getlist('income_source_values'),
+            request.form.getlist('covenant_income_sources_names'),
+            request.form.getlist('covenant_income_sources_values'),
         ):
-        app.logger.debug(f"IS: {income_source}, IV: {income_value}")
         income_sources[income_source] = income_value
 
     covenant["income_sources"] = income_sources
@@ -203,7 +190,6 @@ def process_new_covenant():
     app.logger.debug("HERE 2")
     session['new_covenant'] = covenant
     app.logger.debug(f"APP.NEW_COVENANT: {session['new_covenant']}")
-    #app.logger.debug(f"COV: {covenant}")
     return render_template("create_covenant_landing.html")
 
 
