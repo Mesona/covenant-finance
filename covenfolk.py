@@ -121,6 +121,16 @@ class Covenfolken:
 
         print(list(self.covenfolk.keys()))
 
+    def get_covenfolk_of_classification(self, classification):
+        matches = [covenfolk for covenfolk in self.covenfolk if covenfolk.classification == classification]
+        return matches
+        #for covenfolk in matches:
+        #    print(f"{covenfolk.name}: {covenfolk.classification}")
+        #    if covenfolk.saving_category:
+        #        print(f"""Savings Category: {covenfolk.saving_category}
+#{covenfolk.profession}: {covenfolk.skill}""")
+        #    print("")
+
 
 class Covenfolk:
     def __init__(self, name, classification, profession="", saving_category="", skill=0, rarity=""):

@@ -1,0 +1,121 @@
+<html>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    </head>
+		<style>
+				.input-wrapper div {
+						margin-bottom: 10px;
+				}
+				.remove_input {
+						margin-top: 10px;
+						margin-left: 15px;
+						vertical-align: text-bottom;
+				}
+				.add_input {
+						margin-top: 1000px;
+						margin-left: 10px;
+						vertical-align: text-bottom;
+				}
+		</style>
+    <body>
+        <div class="main">
+            Covenant Covenfolken<br>
+            <form class="modify_covenant_covenfolken" action="{{url_for('modify_covenfolken')}}" method="POST">
+                Mages:<a href="javascript:void(0);" class="add_input" title="Add input"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
+                <div class="covenfolken_mages">
+                    {% for magi in session["new_covenant"].covenfolken.get_covenfolk_of_classification("magi") %}
+                        <div>
+                            <input class="modify_covenfolken_input" value={{magi.name}} name="modify_covenfolken_name" type="text" required>
+                            <input class="modify_covenfolken_input" value="Magi" name="modify_covenfolken_classification" type="text" required>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                Companions:<a href="javascript:void(0);" class="add_input" title="Add input"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
+                <div class="covenfolken_companions">
+                    {% for companion in session["new_covenant"].covenfolken.get_covenfolk_of_classification("companion") %}
+                        <div>
+                            <input class="modify_covenfolken_input" value={{companion.name}} name="modify_covenfolken_name" type="text" required>
+                            <input class="modify_covenfolken_input" value="Companion" name="modify_covenfolken_classification" type="text" required>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                Grogs:<a href="javascript:void(0);" class="add_input" title="Add input"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
+                <div class="covenfolken_grogs">
+                    {% for grog in session["new_covenant"].covenfolken.get_covenfolk_of_classification("grog") %}
+                        <div>
+                            <input class="modify_covenfolken_input" value={{grog.name}} name="modify_covenfolken_name" type="text" required>
+                            <input class="modify_covenfolken_input" value="Grog" name="modify_covenfolken_classification" type="text" required>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                Crafters:<a href="javascript:void(0);" class="add_input" title="Add input"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
+                <div class="covenfolken_crafters">
+                    {% for crafter in session["new_covenant"].covenfolken.get_covenfolk_of_classification("crafter") %}
+                        <div>
+                            <input class="modify_covenfolken_input" value={{crafter.name}} name="modify_covenfolken_name" type="text" required>
+                            <input class="modify_covenfolken_input" value="Crafter" name="modify_covenfolken_classification" type="text" required>
+                            <input class="modify_covenfolken_input" value={{crafter.profession}} name="modify_covenfolken_profession" type="text" required>
+                            <input class="modify_covenfolken_input" value={{crafter.saving_category}} name="modify_covenfolken_saving_category" type="text" required>
+                            <input class="modify_covenfolken_input" value={{crafter.skill}} name="modify_covenfolken_skill" type="number" required>
+                            <input class="modify_covenfolken_input" name="modify_covenfolken_rarity" type="text" required>
+                            <input class="modify_covenfolken_input" name="modify_covenfolken_rarity" type="radio" value="Common" required>
+                            <label for="Common">Common</label>
+                            <input class="modify_covenfolken_input" name="modify_covenfolken_rarity" type="radio" value="Rare" required>
+                            <label for="Rare">Rare</label></br><br>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                Specialists:<a href="javascript:void(0);" class="add_input" title="Add input"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
+                Nobles:<a href="javascript:void(0);" class="add_input" title="Add input"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
+                Dependants:<a href="javascript:void(0);" class="add_input" title="Add input"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
+                Laborers:<a href="javascript:void(0);" class="add_input" title="Add input"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
+                Servants:<a href="javascript:void(0);" class="add_input" title="Add input"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
+                Teamsters:<a href="javascript:void(0);" class="add_input" title="Add input"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
+                Large Livestock:<a href="javascript:void(0);" class="add_input" title="Add input"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
+
+                <div class="income_sources_wrapper">
+                    {% for income_source, income_value in session["new_covenant"].income_sources.items() %}
+                        <div>
+                            <input class="create_covenant_input" placeholder="Income Source" value={{income_source}}  name="covenant_income_sources_names" type="text" required><input class="create_covenant_input" value={{income_value}} placeholder="Income Source Annual Value" name="covenant_income_sources_values" type="number" required>
+                            <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
+                        </div>
+                    {% endfor %}
+                </div>
+                Annual Tithes Owed: <input class="create_covenant_input" placeholder="Tithes" name="covenant_tithes" type="text" value={{session["new_covenant"].tithes}} required><br>
+                Starting Treasury: <input class="create_covenant_input" placeholder="Starting Treasury Amount" name="covenant_treasury" type="text" value={{session["new_covenant"].treasury}} required><br>
+                Starting Year: <input class="create_covenant_input" placeholder="Starting year" name="starting_year" type="text" value={{session["new_covenant"].starting_year}} required placeholder="Starting Year"><br>
+                <p>Enable Inflation?</p>
+                <input class="create_covenant_input" name="covenant_inflation_enabled" type="radio" value="Yes" required>
+                <label for="Yes">Yes</label>
+                <input class="create_covenant_input" name="covenant_inflation_enabled" type="radio" value="No" required>
+                <label for="No">No</label></br><br>
+                Initial Inflation Value: <input class="create_covenant_input" placeholder="Covenant starting inflation value" name="covenant_initial_inflation" type="text" value={{session["new_covenant"].inflation}} required><br>
+                <button class="submit" type="submit">Proceed</button>
+            </form>
+        </div>
+    <script>
+        $(document).ready(function(){
+            var max_input_fields = 10;
+            var add_input = $('.add_input');
+            var input_wrapper = $('.income_sources_wrapper');
+            var new_input = '<div><input class="create_covenant_input" placeholder="Income Source" name="covenant_income_sources_names" type="text" required><input class="create_covenant_input" placeholder="Income Source Annual Value" name="covenant_income_sources_values" type="number" required><a href="javascript:void(0);" class="remove_input" title="Remove input"><img height=20 width=20 src="/static/icon_minus.png" /></a><br></div>';
+            var add_input_count = 1; 
+            $(add_input).click(function(){
+                if(add_input_count < max_input_fields){
+                    add_input_count++; 
+                    $(input_wrapper).append(new_input); 
+                }
+            });
+            $(input_wrapper).on('click', '.remove_input', function(e){
+                e.preventDefault();
+                $(this).parent('div').remove();
+                add_input_count--;
+            });
+        });
+    </script>
+    </body>
+</html>
