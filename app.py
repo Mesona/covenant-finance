@@ -233,10 +233,10 @@ def create_covenant_landing():
         return render_template("create_covenant_landing.html")
 
 
-@app.route("/create_covenant_laboratories", methods = ["POST", "GET"])
-def create_covenant_laboratories():
+@app.route("/modify_laboratories", methods = ["POST", "GET"])
+def modify_laboratories():
     if request.method == "GET":
-        return render_template("create_laboratory.html")
+        return render_template("modify_laboratories.html")
 
     if request.method == "POST":
         name = request.form["covenant_name"]
@@ -254,10 +254,10 @@ def create_covenant_laboratories():
 
         return render_template("create_covenant_landing.html")
 
-@app.route("/create_covenant_covenfolk", methods = ["POST", "GET"])
-def create_covenant_covenfolk():
+@app.route("/modify_covenfolken", methods = ["POST", "GET"])
+def modify_covenfolken():
     if request.method == "GET":
-        return render_template("create_covenfolk.html")
+        return render_template("modify_covenfolken.html")
 
     if request.method == "POST":
         name = request.form["name"]
@@ -272,10 +272,10 @@ def create_covenant_covenfolk():
 
         return render_template("create_covenant_landing.html")
 
-@app.route("/create_covenant_armory", methods = ["POST", "GET"])
-def create_covenant_armory():
+@app.route("/modify_armory", methods = ["POST", "GET"])
+def modify_armory():
     if request.method == "GET":
-        return render_template("create_equipment.html")
+        return render_template("modify_armory.html")
 
     if request.method == "POST":
         name = request.form["name"]
