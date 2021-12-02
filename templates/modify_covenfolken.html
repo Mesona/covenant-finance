@@ -11,7 +11,7 @@
 						margin-left: 15px;
 						vertical-align: text-bottom;
 				}
-				.add_input {
+				.add_covenfolk {
 						margin-top: 1000px;
 						margin-left: 10px;
 						vertical-align: text-bottom;
@@ -19,102 +19,361 @@
 		</style>
     <body>
         <div class="main">
-            Covenant Covenfolken<br>
+            Covenfolk<br>
             <form class="modify_covenant_covenfolken" action="{{url_for('modify_covenfolken')}}" method="POST">
-                Mages:<a href="javascript:void(0);" class="add_input" title="Add input"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
-                <div class="covenfolken_mages">
-                    {% for magi in session["new_covenant"].covenfolken.get_covenfolk_of_classification("magi") %}
+                Mages:<a href="javascript:void(0);" class="add_magi add_covenfolk" title="Add magi"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
+                <div class="covenfolken_magi_wrapper">
+                    {% for magi in session["new_covenant"].covenfolk.get_covenfolk_of_classification("magi") %}
                         <div>
-                            <input class="modify_covenfolken_input" value={{magi.name}} name="modify_covenfolken_name" type="text" required>
-                            <input class="modify_covenfolken_input" value="Magi" name="modify_covenfolken_classification" type="text" required>
-                        </div>
-                    {% endfor %}
-                </div>
-
-                Companions:<a href="javascript:void(0);" class="add_input" title="Add input"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
-                <div class="covenfolken_companions">
-                    {% for companion in session["new_covenant"].covenfolken.get_covenfolk_of_classification("companion") %}
-                        <div>
-                            <input class="modify_covenfolken_input" value={{companion.name}} name="modify_covenfolken_name" type="text" required>
-                            <input class="modify_covenfolken_input" value="Companion" name="modify_covenfolken_classification" type="text" required>
-                        </div>
-                    {% endfor %}
-                </div>
-
-                Grogs:<a href="javascript:void(0);" class="add_input" title="Add input"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
-                <div class="covenfolken_grogs">
-                    {% for grog in session["new_covenant"].covenfolken.get_covenfolk_of_classification("grog") %}
-                        <div>
-                            <input class="modify_covenfolken_input" value={{grog.name}} name="modify_covenfolken_name" type="text" required>
-                            <input class="modify_covenfolken_input" value="Grog" name="modify_covenfolken_classification" type="text" required>
-                        </div>
-                    {% endfor %}
-                </div>
-
-                Crafters:<a href="javascript:void(0);" class="add_input" title="Add input"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
-                <div class="covenfolken_crafters">
-                    {% for crafter in session["new_covenant"].covenfolken.get_covenfolk_of_classification("crafter") %}
-                        <div>
-                            <input class="modify_covenfolken_input" value={{crafter.name}} name="modify_covenfolken_name" type="text" required>
-                            <input class="modify_covenfolken_input" value="Crafter" name="modify_covenfolken_classification" type="text" required>
-                            <input class="modify_covenfolken_input" value={{crafter.profession}} name="modify_covenfolken_profession" type="text" required>
-                            <input class="modify_covenfolken_input" value={{crafter.saving_category}} name="modify_covenfolken_saving_category" type="text" required>
-                            <input class="modify_covenfolken_input" value={{crafter.skill}} name="modify_covenfolken_skill" type="number" required>
-                            <input class="modify_covenfolken_input" name="modify_covenfolken_rarity" type="text" required>
-                            <input class="modify_covenfolken_input" name="modify_covenfolken_rarity" type="radio" value="Common" required>
-                            <label for="Common">Common</label>
-                            <input class="modify_covenfolken_input" name="modify_covenfolken_rarity" type="radio" value="Rare" required>
-                            <label for="Rare">Rare</label></br><br>
-                        </div>
-                    {% endfor %}
-                </div>
-
-                Specialists:<a href="javascript:void(0);" class="add_input" title="Add input"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
-                Nobles:<a href="javascript:void(0);" class="add_input" title="Add input"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
-                Dependants:<a href="javascript:void(0);" class="add_input" title="Add input"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
-                Laborers:<a href="javascript:void(0);" class="add_input" title="Add input"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
-                Servants:<a href="javascript:void(0);" class="add_input" title="Add input"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
-                Teamsters:<a href="javascript:void(0);" class="add_input" title="Add input"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
-                Large Livestock:<a href="javascript:void(0);" class="add_input" title="Add input"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
-
-                <div class="income_sources_wrapper">
-                    {% for income_source, income_value in session["new_covenant"].income_sources.items() %}
-                        <div>
-                            <input class="create_covenant_input" placeholder="Income Source" value={{income_source}}  name="covenant_income_sources_names" type="text" required><input class="create_covenant_input" value={{income_value}} placeholder="Income Source Annual Value" name="covenant_income_sources_values" type="number" required>
+                            <input class="covenfolk_input" value={{magi.name}} name="covenfolk_name" type="text" required>
                             <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
                         </div>
                     {% endfor %}
-                </div>
-                Annual Tithes Owed: <input class="create_covenant_input" placeholder="Tithes" name="covenant_tithes" type="text" value={{session["new_covenant"].tithes}} required><br>
-                Starting Treasury: <input class="create_covenant_input" placeholder="Starting Treasury Amount" name="covenant_treasury" type="text" value={{session["new_covenant"].treasury}} required><br>
-                Starting Year: <input class="create_covenant_input" placeholder="Starting year" name="starting_year" type="text" value={{session["new_covenant"].starting_year}} required placeholder="Starting Year"><br>
-                <p>Enable Inflation?</p>
-                <input class="create_covenant_input" name="covenant_inflation_enabled" type="radio" value="Yes" required>
-                <label for="Yes">Yes</label>
-                <input class="create_covenant_input" name="covenant_inflation_enabled" type="radio" value="No" required>
-                <label for="No">No</label></br><br>
-                Initial Inflation Value: <input class="create_covenant_input" placeholder="Covenant starting inflation value" name="covenant_initial_inflation" type="text" value={{session["new_covenant"].inflation}} required><br>
+                </div><br>
+
+                Crafters:<a href="javascript:void(0);" class="add_crafter add_covenfolk" title="Add crafter"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
+                <div class="covenfolken_crafter_wrapper">
+                    {% for crafter in session["new_covenant"].covenfolk.get_covenfolk_of_classification("crafter") %}
+                        <div>
+                            <input class="covenfolk_input" value={{crafter.name}} name="covenfolk_name" type="text" required>
+                            <input class="covenfolk_input" value={{crafter.profession}} name="covenfolk_profession" type="text" required>
+                            <input class="covenfolk_input" value={{crafter.saving_category}} name="covenfolk_saving_category" type="text" required>
+                            <input class="covenfolk_input" value={{crafter.skill}} name="covenfolk_skill" type="number" required>
+                            <input class="covenfolk_input" name="covenfolk_rarity" type="radio" value="Common" required>
+                            <label for="Common">Common</label>
+                            <input class="covenfolk_input" name="covenfolk_rarity" type="radio" value="Rare" required>
+                            <label for="Rare">Rare</label></br><br>
+                            <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
+                        </div>
+                    {% endfor %}
+                </div><br>
+
+                Specialists:<a href="javascript:void(0);" class="add_specialist add_covenfolk" title="Add specialist"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
+                <div class="covenfolken_specialist_wrapper">
+                    {% for specialist in session["new_covenant"].covenfolk.get_covenfolk_of_classification("specialist") %}
+                        <div>
+                            <input class="covenfolk_input" value={{specialist.name}} name="covenfolk_name" type="text" required>
+                            <input class="covenfolk_input" value={{specialist.profession}} name="covenfolk_profession" type="text" required>
+                            <input class="covenfolk_input" value={{specialist.saving_category}} name="covenfolk_saving_category" type="text" required>
+                            <input class="covenfolk_input" value={{specialist.skill}} name="covenfolk_skill" type="number" required>
+                            <input class="covenfolk_input" name="covenfolk_rarity" type="radio" value="Common" required>
+                            <label for="Common">Common</label>
+                            <input class="covenfolk_input" name="covenfolk_rarity" type="radio" value="Rare" required>
+                            <label for="Rare">Rare</label></br><br>
+                            <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
+                        </div>
+                    {% endfor %}
+                </div><br>
+
+                Companions:<a href="javascript:void(0);" class="add_companion add_covenfolk" title="Add companion"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
+                <div class="covenfolken_companion_wrapper">
+                    {% for companion in session["new_covenant"].covenfolk.get_covenfolk_of_classification("companion") %}
+                        <div>
+                            <input class="covenfolk_input" value={{companion.name}} name="covenfolk_name" type="text" required>
+                            <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
+                        </div>
+                    {% endfor %}
+                </div><br>
+
+                Grogs:<a href="javascript:void(0);" class="add_grog add_covenfolk" title="Add grog"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
+                <div class="covenfolken_grog_wrapper">
+                    {% for grog in session["new_covenant"].covenfolk.get_covenfolk_of_classification("grog") %}
+                        <div>
+                            <input class="covenfolk_input" value={{grog.name}} name="covenfolk_name" type="text" required>
+                            <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
+                        </div>
+                    {% endfor %}
+                </div><br>
+
+                Nobles:<a href="javascript:void(0);" class="add_noble add_covenfolk" title="Add noble"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
+                <div class="covenfolken_noble_wrapper">
+                    {% for noble in session["new_covenant"].covenfolk.get_covenfolk_of_classification("noble") %}
+                        <div>
+                            <input class="covenfolk_input" value={{noble.name}} name="covenfolk_name" type="text" required>
+                            <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
+                        </div>
+                    {% endfor %}
+                </div><br>
+
+                Dependants:<a href="javascript:void(0);" class="add_dependant add_covenfolk" title="Add dependant"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
+                <div class="covenfolken_dependant_wrapper">
+                    {% for dependant in session["new_covenant"].covenfolk.get_covenfolk_of_classification("dependant") %}
+                        <div>
+                            <input class="covenfolk_input" value={{dependant.name}} name="covenfolk_name" type="text" required>
+                            <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
+                        </div>
+                    {% endfor %}
+                </div><br>
+
+                Laborers:<a href="javascript:void(0);" class="add_laborer add_covenfolk" title="Add laborer"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
+                <div class="covenfolken_laborer_wrapper">
+                    {% for laborer in session["new_covenant"].covenfolk.get_covenfolk_of_classification("laborer") %}
+                        <div>
+                            <input class="covenfolk_input" value={{laborer.name}} name="covenfolk_name" type="text" required>
+                            <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
+                        </div>
+                    {% endfor %}
+                </div><br>
+
+                Servants:<a href="javascript:void(0);" class="add_servant add_covenfolk" title="Add servant"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
+                <div class="covenfolken_servant_wrapper">
+                    {% for servant in session["new_covenant"].covenfolk.get_covenfolk_of_classification("servant") %}
+                        <div>
+                            <input class="covenfolk_input" value={{servant.name}} name="covenfolk_name" type="text" required>
+                            <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
+                        </div>
+                    {% endfor %}
+                </div><br>
+
+                Teamsters:<a href="javascript:void(0);" class="add_teamster add_covenfolk" title="Add teamster"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
+                <div class="covenfolken_teamster_wrapper">
+                    {% for teamster in session["new_covenant"].covenfolk.get_covenfolk_of_classification("teamster") %}
+                        <div>
+                            <input class="covenfolk_input" value={{teamster.name}} name="covenfolk_name" type="text" required>
+                            <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
+                        </div>
+                    {% endfor %}
+                </div><br>
+
+                Large Livestock:<a href="javascript:void(0);" class="add_animal add_covenfolk" title="Add animals"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
+                <div class="covenfolken_animal_wrapper">
+                    {% for animal in session["new_covenant"].covenfolk.get_covenfolk_of_classification("horse") %}
+                        <div>
+                            <input class="covenfolkcovenfolk_mal.name}} name="covenfolk_name" type="text" required>
+                            <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
+                        </div>
+                    {% endfor %}
+                </div><br>
+
                 <button class="submit" type="submit">Proceed</button>
             </form>
         </div>
     <script>
         $(document).ready(function(){
-            var max_input_fields = 10;
-            var add_input = $('.add_input');
-            var input_wrapper = $('.income_sources_wrapper');
-            var new_input = '<div><input class="create_covenant_input" placeholder="Income Source" name="covenant_income_sources_names" type="text" required><input class="create_covenant_input" placeholder="Income Source Annual Value" name="covenant_income_sources_values" type="number" required><a href="javascript:void(0);" class="remove_input" title="Remove input"><img height=20 width=20 src="/static/icon_minus.png" /></a><br></div>';
-            var add_input_count = 1; 
-            $(add_input).click(function(){
-                if(add_input_count < max_input_fields){
-                    add_input_count++; 
-                    $(input_wrapper).append(new_input); 
+            var max_input_fields = 100;
+
+            var add_magi = $('.add_magi');
+            var magi_wrapper = $('.covenfolken_magi_wrapper');
+            var new_magi = '<div><input class="covenfolk_input" placeholder="Covenfolk Name" name="covenfolk_name" type="text" required><a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a></div>'
+            var new_magi_input = 1;
+            var add_magi_count = 1
+
+            $(add_magi).click(function(){
+                if(add_magi_count < max_input_fields){
+                    add_magi_count++; 
+                    $(magi_wrapper).append(new_magi); 
                 }
             });
-            $(input_wrapper).on('click', '.remove_input', function(e){
+            $(magi_wrapper).on('click', '.remove_input', function(e){
                 e.preventDefault();
                 $(this).parent('div').remove();
-                add_input_count--;
+                add_magi_count--;
             });
+
+            var add_companion = $('.add_companion');
+            var companion_wrapper = $('.covenfolken_companion_wrapper');
+            var new_companion = '<div><input class="covenfolk_input" placeholder="Covenfolk Name" name="covenfolk_name" type="text" required><a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a></div>'
+            var new_companion_input = 1;
+            var add_companion_count = 1
+
+            $(add_companion).click(function(){
+                if(add_companion_count < max_input_fields){
+                    add_companion_count++; 
+                    $(companion_wrapper).append(new_companion); 
+                }
+            });
+            $(companion_wrapper).on('click', '.remove_input', function(e){
+                e.preventDefault();
+                $(this).parent('div').remove();
+                add_companion_count--;
+            });
+
+            var add_noble = $('.add_noble');
+            var noble_wrapper = $('.covenfolken_noble_wrapper');
+            var new_noble = '<div><input class="covenfolk_input" placeholder="Covenfolk Name" name="covenfolk_name" type="text" required><a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a></div>'
+            var new_noble_input = 1;
+            var add_noble_count = 1
+
+            $(add_noble).click(function(){
+                if(add_noble_count < max_input_fields){
+                    add_noble_count++; 
+                    $(noble_wrapper).append(new_noble); 
+                }
+            });
+            $(noble_wrapper).on('click', '.remove_input', function(e){
+                e.preventDefault();
+                $(this).parent('div').remove();
+                add_noble_count--;
+            });
+
+            var add_crafter = $('.add_crafter');
+            var crafter_wrapper = $('.covenfolken_crafter_wrapper');
+            var new_crafter = `
+                <div>
+                    <input class="covenfolk_input" placeholder="Name" name="covenfolk_name" type="text" required>
+                    <input class="covenfolk_input" placeholder="Profession" name="covenfolk_profession" type="text" required>
+                    <input class="covenfolk_input" placeholder="Saving Category" name="covenfolk_saving_category" type="text" required>
+                    <input class="covenfolk_input" placeholder="Skill Level" name="covenfolk_skill" type="number" required>
+                    <select name="covenfolk_rarity">
+                        <option value="common">Common</option>
+                        <option value="rare">Rare</option>
+                    </select>
+                    <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
+                </div>
+            `
+            var new_crafter_input = 1;
+            var add_crafter_count = 1;
+
+            $(add_crafter).click(function(){
+                if(add_crafter_count < max_input_fields){
+                    add_crafter_count++; 
+                    $(crafter_wrapper).append(new_crafter); 
+                }
+            });
+            $(crafter_wrapper).on('click', '.remove_input', function(e){
+                e.preventDefault();
+                $(this).parent('div').remove();
+                add_crafter_count--;
+            });
+
+            var add_specialist = $('.add_specialist');
+            var specialist_wrapper = $('.covenfolken_specialist_wrapper');
+            var new_specialist = `
+                <div>
+                    <input class="covenfolk_input" placeholder="Name" name="covenfolk_name" type="text" required>
+                    <input class="covenfolk_input" placeholder="Profession" name="covenfolk_profession" type="text" required>
+                    <input class="covenfolk_input" placeholder="Saving Category" name="covenfolk_saving_category" type="text" required>
+                    <input class="covenfolk_input" placeholder="Skill Level" name="covenfolk_skill" type="number" required>
+                    <select name="covenfolk_rarity">
+                        <option value="common">Common</option>
+                        <option value="rare">Rare</option>
+                    </select>
+                    <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
+                </div>
+            `
+            var new_specialist_input = 1;
+            var add_specialist_count = 1;
+
+            $(add_specialist).click(function(){
+                if(add_specialist_count < max_input_fields){
+                    add_specialist_count++; 
+                    $(specialist_wrapper).append(new_specialist); 
+                }
+            });
+            $(specialist_wrapper).on('click', '.remove_input', function(e){
+                e.preventDefault();
+                $(this).parent('div').remove();
+                add_specialist_count--;
+            });
+
+            var add_dependant = $('.add_dependant');
+            var dependant_wrapper = $('.covenfolken_dependant_wrapper');
+            var new_dependant = '<div><input class="covenfolk_input" placeholder="Covenfolk Name" name="covenfolk_name" type="text" required><a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a></div>'
+            var new_dependant_input = 1;
+            var add_dependant_count = 1;
+
+            $(add_dependant).click(function(){
+                if(add_dependant_count < max_input_fields){
+                    add_dependant_count++; 
+                    $(dependant_wrapper).append(new_dependant); 
+                }
+            });
+            $(dependant_wrapper).on('click', '.remove_input', function(e){
+                e.preventDefault();
+                $(this).parent('div').remove();
+                add_dependant_count--;
+            });
+
+            var add_grog = $('.add_grog');
+            var grog_wrapper = $('.covenfolken_grog_wrapper');
+            var new_grog = '<div><input class="covenfolk_input" placeholder="Covenfolk Name" name="covenfolk_name" type="text" required><a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a></div>'
+            var new_grog_input = 1;
+            var add_grog_count = 1
+
+            $(add_grog).click(function(){
+                if(add_grog_count < max_input_fields){
+                    add_grog_count++; 
+                    $(grog_wrapper).append(new_grog); 
+                }
+            });
+            $(grog_wrapper).on('click', '.remove_input', function(e){
+                e.preventDefault();
+                $(this).parent('div').remove();
+                add_grog_count--;
+            });
+
+            var add_laborer = $('.add_laborer');
+            var laborer_wrapper = $('.covenfolken_laborer_wrapper');
+            var new_laborer = '<div><input class="covenfolk_input" placeholder="Covenfolk Name" name="covenfolk_name" type="text" required><a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a></div>'
+            var new_laborer_input = 1;
+            var add_laborer_count = 1
+
+            $(add_laborer).click(function(){
+                if(add_laborer_count < max_input_fields){
+                    add_laborer_count++; 
+                    $(laborer_wrapper).append(new_laborer); 
+                }
+            });
+            $(laborer_wrapper).on('click', '.remove_input', function(e){
+                e.preventDefault();
+                $(this).parent('div').remove();
+                add_laborer_count--;
+            });
+
+            var add_servant = $('.add_servant');
+            var servant_wrapper = $('.covenfolken_servant_wrapper');
+            var new_servant = '<div><input class="covenfolk_input" placeholder="Covenfolk Name" name="covenfolk_name" type="text" required><a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a></div>'
+            var new_servant_input = 1;
+            var add_servant_count = 1
+
+            $(add_servant).click(function(){
+                if(add_servant_count < max_input_fields){
+                    add_servant_count++; 
+                    $(servant_wrapper).append(new_servant); 
+                }
+            });
+            $(servant_wrapper).on('click', '.remove_input', function(e){
+                e.preventDefault();
+                $(this).parent('div').remove();
+                add_servant_count--;
+            });
+
+            var add_teamster = $('.add_teamster');
+            var teamster_wrapper = $('.covenfolken_teamster_wrapper');
+            var new_teamster = '<div><input class="covenfolk_input" placeholder="Covenfolk Name" name="covenfolk_name" type="text" required><a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a></div>'
+            var new_teamster_input = 1;
+            var add_teamster_count = 1
+
+            $(add_teamster).click(function(){
+                if(add_teamster_count < max_input_fields){
+                    add_teamster_count++; 
+                    $(teamster_wrapper).append(new_teamster); 
+                }
+            });
+            $(teamster_wrapper).on('click', '.remove_input', function(e){
+                e.preventDefault();
+                $(this).parent('div').remove();
+                add_teamster_count--;
+            });
+
+            var add_animal = $('.add_animal');
+            var animal_wrapper = $('.covenfolken_animal_wrapper');
+            var new_animal = '<div><input class="covenfolk_input" placeholder="Animal Name" name="covenfolk_name" type="text" required><a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a></div>'
+            var new_animal_input = 1;
+            var add_animal_count = 1
+
+            $(add_animal).click(function(){
+                if(add_animal_count < max_input_fields){
+                    add_animal_count++; 
+                    $(animal_wrapper).append(new_animal); 
+                }
+            });
+            $(animal_wrapper).on('click', '.remove_input', function(e){
+                e.preventDefault();
+                $(this).parent('div').remove();
+                add_animal_count--;
+            });
+
         });
     </script>
     </body>
