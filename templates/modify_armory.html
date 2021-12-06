@@ -1,0 +1,289 @@
+<html>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    </head>
+		<style>
+				.input-wrapper div {
+						margin-bottom: 10px;
+				}
+				.remove_input {
+						margin-top: 10px;
+						margin-left: 15px;
+						vertical-align: text-bottom;
+				}
+				.add_equipment {
+						margin-top: 1000px;
+						margin-left: 10px;
+						vertical-align: text-bottom;
+				}
+		</style>
+    <body>
+        <div class="main">
+            Armory<br>
+            <form class="modify_covenant_armory" action="{{url_for('modify_armory')}}" method="POST">
+                Weapons:<a href="javascript:void(0);" class="add_equipment add_weapon" title="Add weapon"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
+                <div class="weapon_wrapper">
+                    {% for weapon in session["new_covenant"].armory.select_equipment_type("weapon") %}
+                        <div>
+                            <input class="armory_input" value={{weapon.name}} name="weapon_name" type="text" required>
+                            <select name="weapon_quality">
+                                <option value="inexpensive">Inexpensive</option>
+                                <option value="standard">Standard</option>
+                                <option value="expensive">Expensive</option>
+                            </select>
+                            <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
+                        </div>
+                    {% endfor %}
+                </div><br>
+
+                Partial Armors:<a href="javascript:void(0);" class="add_equipment add_partial" title="Add partial"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
+                <div class="partial_wrapper">
+                    {% for partial in session["new_covenant"].armory.select_equipment_type("partial") %}
+                        <div>
+                            <input class="armory_input" value={{partial.name}} name="partial_name" type="text" required>
+                            <select name="partial_quality">
+                                <option value="inexpensive">Inexpensive</option>
+                                <option value="standard">Standard</option>
+                                <option value="expensive">Expensive</option>
+                            </select>
+                            <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
+                        </div>
+                    {% endfor %}
+                </div><br>
+
+                Full Armor:<a href="javascript:void(0);" class="add_equipment add_full" title="Add full"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
+                <div class="full_wrapper">
+                    {% for full in session["new_covenant"].armory.select_equipment_type("full") %}
+                        <div>
+                            <input class="armory_input" value={{full.name}} name="full_name" type="text" required>
+                            <select name="full_quality">
+                                <option value="inexpensive">Inexpensive</option>
+                                <option value="standard">Standard</option>
+                                <option value="expensive">Expensive</option>
+                            </select>
+                            <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
+                        </div>
+                    {% endfor %}
+                </div><br>
+
+                Light Siege:<a href="javascript:void(0);" class="add_equipment add_light_siege" title="Add light_siege"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
+                <div class="light_siege_wrapper">
+                    {% for light_siege in session["new_covenant"].armory.select_equipment_type("light_siege") %}
+                        <div>
+                            <input class="armory_input" value={{light_siege.name}} name="light_siege_name" type="text" required>
+                            <select name="light_siege_quality">
+                                <option value="inexpensive">Inexpensive</option>
+                                <option value="standard">Standard</option>
+                                <option value="expensive">Expensive</option>
+                            </select>
+                            <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
+                        </div>
+                    {% endfor %}
+                </div><br>
+
+                Heavy Siege:<a href="javascript:void(0);" class="add_equipment add_heavy_siege" title="Add heavy_siege"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
+                <div class="heavy_siege_wrapper">
+                    {% for heavy_siege in session["new_covenant"].armory.select_equipment_type("heavy_siege") %}
+                        <div>
+                            <input class="armory_input" value={{heavy_siege.name}} name="heavy_siege_name" type="text" required>
+                            <select name="heavy_siege_quality">
+                                <option value="inexpensive">Inexpensive</option>
+                                <option value="standard">Standard</option>
+                                <option value="expensive">Expensive</option>
+                            </select>
+                            <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
+                        </div>
+                    {% endfor %}
+                </div><br>
+
+                Magic Equipment:<a href="javascript:void(0);" class="add_equipment add_magic" title="Add magic"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
+                <div class="magic_wrapper">
+                    {% for magic in session["new_covenant"].armory.select_equipment_type("magic") %}
+                        <div>
+                            <input class="armory_input" value={{magic.name}} name="magic_name" type="text" required>
+                            <input class="armory_input" value={{magic.saving_category}} name="magic_saving_category" type="text" required>
+                            <input class="armory_input" value={{magic.saving_value}} name="magic_saving_value" type="text" required>
+                            <input class="armory_input" value={{magic.description}} name="magic_description" type="text" required>
+                            <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
+                        </div>
+                    {% endfor %}
+                </div><br>
+
+                <button class="submit" type="submit">Proceed</button>
+            </form>
+        </div>
+    <script>
+        $(document).ready(function(){
+            
+            var max_input_fields = 100;
+
+            var add_weapon = $('.add_weapon');
+            var weapon_wrapper = $('.weapon_wrapper');
+            var new_weapon = `
+                <div>
+                    <input class="armory_input" placeholder="Weapon Name" name="weapon_name" type="text" required>
+                    <select name="weapon_quality">
+                        <option value="inexpensive">Inexpensive</option>
+                        <option value="standard">Standard</option>
+                        <option value="expensive">Expensive</option>
+                    </select>
+                    <a href="javascript:void(0);" class="remove_input" title="Remove input">
+                    <img width=20 height=20 src="/static/icon_minus.png"/></a>
+                </div>`
+            var new_weapon_input = 1;
+            var add_weapon_count = 1
+
+            $(add_weapon).click(function(){
+                if(add_weapon_count < max_input_fields){
+                    add_weapon_count++; 
+                    $(weapon_wrapper).append(new_weapon); 
+                }
+            });
+            $(weapon_wrapper).on('click', '.remove_input', function(e){
+                e.preventDefault();
+                $(this).parent('div').remove();
+                add_weapon_count--;
+            });
+
+            var add_partial = $('.add_partial');
+            var partial_wrapper = $('.partial_wrapper');
+            var new_partial = `
+                <div>
+                    <input class="armory_input" placeholder="Armor Name" name="partial_name" type="text" required>
+                    <select name="partial_quality">
+                        <option value="inexpensive">Inexpensive</option>
+                        <option value="standard">Standard</option>
+                        <option value="expensive">Expensive</option>
+                    </select>
+                    <a href="javascript:void(0);" class="remove_input" title="Remove input">
+                    <img width=20 height=20 src="/static/icon_minus.png"/></a>
+                </div>`
+            var new_partial_input = 1;
+            var add_partial_count = 1
+
+            $(add_partial).click(function(){
+                if(add_partial_count < max_input_fields){
+                    add_partial_count++; 
+                    $(partial_wrapper).append(new_partial); 
+                }
+            });
+            $(partial_wrapper).on('click', '.remove_input', function(e){
+                e.preventDefault();
+                $(this).parent('div').remove();
+                add_partial_count--;
+            });
+
+            var add_full = $('.add_full');
+            var full_wrapper = $('.full_wrapper');
+            var new_full = `
+                <div>
+                    <input class="armory_input" placeholder="Armor Name" name="full_name" type="text" required>
+                    <select name="full_quality">
+                        <option value="inexpensive">Inexpensive</option>
+                        <option value="standard">Standard</option>
+                        <option value="expensive">Expensive</option>
+                    </select>
+                    <a href="javascript:void(0);" class="remove_input" title="Remove input">
+                    <img width=20 height=20 src="/static/icon_minus.png"/></a>
+                </div>`
+            var new_full_input = 1;
+            var add_full_count = 1
+
+            $(add_full).click(function(){
+                if(add_full_count < max_input_fields){
+                    add_full_count++; 
+                    $(full_wrapper).append(new_full); 
+                }
+            });
+            $(full_wrapper).on('click', '.remove_input', function(e){
+                e.preventDefault();
+                $(this).parent('div').remove();
+                add_full_count--;
+            });
+
+            var add_light_siege = $('.add_light_siege');
+            var light_siege_wrapper = $('.light_siege_wrapper');
+            var new_light_siege = `
+                <div>
+                    <input class="armory_input" placeholder="Siege Name" name="light_siege_name" type="text" required>
+                    <select name="light_siege_quality">
+                        <option value="inexpensive">Inexpensive</option>
+                        <option value="standard">Standard</option>
+                        <option value="expensive">Expensive</option>
+                    </select>
+                    <a href="javascript:void(0);" class="remove_input" title="Remove input">
+                    <img width=20 height=20 src="/static/icon_minus.png"/></a>
+                </div>`
+            var new_light_siege_input = 1;
+            var add_light_siege_count = 1
+
+            $(add_light_siege).click(function(){
+                if(add_light_siege_count < max_input_fields){
+                    add_light_siege_count++; 
+                    $(light_siege_wrapper).append(new_light_siege); 
+                }
+            });
+            $(light_siege_wrapper).on('click', '.remove_input', function(e){
+                e.preventDefault();
+                $(this).parent('div').remove();
+                add_light_siege_count--;
+            });
+
+            var add_heavy_siege = $('.add_heavy_siege');
+            var heavy_siege_wrapper = $('.heavy_siege_wrapper');
+            var new_heavy_siege = `
+                <div>
+                    <input class="armory_input" placeholder="Siege Name" name="heavy_siege_name" type="text" required>
+                    <select name="heavy_siege_quality">
+                        <option value="inexpensive">Inexpensive</option>
+                        <option value="standard">Standard</option>
+                        <option value="expensive">Expensive</option>
+                    </select>
+                    <a href="javascript:void(0);" class="remove_input" title="Remove input">
+                    <img width=20 height=20 src="/static/icon_minus.png"/></a>
+                </div>`
+            var new_heavy_siege_input = 1;
+            var add_heavy_siege_count = 1
+
+            $(add_heavy_siege).click(function(){
+                if(add_heavy_siege_count < max_input_fields){
+                    add_heavy_siege_count++; 
+                    $(heavy_siege_wrapper).append(new_heavy_siege); 
+                }
+            });
+            $(heavy_siege_wrapper).on('click', '.remove_input', function(e){
+                e.preventDefault();
+                $(this).parent('div').remove();
+                add_heavy_siege_count--;
+            });
+
+            var add_magic = $('.add_magic');
+            var magic_wrapper = $('.magic_wrapper');
+            var new_magic = `
+                <div>
+                    <input class="armory_input" placeholder="Magic Item Name" name="magic_name" type="text" required>
+                    <input class="armory_input" placeholder="Magic Item Saving Category" name="magic_saving_category" type="text" required>
+                    <input class="armory_input" placeholder="Magic Item Saving Value" name="magic_saving_value" type="text" required>
+                    <input class="armory_input" placeholder="Magic Item Description" name="magic_description" type="text" required>
+                    <a href="javascript:void(0);" class="remove_input" title="Remove input">
+                    <img width=20 height=20 src="/static/icon_minus.png"/></a>
+                </div>`
+            var new_magic_input = 1;
+            var add_magic_count = 1
+
+            $(add_magic).click(function(){
+                if(add_magic_count < max_input_fields){
+                    add_magic_count++; 
+                    $(magic_wrapper).append(new_magic); 
+                }
+            });
+            $(magic_wrapper).on('click', '.remove_input', function(e){
+                e.preventDefault();
+                $(this).parent('div').remove();
+                add_magic_count--;
+            });
+
+        });
+    </script>
+    </body>
+</html>
