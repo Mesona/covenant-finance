@@ -150,15 +150,12 @@ def authenticate():
 
 @app.route("/process_new_covenant", methods=["POST"])
 def process_new_covenant():
-    # Init
-    if session["new_covenant"]:
-        covenant = session["new_covenant"]
-    else:
-        covenant = Covenant()
+    covenant = session["new_covenant"]
 
     # Create covenant core
-    covenant["name"] = request.form["covenant_name"]
-    covenant["season"] = request.form["covenant_season"]
+    print("TEST:", covenant.name)
+    covenant.name = request.form["covenant_name"]
+    covenant.season = request.form["covenant_season"]
 
     income_sources = {}
     for income_source, income_value in zip(
@@ -167,12 +164,12 @@ def process_new_covenant():
         ):
         income_sources[income_source] = income_value
 
-    covenant["income_sources"] = income_sources
-    covenant["tithes"] = request.form["covenant_tithes"]
-    covenant["treasury"] = request.form["covenant_treasury"]
-    covenant["inflation_enabled"] = request.form["covenant_inflation_enabled"]
-    covenant["inflation"] = request.form["covenant_initial_inflation"]
-    covenant["current_year"] = request.form["starting_year"]
+    covenant.income_sources = income_sources
+    covenant.tithes = request.form["covenant_tithes"]
+    covenant.treasury = request.form["covenant_treasury"]
+    covenant.inflation_enabled = request.form["covenant_inflation_enabled"]
+    covenant.inflation = request.form["covenant_initial_inflation"]
+    covenant.current_year = request.form["starting_year"]
 
     # Covenfolk content
     covenfolken = Covenfolken()
@@ -184,9 +181,9 @@ def process_new_covenant():
     labs = Laboratories()
 
     # Combo section
-    covenant["laboratories"] = labs
-    covenant["covenfolk"] = covenfolken
-    covenant["armory"] = armory
+    covenant.laboratories = labs
+    covenant.covenfolk = covenfolken
+    covenant.armory = armory
     app.logger.debug("HERE 2")
     session['new_covenant'] = covenant
     app.logger.debug(f"APP.NEW_COVENANT: {session['new_covenant']}")
@@ -220,6 +217,9 @@ def login():
 
 @app.route("/create_covenant", methods = ["GET"])
 def create_covenant():
+    if not session.get("new_covenant"):
+        session["new_covenant"] = Covenant()
+
     if request.method == "GET":
         return render_template("create_covenant.html")
 

@@ -420,9 +420,13 @@
                 let name_elements = []
                 console.log(`TYPE: ${quick_add_type}`)
                 if (quick_add_type === "Magi") {
+                    console.log("YO")
                     total = quick_add_amount + add_magi_count
+                    console.log("TOTAL", total)
                     if (total <= max_input_fields) {
+                        console.log("IN ADD MAGI")
                         while (quick_add_amount > count) {
+                            console.log("COUNT LESS THAN QUICK ADD AMT")
                             $(magi_wrapper).append(new_magi); 
                             name_field = [...document.querySelectorAll(".magi_name")].pop()
                             name_field.value = `Magi ${count}`
