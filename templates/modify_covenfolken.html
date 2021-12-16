@@ -44,7 +44,7 @@
                 <div class="covenfolken_magi_wrapper">
                     {% for magi in session["new_covenant"].covenfolk.get_covenfolk_of_classification("magi") %}
                         <div>
-                            <input class="magi_name covenfolk_input" value={{magi.name}} name="covenfolk_name" type="text" required>
+                            <input class="magi_name covenfolk_input" value={{magi.name}} name="magi_name" type="text" required>
                             <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
                         </div>
                     {% endfor %}
@@ -55,11 +55,11 @@
                 <div class="covenfolken_crafter_wrapper">
                     {% for crafter in session["new_covenant"].covenfolk.get_covenfolk_of_classification("crafter") %}
                         <div>
-                            <input class="crafter_name covenfolk_input" value={{crafter.name}} name="covenfolk_name" type="text" required>
-                            <input class="covenfolk_input" value={{crafter.profession}} name="covenfolk_profession" type="text" required>
-                            <input class="covenfolk_input" value={{crafter.saving_category}} name="covenfolk_saving_category" type="text" required>
-                            <input class="covenfolk_input" value={{crafter.skill}} name="covenfolk_skill" type="number" required>
-                            <input class="covenfolk_input" name="covenfolk_rarity" type="radio" value="Common" required>
+                            <input class="crafter_name covenfolk_input" value={{crafter.name}} name="add_crafter" type="text" required>
+                            <input class="covenfolk_input" value={{crafter.profession}} name="add_crafter" type="text" required>
+                            <input class="covenfolk_input" value={{crafter.saving_category}} name="add_crafter" type="text" required>
+                            <input class="covenfolk_input" value={{crafter.skill}} name="add_crafter" type="number" required>
+                            <input class="covenfolk_input" name="add_crafter" type="radio" value="Common" required>
                             <label for="Common">Common</label>
                             <input class="covenfolk_input" name="covenfolk_rarity" type="radio" value="Rare" required>
                             <label for="Rare">Rare</label></br><br>
@@ -73,7 +73,7 @@
                 <div class="covenfolken_specialist_wrapper">
                     {% for specialist in session["new_covenant"].covenfolk.get_covenfolk_of_classification("specialist") %}
                         <div>
-                            <input class="specialist_name covenfolk_input" value={{specialist.name}} name="covenfolk_name" type="text" required>
+                            <input class="specialist_name covenfolk_input" value={{specialist.name}} name="specialist_name" type="text" required>
                             <input class="covenfolk_input" value={{specialist.profession}} name="covenfolk_profession" type="text" required>
                             <input class="covenfolk_input" value={{specialist.saving_category}} name="covenfolk_saving_category" type="text" required>
                             <input class="covenfolk_input" value={{specialist.skill}} name="covenfolk_skill" type="number" required>
@@ -91,7 +91,7 @@
                 <div class="covenfolken_companion_wrapper">
                     {% for companion in session["new_covenant"].covenfolk.get_covenfolk_of_classification("companion") %}
                         <div>
-                            <input class="companion_name covenfolk_input" value={{companion.name}} name="covenfolk_name" type="text" required>
+                            <input class="companion_name covenfolk_input" value={{companion.name}} name="companion_name" type="text" required>
                             <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
                         </div>
                     {% endfor %}
@@ -102,7 +102,7 @@
                 <div class="covenfolken_grog_wrapper">
                     {% for grog in session["new_covenant"].covenfolk.get_covenfolk_of_classification("grog") %}
                         <div>
-                            <input class="grog_name covenfolk_input" value={{grog.name}} name="covenfolk_name" type="text" required>
+                            <input class="grog_name covenfolk_input" value={{grog.name}} name="grog_name" type="text" required>
                             <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
                         </div>
                     {% endfor %}
@@ -113,7 +113,7 @@
                 <div class="covenfolken_noble_wrapper">
                     {% for noble in session["new_covenant"].covenfolk.get_covenfolk_of_classification("noble") %}
                         <div>
-                            <input class="noble_name covenfolk_input" value={{noble.name}} name="covenfolk_name" type="text" required>
+                            <input class="noble_name covenfolk_input" value={{noble.name}} name="noble_name" type="text" required>
                             <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
                         </div>
                     {% endfor %}
@@ -124,7 +124,7 @@
                 <div class="covenfolken_dependant_wrapper">
                     {% for dependant in session["new_covenant"].covenfolk.get_covenfolk_of_classification("dependant") %}
                         <div>
-                            <input class="dependant_name covenfolk_input" value={{dependant.name}} name="covenfolk_name" type="text" required>
+                            <input class="dependant_name covenfolk_input" value={{dependant.name}} name="dependant_name" type="text" required>
                             <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
                         </div>
                     {% endfor %}
@@ -135,7 +135,7 @@
                 <div class="covenfolken_laborer_wrapper">
                     {% for laborer in session["new_covenant"].covenfolk.get_covenfolk_of_classification("laborer") %}
                         <div>
-                            <input class="laborer_name covenfolk_input" value={{laborer.name}} name="covenfolk_name" type="text" required>
+                            <input class="laborer_name covenfolk_input" value={{laborer.name}} name="laborer_name" type="text" required>
                             <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
                         </div>
                     {% endfor %}
@@ -146,7 +146,7 @@
                 <div class="covenfolken_servant_wrapper">
                     {% for servant in session["new_covenant"].covenfolk.get_covenfolk_of_classification("servant") %}
                         <div>
-                            <input class="servant_name covenfolk_input" value={{servant.name}} name="covenfolk_name" type="text" required>
+                            <input class="servant_name covenfolk_input" value={{servant.name}} name="servant_name" type="text" required>
                             <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
                         </div>
                     {% endfor %}
@@ -157,7 +157,7 @@
                 <div class="covenfolken_teamster_wrapper">
                     {% for teamster in session["new_covenant"].covenfolk.get_covenfolk_of_classification("teamster") %}
                         <div>
-                            <input class="teamster_name covenfolk_input" value={{teamster.name}} name="covenfolk_name" type="text" required>
+                            <input class="teamster_name covenfolk_input" value={{teamster.name}} name="teamster_name" type="text" required>
                             <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
                         </div>
                     {% endfor %}
@@ -168,7 +168,7 @@
                 <div class="covenfolken_animal_wrapper">
                     {% for animal in session["new_covenant"].covenfolk.get_covenfolk_of_classification("horse") %}
                         <div>
-                            <input class="covenfolkcovenfolk_mal.name}} name="covenfolk_name" type="text" required>
+                            <input class="animal_name covenfolk_input" value={{animal.name}} name="animal_name" type="text" required>
                             <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
                         </div>
                     {% endfor %}
@@ -201,7 +201,7 @@
 
             var add_companion = $('.add_companion');
             var companion_wrapper = $('.covenfolken_companion_wrapper');
-            var new_companion = '<div><input class="companion_name covenfolk_input" placeholder="Covenfolk Name" name="covenfolk_name" type="text" required><a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a></div>'
+            var new_companion = '<div><input class="companion_name covenfolk_input" placeholder="Covenfolk Name" name="companion_name" type="text" required><a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a></div>'
             var new_companion_input = 1;
             var add_companion_count = 1
 
@@ -219,7 +219,7 @@
 
             var add_noble = $('.add_noble');
             var noble_wrapper = $('.covenfolken_noble_wrapper');
-            var new_noble = '<div><input class="noble_name covenfolk_input" placeholder="Covenfolk Name" name="covenfolk_name" type="text" required><a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a></div>'
+            var new_noble = '<div><input class="noble_name covenfolk_input" placeholder="Covenfolk Name" name="noble_name" type="text" required><a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a></div>'
             var new_noble_input = 1;
             var add_noble_count = 1
 
@@ -239,7 +239,7 @@
             var crafter_wrapper = $('.covenfolken_crafter_wrapper');
             var new_crafter = `
                 <div>
-                    <input class="crafter_name covenfolk_input" placeholder="Name" name="covenfolk_name" type="text" required>
+                    <input class="crafter_name covenfolk_input" placeholder="Name" name="crafter_name" type="text" required>
                     <input class="covenfolk_input" placeholder="Profession" name="covenfolk_profession" type="text" required>
                     <input class="covenfolk_input" placeholder="Saving Category" name="covenfolk_saving_category" type="text" required>
                     <input class="covenfolk_input" placeholder="Skill Level" name="covenfolk_skill" type="number" required>
@@ -269,7 +269,7 @@
             var specialist_wrapper = $('.covenfolken_specialist_wrapper');
             var new_specialist = `
                 <div>
-                    <input class="specialist_name covenfolk_input" placeholder="Name" name="covenfolk_name" type="text" required>
+                    <input class="specialist_name covenfolk_input" placeholder="Name" name="specialist_name" type="text" required>
                     <input class="covenfolk_input" placeholder="Profession" name="covenfolk_profession" type="text" required>
                     <input class="covenfolk_input" placeholder="Saving Category" name="covenfolk_saving_category" type="text" required>
                     <input class="covenfolk_input" placeholder="Skill Level" name="covenfolk_skill" type="number" required>
@@ -297,7 +297,7 @@
 
             var add_dependant = $('.add_dependant');
             var dependant_wrapper = $('.covenfolken_dependant_wrapper');
-            var new_dependant = '<div><input class="dependant_name covenfolk_input" placeholder="Covenfolk Name" name="covenfolk_name" type="text" required><a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a></div>'
+            var new_dependant = '<div><input class="dependant_name covenfolk_input" placeholder="Covenfolk Name" name="dependant_name" type="text" required><a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a></div>'
             var new_dependant_input = 1;
             var add_dependant_count = 1;
 
@@ -315,7 +315,7 @@
 
             var add_grog = $('.add_grog');
             var grog_wrapper = $('.covenfolken_grog_wrapper');
-            var new_grog = '<div><input class="grog_name covenfolk_input" placeholder="Covenfolk Name" name="covenfolk_name" type="text" required><a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a></div>'
+            var new_grog = '<div><input class="grog_name covenfolk_input" placeholder="Covenfolk Name" name="grog_name" type="text" required><a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a></div>'
             var new_grog_input = 1;
             var add_grog_count = 1;
 
@@ -333,7 +333,7 @@
 
             var add_laborer = $('.add_laborer');
             var laborer_wrapper = $('.covenfolken_laborer_wrapper');
-            var new_laborer = '<div><input class="laborer_name covenfolk_input" placeholder="Covenfolk Name" name="covenfolk_name" type="text" required><a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a></div>'
+            var new_laborer = '<div><input class="laborer_name covenfolk_input" placeholder="Covenfolk Name" name="laborer_name" type="text" required><a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a></div>'
             var new_laborer_input = 1;
             var add_laborer_count = 1;
 
@@ -351,7 +351,7 @@
 
             var add_servant = $('.add_servant');
             var servant_wrapper = $('.covenfolken_servant_wrapper');
-            var new_servant = '<div><input class="servant_name covenfolk_input" placeholder="Covenfolk Name" name="covenfolk_name" type="text" required><a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a></div>'
+            var new_servant = '<div><input class="servant_name covenfolk_input" placeholder="Covenfolk Name" name="servant_name" type="text" required><a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a></div>'
             var new_servant_input = 1;
             var add_servant_count = 1;
 
@@ -369,7 +369,7 @@
 
             var add_teamster = $('.add_teamster');
             var teamster_wrapper = $('.covenfolken_teamster_wrapper');
-            var new_teamster = '<div><input class="teamster_name covenfolk_input" placeholder="Covenfolk Name" name="covenfolk_name" type="text" required><a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a></div>'
+            var new_teamster = '<div><input class="teamster_name covenfolk_input" placeholder="Covenfolk Name" name="teamster_name" type="text" required><a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a></div>'
             var new_teamster_input = 1;
             var add_teamster_count = 1;
 
@@ -390,7 +390,7 @@
             var animal_wrapper = $('.covenfolken_animal_wrapper');
             var new_animal = `
                         <div>
-                            <input class="animal_name covenfolk_input" placeholder="Animal Name" name="covenfolk_name" type="text" required>
+                            <input class="animal_name covenfolk_input" placeholder="Animal Name" name="animal_name" type="text" required>
                             <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a>
                         </div>
             `

@@ -190,6 +190,20 @@ def process_new_covenant():
     return render_template("create_covenant_landing.html")
 
 
+@app.route("/process_covenfolk_modifications", methods=["POST"])
+def process_covenfolk_modifications():
+    if session.get("new_covenant"):
+        new = True
+        covenant = session["new_covenant"]
+    else:
+        new = False
+        covenant = session["current_covenant"]
+
+    covenfolk = request.form["modify_covenant_covenfolken"]
+    print("COVENFOLK:", covenfolk)
+    if new:
+        return render_template("create_covenant_landing.html")
+
 
 @app.route('/register')
 def register():
@@ -260,17 +274,40 @@ def modify_covenfolken():
         return render_template("modify_covenfolken.html")
 
     if request.method == "POST":
-        name = request.form["name"]
-        classification = request.form["classification"]
-        profession = request.form["profession"]
-        saving_category = request.form["saving_category"]
-        skill = request.form["skill"]
-        rarity = request.form["rarity"]
+        if session.get("new_covenant"):
+            new = True
+            covenant = session["new_covenant"]
+        else:
+            new = False
+            covenant = session["current_covenant"]
 
-        app.new_covenant.covenfolk.add_covenfolk(name, classification,
-                profession, saving_category, skill, rarity)
+        form = request.form
+        json = request.json
+        values = request.values
+        data = request.data
+        getlist = request.form.getlist("crafter_name")
+        #covenfolk = request.form["modify_covenant_covenfolken"]
+        app.logger.debug("SPAAAACE")
+        app.logger.debug(f"JSON: {json}")
+        app.logger.debug(f"DATA: {data}")
+        app.logger.debug(f"VALUES: {values}")
+        app.logger.debug(f"FORM: {form}")
+        app.logger.debug(f"GETLIST: {getlist}")
+        if new:
+            return render_template("create_covenant_landing.html")
 
-        return render_template("create_covenant_landing.html")
+    #if request.method == "POST":
+    #    name = request.form["name"]
+    #    classification = request.form["classification"]
+    #    profession = request.form["profession"]
+    #    saving_category = request.form["saving_category"]
+    #    skill = request.form["skill"]
+    #    rarity = request.form["rarity"]
+
+    #    app.new_covenant.covenfolk.add_covenfolk(name, classification,
+    #            profession, saving_category, skill, rarity)
+
+    #    return render_template("create_covenant_landing.html")
 
 @app.route("/modify_armory", methods = ["POST", "GET"])
 def modify_armory():
