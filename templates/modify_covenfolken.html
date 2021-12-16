@@ -416,123 +416,116 @@
                 var quick_add_amount = document.getElementById('covenfolk_quick_add_amount').value;
                 var quick_add_type = document.getElementById('covenfolk_quick_add_type').value;
                 var total = 0
-                let count = 0
                 let name_elements = []
-                console.log(`TYPE: ${quick_add_type}`)
                 if (quick_add_type === "Magi") {
-                    console.log("YO")
-                    total = quick_add_amount + add_magi_count
-                    console.log("TOTAL", total)
+                    total = Number(quick_add_amount) + Number(add_magi_count)
                     if (total <= max_input_fields) {
-                        console.log("IN ADD MAGI")
-                        while (quick_add_amount > count) {
-                            console.log("COUNT LESS THAN QUICK ADD AMT")
+                        while (add_magi_count < total) {
                             $(magi_wrapper).append(new_magi); 
                             name_field = [...document.querySelectorAll(".magi_name")].pop()
-                            name_field.value = `Magi ${count}`
-                            count++;
+                            name_field.value = `Magi ${add_magi_count}`
+                            add_magi_count++;
                         }
                     }
                 } else if (quick_add_type === "Nobles") {
-                    console.log("IN NOBLE")
-                    total = quick_add_amount + add_noble_count
+                    total = Number(quick_add_amount) + Number(add_noble_count)
                     if (total <= max_input_fields) {
-                        while (quick_add_amount > count) {
+                        while (add_noble_count < total) {
                             $(noble_wrapper).append(new_noble); 
                             name_field = [...document.querySelectorAll(".noble_name")].pop()
-                            name_field.value = `Noble ${count}`
-                            count++;
+                            name_field.value = `Noble ${add_noble_count}`
+                            add_noble_count++;
                         }
                     }
                 } else if (quick_add_type === "Companions") {
-                    total = quick_add_amount + add_companion_count
+                    total = Number(quick_add_amount) + Number(add_companion_count)
                     if (total <= max_input_fields) {
-                        while (quick_add_amount > count) {
+                        while (add_companion_count < total) {
                             $(companion_wrapper).append(new_companion); 
                             name_field = [...document.querySelectorAll(".companion_name")].pop()
-                            name_field.value = `Companion ${count}`
-                            count++;
+                            name_field.value = `Companion ${add_companion_count}`
+                            add_companion_count++;
                         }
                     }
                 } else if (quick_add_type === "Crafters") {
                     
-                    total = quick_add_amount + add_crafter_count
+                    total = Number(quick_add_amount) + Number(add_crafter_count)
                     if (total <= max_input_fields) {
-                        while (quick_add_amount > count) {
+                        while (add_crafter_count < total) {
                             $(crafter_wrapper).append(new_crafter); 
                             name_field = [...document.querySelectorAll(".crafter_name")].pop()
-                            name_field.value = `Crafter ${count}`
-                            count++;
+                            name_field.value = `Crafter ${add_crafter_count}`
+                            add_crafter_count++;
                         }
                     }
                 } else if (quick_add_type === "Specialists") {
-                    total = quick_add_amount + add_specialist_count
+                    total = Number(quick_add_amount) + Number(add_specialist_count)
                     if (total <= max_input_fields) {
-                        while (quick_add_amount > count) {
+                        while (add_specialist_count < total) {
                             $(specialist_wrapper).append(new_specialist); 
                             name_field = [...document.querySelectorAll(".specialist_name")].pop()
-                            name_field.value = `Specialist ${count}`
-                            count++;
+                            name_field.value = `Specialist ${add_specialist_count}`
+                            add_specialist_count++;
                         }
                     }
                 } else if (quick_add_type === "Dependants") {
-                    total = quick_add_amount + add_dependant_count
+                    total = Number(quick_add_amount) + Number(add_dependant_count)
                     if (total <= max_input_fields) {
-                        while (quick_add_amount > count) {
+                        while (add_dependant_count < total) {
                             $(dependant_wrapper).append(new_dependant); 
                             name_field = [...document.querySelectorAll(".dependant_name")].pop()
-                            name_field.value = `Dependant ${count}`
-                            count++;
+                            name_field.value = `Dependant ${add_dependant_count}`
+                            add_dependant_count++;
                         }
                     }
                 } else if (quick_add_type === "Grogs") {
-                    total = quick_add_amount + add_grog_count
+                    total = Number(quick_add_amount) + Number(add_grog_count)
                     if (total <= max_input_fields) {
-                        while (quick_add_amount > count) {
+                        while (add_grog_count < total) {
                             $(grog_wrapper).append(new_grog); 
                             name_field = [...document.querySelectorAll(".grog_name")].pop()
-                            name_field.value = `Grog ${count}`
-                            count++;
+                            name_field.value = `Grog ${add_grog_count}`
+                            add_grog_count++;
                         }
                     }
                 } else if (quick_add_type === "Laborers") {
-                    total = quick_add_amount + add_laborer_count
+                    total = Number(quick_add_amount) + Number(add_laborer_count)
                     if (total <= max_input_fields) {
-                        while (quick_add_amount > count) {
+                        while (add_laborer_count < total) {
                             $(laborer_wrapper).append(new_laborer); 
                             name_field = [...document.querySelectorAll(".laborer_name")].pop()
-                            name_field.value = `Laborer ${count}`
-                            count++;
+                            name_field.value = `Laborer ${add_laborer_count}`
+                            add_laborer_count++;
                         }
                     }
                 } else if (quick_add_type === "Servants") {
-                    total = quick_add_amount + add_servant_count
+                    total = Number(quick_add_amount) + Number(add_servant_count)
                     if (total <= max_input_fields) {
-                        while (quick_add_amount > count) {
+                        while (add_servant_count < total) {
                             $(servant_wrapper).append(new_servant); 
                             name_field = [...document.querySelectorAll(".servant_name")].pop()
-                            name_field.value = `Servant ${count}`
-                            count++;
+                            name_field.value = `Servant ${add_servant_count}`
+                            add_servant_count++;
                         }
                     }
                 } else if (quick_add_type === "Teamsters") {
-                    total = quick_add_amount + add_teamster_count
+                    total = Number(quick_add_amount) + Number(add_teamster_count)
                     if (total <= max_input_fields) {
-                        while (quick_add_amount > count) {
+                        while (add_teamster_count < total) {
                             $(teamster_wrapper).append(new_teamster); 
                             name_field = [...document.querySelectorAll(".teamster_name")].pop()
-                            name_field.value = `Teamster ${count}`
-                            count++;
+                            name_field.value = `Teamster ${add_teamster_count}`
+                            add_teamster_count++;
                         }
                     }
                 } else if (quick_add_type === "Large Animals") {
-                    total = quick_add_amount + add_animal_count
+                    total = Number(quick_add_amount) + Number(add_animal_count)
                     if (total <= max_input_fields) {
-                        while (quick_add_amount > count) {
+                        while (add_animal_count < total) {
                             $(animal_wrapper).append(new_animal); 
                             name_field = [...document.querySelectorAll(".animal_name")].pop()
-                            name_field.value = `Animal ${count}`
-                            count++;
+                            name_field.value = `Animal ${add_animal_count}`
+                            add_animal_count++;
                         }
                     }
                 }

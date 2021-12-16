@@ -307,14 +307,12 @@
 
             var quick_add = $('.armory_quick_add_button')
             $(quick_add).click(function() {
-                console.log("YO")
                 var quick_add_amount = document.getElementById('armory_quick_add_amount').value;
                 var quick_add_type = document.getElementById('armory_quick_add_type').value;
                 var quick_add_name = document.getElementById('armory_quick_add_name').value;
                 var quick_add_quality = document.getElementById('armory_quick_add_quality').value;
                 var total = 0
                 let name_elements = []
-                console.log(`TYPE: ${quick_add_type}`)
                 if (quick_add_type === "Weapons") {
                     total = Number(quick_add_amount) + Number(add_weapon_count)
                     if (total <= max_input_fields) {
@@ -322,12 +320,13 @@
                             $(weapon_wrapper).append(new_weapon); 
                             name_field = [...document.querySelectorAll(".weapon_name")].pop()
                             name_field.value = quick_add_name
+                            quality_field_list = [...document.querySelectorAll(".weapon_quality")]
+                            let test2 = quality_field_list[quality_field_list.length - 1]
                             add_weapon_count++;
                         }
                     }
                 } else if (quick_add_type == "Partial Armors") {
                     total = Number(quick_add_amount) + Number(add_partial_count)
-                    console.log("TOTAL:", total)
                     if (total <= max_input_fields) {
                         while (add_partial_count < total) {
                             $(partial_wrapper).append(new_partial); 
@@ -335,40 +334,42 @@
                             name_field.value = quick_add_name
                             quality_field_list = [...document.querySelectorAll(".partial_quality")]
                             let test2 = quality_field_list[quality_field_list.length - 1]
-                            console.log("TEST:", $(".partial_quality:last").val(quick_add_quality.toLowerCase()).change())
                             add_partial_count++;
                         }
                     }
                 } else if (quick_add_type == "Full Armors") {
                     total = Number(quick_add_amount) + Number(add_full_count)
-                    console.log("TOTAL:", total)
                     if (total <= max_input_fields) {
                         while (add_full_count < total) {
                             $(full_wrapper).append(new_full); 
                             name_field = [...document.querySelectorAll(".full_name")].pop()
                             name_field.value = quick_add_name
+                            quality_field_list = [...document.querySelectorAll(".full_quality")]
+                            let test2 = quality_field_list[quality_field_list.length - 1]
                             add_full_count++;
                         }
                     }
                 } else if (quick_add_type == "Light Siege Equipment") {
                     total = Number(quick_add_amount) + Number(add_light_siege_count)
-                    console.log("TOTAL:", total)
                     if (total <= max_input_fields) {
                         while (add_light_siege_count < total) {
                             $(light_siege_wrapper).append(new_light_siege); 
                             name_field = [...document.querySelectorAll(".light_siege_name")].pop()
                             name_field.value = quick_add_name
+                            quality_field_list = [...document.querySelectorAll(".light_siege_quality")]
+                            let test2 = quality_field_list[quality_field_list.length - 1]
                             add_light_siege_count++;
                         }
                     }
                 } else if (quick_add_type == "Heavy Siege Equipment") {
                     total = Number(quick_add_amount) + Number(add_heavy_siege_count)
-                    console.log("TOTAL:", total)
                     if (total <= max_input_fields) {
                         while (add_heavy_siege_count < total) {
                             $(heavy_siege_wrapper).append(new_heavy_siege); 
                             name_field = [...document.querySelectorAll(".heavy_siege_name")].pop()
                             name_field.value = quick_add_name
+                            quality_field_list = [...document.querySelectorAll(".heavy_siege_quality")]
+                            let test2 = quality_field_list[quality_field_list.length - 1]
                             add_heavy_siege_count++;
                         }
                     }
