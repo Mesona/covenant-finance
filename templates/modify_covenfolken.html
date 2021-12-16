@@ -55,13 +55,13 @@
                 <div class="covenfolken_crafter_wrapper">
                     {% for crafter in session["new_covenant"].covenfolk.get_covenfolk_of_classification("crafter") %}
                         <div>
-                            <input class="crafter_name covenfolk_input" value={{crafter.name}} name="add_crafter" type="text" required>
-                            <input class="covenfolk_input" value={{crafter.profession}} name="add_crafter" type="text" required>
-                            <input class="covenfolk_input" value={{crafter.saving_category}} name="add_crafter" type="text" required>
-                            <input class="covenfolk_input" value={{crafter.skill}} name="add_crafter" type="number" required>
-                            <input class="covenfolk_input" name="add_crafter" type="radio" value="Common" required>
+                            <input class="crafter_name covenfolk_input" value={{crafter.name}} name="crafter_name" type="text" required>
+                            <input class="covenfolk_input" value={{crafter.profession}} name="crafter_profession" type="text" required>
+                            <input class="covenfolk_input" value={{crafter.saving_category}} name="crafter_saving_category" type="text" required>
+                            <input class="covenfolk_input" value={{crafter.skill}} name="crafter_skill" type="number" required>
+                            <input class="covenfolk_input" name="crafter_rarity" type="radio" value="Common" required>
                             <label for="Common">Common</label>
-                            <input class="covenfolk_input" name="covenfolk_rarity" type="radio" value="Rare" required>
+                            <input class="covenfolk_input" name="crafter_rarity" type="radio" value="Rare" required>
                             <label for="Rare">Rare</label></br><br>
                             <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
                         </div>
@@ -74,12 +74,12 @@
                     {% for specialist in session["new_covenant"].covenfolk.get_covenfolk_of_classification("specialist") %}
                         <div>
                             <input class="specialist_name covenfolk_input" value={{specialist.name}} name="specialist_name" type="text" required>
-                            <input class="covenfolk_input" value={{specialist.profession}} name="covenfolk_profession" type="text" required>
-                            <input class="covenfolk_input" value={{specialist.saving_category}} name="covenfolk_saving_category" type="text" required>
-                            <input class="covenfolk_input" value={{specialist.skill}} name="covenfolk_skill" type="number" required>
-                            <input class="covenfolk_input" name="covenfolk_rarity" type="radio" value="Common" required>
+                            <input class="covenfolk_input" value={{specialist.profession}} name="specialist_profession" type="text" required>
+                            <input class="covenfolk_input" value={{specialist.saving_category}} name="specialist_saving_category" type="text" required>
+                            <input class="covenfolk_input" value={{specialist.skill}} name="specialist_skill" type="number" required>
+                            <input class="covenfolk_input" name="specialist_rarity" type="radio" value="Common" required>
                             <label for="Common">Common</label>
-                            <input class="covenfolk_input" name="covenfolk_rarity" type="radio" value="Rare" required>
+                            <input class="covenfolk_input" name="specialist_rarity" type="radio" value="Rare" required>
                             <label for="Rare">Rare</label></br><br>
                             <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
                         </div>
@@ -240,10 +240,10 @@
             var new_crafter = `
                 <div>
                     <input class="crafter_name covenfolk_input" placeholder="Name" name="crafter_name" type="text" required>
-                    <input class="covenfolk_input" placeholder="Profession" name="covenfolk_profession" type="text" required>
-                    <input class="covenfolk_input" placeholder="Saving Category" name="covenfolk_saving_category" type="text" required>
-                    <input class="covenfolk_input" placeholder="Skill Level" name="covenfolk_skill" type="number" required>
-                    <select name="covenfolk_rarity">
+                    <input class="covenfolk_input" placeholder="Profession" name="crafter_profession" type="text" required>
+                    <input class="covenfolk_input" placeholder="Saving Category" name="crafter_saving_category" type="text" required>
+                    <input class="covenfolk_input" placeholder="Skill Level" name="crafter_skill" type="number" required>
+                    <select name="crafter_rarity">
                         <option value="common">Common</option>
                         <option value="rare">Rare</option>
                     </select>
@@ -270,10 +270,10 @@
             var new_specialist = `
                 <div>
                     <input class="specialist_name covenfolk_input" placeholder="Name" name="specialist_name" type="text" required>
-                    <input class="covenfolk_input" placeholder="Profession" name="covenfolk_profession" type="text" required>
-                    <input class="covenfolk_input" placeholder="Saving Category" name="covenfolk_saving_category" type="text" required>
-                    <input class="covenfolk_input" placeholder="Skill Level" name="covenfolk_skill" type="number" required>
-                    <select name="covenfolk_rarity">
+                    <input class="covenfolk_input" placeholder="Profession" name="specialist_profession" type="text" required>
+                    <input class="covenfolk_input" placeholder="Saving Category" name="specialist_saving_category" type="text" required>
+                    <input class="covenfolk_input" placeholder="Skill Level" name="specialist_skill" type="number" required>
+                    <select name="specialist_rarity">
                         <option value="common">Common</option>
                         <option value="rare">Rare</option>
                     </select>

@@ -285,14 +285,54 @@ def modify_covenfolken():
         json = request.json
         values = request.values
         data = request.data
+        args = request.args
         getlist = request.form.getlist("crafter_name")
+        covenfolk_input = request.form.getlist("covenfolk_input")
         #covenfolk = request.form["modify_covenant_covenfolken"]
         app.logger.debug("SPAAAACE")
         app.logger.debug(f"JSON: {json}")
         app.logger.debug(f"DATA: {data}")
         app.logger.debug(f"VALUES: {values}")
         app.logger.debug(f"FORM: {form}")
+        app.logger.debug(f"ARGS: {args}")
+        app.logger.debug(f"COVENFOLK_INPUT: {covenfolk_input}")
         app.logger.debug(f"GETLIST: {getlist}")
+        non_crafters = ["magi", "companion", "grog", "noble", "dependant", "laborer", "servant", "teamster", "animal"]
+        covenfolken = Covenfolken()
+        for nc in non_crafters:
+            current = f"{nc}_name"
+            these_covenfolk = request.form.getlist(current)
+            for covenfolk in these_covenfolk:
+                app.logger.debug(f"NAME: {covenfolk}")
+                app.logger.debug(f"TYPE: {nc}")
+                covenfolken.add_covenfolk(covenfolk, nc)
+
+        count = 0
+        crafter_names = request.form.getlist("crafter_name")
+        crafter_professions = request.form.getlist("crafter_profession")
+        crafter_saving_categories = request.form.getlist("crafter_saving_category")
+        crafter_skills = request.form.getlist("crafter_skill")
+        crafter_rarities = request.form.getlist("crafter_rarity")
+        while count < len(crafter_names):
+            covenfolken.add_covenfolk(
+                    crafter_names[count],
+                    "crafter",
+                    crafter_professions[count],
+                    crafter_saving_categories[count],
+                    int(crafter_skills[count]),
+                    crafter_rarities[count]
+            )
+            count+=1
+
+
+        specialist_names = request.form.getlist("specialist_name")
+        specialist_professions = request.form.getlist("specialist_profession")
+        specialist_saving_category = request.form.getlist("specialist_saving_category")
+        specialist_skill = request.form.getlist("specialist_skill")
+        specialist_rarity = request.form.getlist("specialist_rarity")
+
+        app.logger.debug(f"COVENFOLKEN: {covenfolken}")
+
         if new:
             return render_template("create_covenant_landing.html")
 
