@@ -42,9 +42,9 @@
                 <hr>
                 Mages:<a href="javascript:void(0);" class="add_magi add_covenfolk" title="Add magi"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
                 <div class="covenfolken_magi_wrapper">
-                    {% for magi in session["new_covenant"].covenfolk.get_covenfolk_of_classification("magi") %}
+                    {% for magi in session["new_covenant"].covenfolken.get_covenfolk_of_classification("magi") %}
                         <div>
-                            <input class="magi_name covenfolk_input" value={{magi.name}} name="magi_name" type="text" required>
+                            <input class="magi_name covenfolk_input" value="{{magi.name}}" name="magi_name" type="text" required>
                             <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
                         </div>
                     {% endfor %}
@@ -53,24 +53,28 @@
                 <hr>
                 Crafters:<a href="javascript:void(0);" class="add_crafter add_covenfolk" title="Add crafter"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
                 <div class="covenfolken_crafter_wrapper">
-                    {% for crafter in session["new_covenant"].covenfolk.get_covenfolk_of_classification("crafter") %}
+                    {% for crafter in session["new_covenant"].covenfolken.get_covenfolk_of_classification("crafter") %}
                         <div>
-                            <input class="crafter_name covenfolk_input" value={{crafter.name}} name="crafter_name" type="text" required>
-                            <input class="covenfolk_input" value={{crafter.profession}} name="crafter_profession" type="text" required>
-                            TODO: MAKE SAVING CATEGORY A SELECT INPUT RATHER THAN TEXT
+                            <input class="crafter_name covenfolk_input" value="{{crafter.name}}" name="crafter_name" type="text" required>
+                            <input class="covenfolk_input" value="{{crafter.profession}}" name="crafter_profession" type="text" required>
                             <select class="covenfolk_input" name="crafter_saving_category">
                                 {% for saving_category in saving_categories %}
-                                    {% if saving_category == crafter.saving_cateogry %}
-                                        <option value=saving_cateogry selected="selected">{{saving_category}}</option>
+                                    {% if saving_category == crafter.saving_category %}
+                                        <option value="{{saving_category}}" selected="selected">{{saving_category}}</option>
                                     {% else %}
-                                        <option value=saving_cateogry>{{saving_category}}</option>
+                                        <option value="{{saving_category}}">{{saving_category}}</option>
                                     {% endif %}
                                 {% endfor %}
                             </select>
                             <input class="covenfolk_input" value={{crafter.skill}} name="crafter_skill" type="number" required>
                             <select class="covenfolk_input" name="crafter_rarity">
-                                <option value="common">Common</option>
-                                <option value="rare">Rare</option>
+                                {% for rarity in ["Common", "Rare"] %}
+                                    {% if rarity.lower() == crafter.rarity.lower() %}
+                                        <option value={{rarity}} selected="selected">{{rarity}}</option>
+                                    {% else %}
+                                        <option value={{rarity}}>{{rarity}}</option>
+                                    {% endif %}
+                                {% endfor %}
                             </select>
                             <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
                         </div>
@@ -80,23 +84,28 @@
                 <hr>
                 Specialists:<a href="javascript:void(0);" class="add_specialist add_covenfolk" title="Add specialist"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
                 <div class="covenfolken_specialist_wrapper">
-                    {% for specialist in session["new_covenant"].covenfolk.get_covenfolk_of_classification("specialist") %}
+                    {% for specialist in session["new_covenant"].covenfolken.get_covenfolk_of_classification("specialist") %}
                         <div>
-                            <input class="specialist_name covenfolk_input" value={{specialist.name}} name="specialist_name" type="text" required>
-                            <input class="covenfolk_input" value={{specialist.profession}} name="specialist_profession" type="text" required>
+                            <input class="specialist_name covenfolk_input" value="{{specialist.name}}" name="specialist_name" type="text" required>
+                            <input class="covenfolk_input" value="{{specialist.profession}}" name="specialist_profession" type="text" required>
                             <select class="covenfolk_input" name="specialist_saving_category">
                                 {% for saving_category in saving_categories %}
-                                    {% if saving_category == specialist.saving_cateogry %}
-                                        <option value=saving_cateogry selected="selected">{{saving_category}}</option>
+                                    {% if saving_category == specialist.saving_category %}
+                                        <option value="{{saving_category}}" selected="selected">{{saving_category}}</option>
                                     {% else %}
-                                        <option value=saving_cateogry>{{saving_category}}</option>
+                                        <option value="{{saving_category}}">{{saving_category}}</option>
                                     {% endif %}
                                 {% endfor %}
                             </select>
                             <input class="covenfolk_input" value={{specialist.skill}} name="specialist_skill" type="number" required>
                             <select class="covenfolk_input" name="specialist_rarity">
-                                <option value="common">Common</option>
-                                <option value="rare">Rare</option>
+                                {% for rarity in ["Common", "Rare"] %}
+                                    {% if rarity.lower() == specialist.rarity.lower() %}
+                                        <option value={{rarity}} selected="selected">{{rarity}}</option>
+                                    {% else %}
+                                        <option value={{rarity}}>{{rarity}}</option>
+                                    {% endif %}
+                                {% endfor %}
                             </select>
                             <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
                         </div>
@@ -106,9 +115,9 @@
                 <hr>
                 Companions:<a href="javascript:void(0);" class="add_companion add_covenfolk" title="Add companion"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
                 <div class="covenfolken_companion_wrapper">
-                    {% for companion in session["new_covenant"].covenfolk.get_covenfolk_of_classification("companion") %}
+                    {% for companion in session["new_covenant"].covenfolken.get_covenfolk_of_classification("companion") %}
                         <div>
-                            <input class="companion_name covenfolk_input" value={{companion.name}} name="companion_name" type="text" required>
+                            <input class="companion_name covenfolk_input" value="{{companion.name}}" name="companion_name" type="text" required>
                             <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
                         </div>
                     {% endfor %}
@@ -117,9 +126,9 @@
                 <hr>
                 Grogs:<a href="javascript:void(0);" class="add_grog add_covenfolk" title="Add grog"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
                 <div class="covenfolken_grog_wrapper">
-                    {% for grog in session["new_covenant"].covenfolk.get_covenfolk_of_classification("grog") %}
+                    {% for grog in session["new_covenant"].covenfolken.get_covenfolk_of_classification("grog") %}
                         <div>
-                            <input class="grog_name covenfolk_input" value={{grog.name}} name="grog_name" type="text" required>
+                            <input class="grog_name covenfolk_input" value="{{grog.name}}" name="grog_name" type="text" required>
                             <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
                         </div>
                     {% endfor %}
@@ -128,9 +137,9 @@
                 <hr>
                 Nobles:<a href="javascript:void(0);" class="add_noble add_covenfolk" title="Add noble"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
                 <div class="covenfolken_noble_wrapper">
-                    {% for noble in session["new_covenant"].covenfolk.get_covenfolk_of_classification("noble") %}
+                    {% for noble in session["new_covenant"].covenfolken.get_covenfolk_of_classification("noble") %}
                         <div>
-                            <input class="noble_name covenfolk_input" value={{noble.name}} name="noble_name" type="text" required>
+                            <input class="noble_name covenfolk_input" value="{{noble.name}}" name="noble_name" type="text" required>
                             <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
                         </div>
                     {% endfor %}
@@ -139,9 +148,9 @@
                 <hr>
                 Dependants:<a href="javascript:void(0);" class="add_dependant add_covenfolk" title="Add dependant"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
                 <div class="covenfolken_dependant_wrapper">
-                    {% for dependant in session["new_covenant"].covenfolk.get_covenfolk_of_classification("dependant") %}
+                    {% for dependant in session["new_covenant"].covenfolken.get_covenfolk_of_classification("dependant") %}
                         <div>
-                            <input class="dependant_name covenfolk_input" value={{dependant.name}} name="dependant_name" type="text" required>
+                            <input class="dependant_name covenfolk_input" value="{{dependant.name}}" name="dependant_name" type="text" required>
                             <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
                         </div>
                     {% endfor %}
@@ -150,9 +159,9 @@
                 <hr>
                 Laborers:<a href="javascript:void(0);" class="add_laborer add_covenfolk" title="Add laborer"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
                 <div class="covenfolken_laborer_wrapper">
-                    {% for laborer in session["new_covenant"].covenfolk.get_covenfolk_of_classification("laborer") %}
+                    {% for laborer in session["new_covenant"].covenfolken.get_covenfolk_of_classification("laborer") %}
                         <div>
-                            <input class="laborer_name covenfolk_input" value={{laborer.name}} name="laborer_name" type="text" required>
+                            <input class="laborer_name covenfolk_input" value="{{laborer.name}}" name="laborer_name" type="text" required>
                             <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
                         </div>
                     {% endfor %}
@@ -161,9 +170,9 @@
                 <hr>
                 Servants:<a href="javascript:void(0);" class="add_servant add_covenfolk" title="Add servant"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
                 <div class="covenfolken_servant_wrapper">
-                    {% for servant in session["new_covenant"].covenfolk.get_covenfolk_of_classification("servant") %}
+                    {% for servant in session["new_covenant"].covenfolken.get_covenfolk_of_classification("servant") %}
                         <div>
-                            <input class="servant_name covenfolk_input" value={{servant.name}} name="servant_name" type="text" required>
+                            <input class="servant_name covenfolk_input" value="{{servant.name}}" name="servant_name" type="text" required>
                             <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
                         </div>
                     {% endfor %}
@@ -172,9 +181,9 @@
                 <hr>
                 Teamsters:<a href="javascript:void(0);" class="add_teamster add_covenfolk" title="Add teamster"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
                 <div class="covenfolken_teamster_wrapper">
-                    {% for teamster in session["new_covenant"].covenfolk.get_covenfolk_of_classification("teamster") %}
+                    {% for teamster in session["new_covenant"].covenfolken.get_covenfolk_of_classification("teamster") %}
                         <div>
-                            <input class="teamster_name covenfolk_input" value={{teamster.name}} name="teamster_name" type="text" required>
+                            <input class="teamster_name covenfolk_input" value="{{teamster.name}}" name="teamster_name" type="text" required>
                             <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
                         </div>
                     {% endfor %}
@@ -183,9 +192,9 @@
                 <hr>
                 Large Livestock:<a href="javascript:void(0);" class="add_animal add_covenfolk" title="Add animals"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
                 <div class="covenfolken_animal_wrapper">
-                    {% for animal in session["new_covenant"].covenfolk.get_covenfolk_of_classification("horse") %}
+                    {% for animal in session["new_covenant"].covenfolken.get_covenfolk_of_classification("horse") %}
                         <div>
-                            <input class="animal_name covenfolk_input" value={{animal.name}} name="animal_name" type="text" required>
+                            <input class="animal_name covenfolk_input" value="{{animal.name}}" name="animal_name" type="text" required>
                             <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
                         </div>
                     {% endfor %}
@@ -260,7 +269,7 @@
                     <input class="covenfolk_input" placeholder="Profession" name="crafter_profession" type="text" required>
                     <select class="covenfolk_input" name="crafter_saving_category">
                         {% for saving_category in saving_categories %}
-                            <option value={{saving_category}}>{{saving_category}}</option>
+                            <option value="{{saving_category}}">{{saving_category}}</option>
                         {% endfor %}
                     </select>
                     <input class="covenfolk_input" placeholder="Skill Level" name="crafter_skill" type="number" required>
@@ -294,7 +303,7 @@
                     <input class="covenfolk_input" placeholder="Profession" name="specialist_profession" type="text" required>
                     <select class="covenfolk_input" name="specialist_saving_category">
                         {% for saving_category in saving_categories %}
-                            <option value={{saving_cateogry}}>{{saving_category}}</option>
+                            <option value="{{saving_category}}">{{saving_category}}</option>
                         {% endfor %}
                     </select>
                     <input class="covenfolk_input" placeholder="Skill Level" name="specialist_skill" type="number" required>

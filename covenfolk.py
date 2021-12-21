@@ -111,27 +111,31 @@ class Covenfolken:
     def remove_covenfolk(self, name):
         self.covenfolk.pop(name)
 
-    def display_covenfolk(self):
-        for covenfolk in self.covenfolk.values():
-            print(f"{covenfolk.name}: {covenfolk.classification}")
+    def display_covenfolk(self, name=None):
+        if name:
+            covenfolk = self.covenfolk[name]
+            print(f"{covenfolk.name} {covenfolk.classification}")
             if covenfolk.saving_category:
                 print(f"""Savings Category: {covenfolk.saving_category}
-{covenfolk.profession}: {covenfolk.skill}""")
+{covenfolk.profession}: {covenfolk.skill}
+Rarity: {covenfolk.rarity}""")
             print("")
+
+        else:
+            for covenfolk in self.covenfolk.values():
+                print(f"{covenfolk.name}: {covenfolk.classification}")
+                if covenfolk.saving_category:
+                    print(f"""Savings Category: {covenfolk.saving_category}
+{covenfolk.profession}: {covenfolk.skill}""")
+                print("")
 
     def list(self):
 
         print(list(self.covenfolk.keys()))
 
     def get_covenfolk_of_classification(self, classification):
-        matches = [covenfolk for covenfolk in self.covenfolk if covenfolk.classification == classification]
+        matches = [covenfolk for _, covenfolk in self.covenfolk.items() if covenfolk.classification == classification]
         return matches
-        #for covenfolk in matches:
-        #    print(f"{covenfolk.name}: {covenfolk.classification}")
-        #    if covenfolk.saving_category:
-        #        print(f"""Savings Category: {covenfolk.saving_category}
-#{covenfolk.profession}: {covenfolk.skill}""")
-        #    print("")
 
 
 class Covenfolk:

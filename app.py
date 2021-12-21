@@ -117,16 +117,23 @@ def home():
         return render_template("home.html", username = g.username, covenants = covenants)
     else:
         return render_template("login.html")
- 
+
+
+def clean_session():
+    session["new_covenant"] = None
+    session["current_covenant"] = None
+
+
 @app.route("/authentication", methods=["POST","GET"])
 def authenticate():
     import os
     bcrypt = Bcrypt()
- 
+    clean_session()
+
     if request.method == "POST":
         username = request.form["username"]
-        password = request.form["password"]   
- 
+        password = request.form["password"]
+
         if session.get("connection") == None:
             connection = create_connection()
             cursor = create_cursor(connection)
@@ -150,10 +157,9 @@ def authenticate():
 
 @app.route("/process_new_covenant", methods=["POST"])
 def process_new_covenant():
+    # Create covenant core
     covenant = session["new_covenant"]
 
-    # Create covenant core
-    print("TEST:", covenant.name)
     covenant.name = request.form["covenant_name"]
     covenant.season = request.form["covenant_season"]
 
@@ -172,21 +178,18 @@ def process_new_covenant():
     covenant.current_year = request.form["starting_year"]
 
     # Covenfolk content
-    covenfolken = Covenfolken()
+    if not hasattr(covenant, "covenfolken"):
+        covenant.covenfolk = Covenfolken()
 
     # Armory content
-    armory = Armory()
+    if not hasattr(covenant, "armory"):
+        covenant.armory = Armory()
 
     # Laboratory content
-    labs = Laboratories()
+    if not hasattr(covenant, "laboratories"):
+        covenant.laboratories = Laboratories()
 
-    # Combo section
-    covenant.laboratories = labs
-    covenant.covenfolk = covenfolken
-    covenant.armory = armory
-    app.logger.debug("HERE 2")
     session['new_covenant'] = covenant
-    app.logger.debug(f"APP.NEW_COVENANT: {session['new_covenant']}")
     return render_template("create_covenant_landing.html")
 
 
@@ -288,24 +291,16 @@ def modify_covenfolken():
         args = request.args
         getlist = request.form.getlist("crafter_name")
         covenfolk_input = request.form.getlist("covenfolk_input")
-        #covenfolk = request.form["modify_covenant_covenfolken"]
-        app.logger.debug("SPAAAACE")
-        app.logger.debug(f"JSON: {json}")
-        app.logger.debug(f"DATA: {data}")
-        app.logger.debug(f"VALUES: {values}")
-        app.logger.debug(f"FORM: {form}")
-        app.logger.debug(f"ARGS: {args}")
-        app.logger.debug(f"COVENFOLK_INPUT: {covenfolk_input}")
-        app.logger.debug(f"GETLIST: {getlist}")
         non_crafters = ["magi", "companion", "grog", "noble", "dependant", "laborer", "servant", "teamster", "animal"]
         covenfolken = Covenfolken()
         for nc in non_crafters:
             current = f"{nc}_name"
             these_covenfolk = request.form.getlist(current)
             for covenfolk in these_covenfolk:
-                app.logger.debug(f"NAME: {covenfolk}")
-                app.logger.debug(f"TYPE: {nc}")
-                covenfolken.add_covenfolk(covenfolk, nc)
+                if nc == "animal":
+                    covenfolken.add_covenfolk(covenfolk, "horse")
+                else:
+                    covenfolken.add_covenfolk(covenfolk, nc)
 
         count = 0
         crafter_names = request.form.getlist("crafter_name")
@@ -313,9 +308,8 @@ def modify_covenfolken():
         crafter_saving_categories = request.form.getlist("crafter_saving_category")
         crafter_skills = request.form.getlist("crafter_skill")
         crafter_rarities = request.form.getlist("crafter_rarity")
-        app.logger.debug(f"CRAFTERS GET")
+
         while count < len(crafter_names):
-            app.logger.debug(f"CRAFTER TEST: {crafter_names[count]} {crafter_professions[count]} {crafter_saving_categories[count]} {crafter_skills[count]} {crafter_rarities[count]}")
             covenfolken.add_covenfolk(
                     crafter_names[count],
                     "crafter",
@@ -327,16 +321,38 @@ def modify_covenfolken():
             count+=1
 
 
+        count = 0
         specialist_names = request.form.getlist("specialist_name")
         specialist_professions = request.form.getlist("specialist_profession")
-        specialist_saving_category = request.form.getlist("specialist_saving_category")
-        specialist_skill = request.form.getlist("specialist_skill")
-        specialist_rarity = request.form.getlist("specialist_rarity")
+        specialist_saving_categories = request.form.getlist("specialist_saving_category")
+        specialist_skills = request.form.getlist("specialist_skill")
+        specialist_rarities = request.form.getlist("specialist_rarity")
 
-        app.logger.debug(f"COVENFOLKEN: {covenfolken}")
+        while count < len(specialist_names):
+            covenfolken.add_covenfolk(
+                    specialist_names[count],
+                    "specialist",
+                    specialist_professions[count],
+                    specialist_saving_categories[count],
+                    int(specialist_skills[count]),
+                    specialist_rarities[count]
+            )
+            count+=1
+
+        app.logger.debug("====================== NEW =====================")
+        app.logger.debug(f"COVENFOLKEN: {covenfolken.display_covenfolk()}")
+        app.logger.debug("====================== OLD =====================")
+        app.logger.debug(f"OLD COVENFOLKEN: {covenant.covenfolken.display_covenfolk()}")
+        app.logger.debug("====================== END =====================")
+
+        covenant.covenfolken = covenfolken
 
         if new:
+            session["new_covenant"] = covenant
             return render_template("create_covenant_landing.html")
+        else:
+            session["current_covenant"] = covenant
+            #return render_template(TBD)
 
     #if request.method == "POST":
     #    name = request.form["name"]

@@ -14,8 +14,16 @@
             Covenfolken:
             <a href="{{url_for('modify_covenfolken')}}">
                 <button>Edit Covenfolken</button>
-            </a><br>
-            blasdkjflasd<br><br>
+            </a><br><br>
+            {% for name,object in session["new_covenant"].covenfolken.covenfolk.items() %}
+                <div>{{name}} -- {{object.rarity}} {{object.classification}}
+                    {% if object.classification == "crafter" or object.classification == "specialist" %}
+                        -- Level {{object.skill}} {{object.profession}}<br>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            <br><br>
+
 
             Armory:
             <a href="{{url_for('modify_armory')}}">
