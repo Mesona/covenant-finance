@@ -1,6 +1,15 @@
 #!/usr/bin/env python3
 
 
+SAVING_CATEGORIES = [
+        "buildings",
+        "consumables",
+        "laboratories",
+        "provisions",
+        "weapons and armor",
+        "writing",
+]
+
 def validate_classification(classification):
     classifications = [
             "magi",
@@ -25,14 +34,7 @@ Please choose between these options: {classifications}
     return classification
 
 def validate_saving_category(category):
-    categories = [
-            "buildings",
-            "consumables",
-            "laboratories",
-            "provisions",
-            "weapons and armor",
-            "writing",
-    ]
+    categories = SAVING_CATEGORIES
 
     if category and category not in categories:
         raise ValueError(f"""

@@ -9,7 +9,7 @@ from database_password import PASSWORD, SECRET_KEY
 import psycopg2
 from covenant import Covenant
 from laboratory import Laboratories
-from covenfolk import Covenfolken
+from covenfolk import Covenfolken, SAVING_CATEGORIES
 from armory import Armory
 import logging
 
@@ -271,7 +271,7 @@ def modify_laboratories():
 @app.route("/modify_covenfolken", methods = ["POST", "GET"])
 def modify_covenfolken():
     if request.method == "GET":
-        return render_template("modify_covenfolken.html")
+        return render_template("modify_covenfolken.html", saving_categories=SAVING_CATEGORIES)
 
     if request.method == "POST":
         if session.get("new_covenant"):
@@ -313,7 +313,9 @@ def modify_covenfolken():
         crafter_saving_categories = request.form.getlist("crafter_saving_category")
         crafter_skills = request.form.getlist("crafter_skill")
         crafter_rarities = request.form.getlist("crafter_rarity")
+        app.logger.debug(f"CRAFTERS GET")
         while count < len(crafter_names):
+            app.logger.debug(f"CRAFTER TEST: {crafter_names[count]} {crafter_professions[count]} {crafter_saving_categories[count]} {crafter_skills[count]} {crafter_rarities[count]}")
             covenfolken.add_covenfolk(
                     crafter_names[count],
                     "crafter",
