@@ -1,0 +1,7 @@
+[pytest]
+testpaths = 
+  tests
+
+python_files = *_tests.py
+python_functions = it_*
+python_classes = Describe*

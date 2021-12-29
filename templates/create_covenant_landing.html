@@ -1,0 +1,47 @@
+<html>
+    <body>
+        <div class="main">
+            COVENANT OVERVIEW<button class="submit" type="submit"><a href="{{url_for('create_covenant')}}">Edit Attributes</a></button><br>
+            Name: {{session["new_covenant"].name}}<br>
+            Season: {{session["new_covenant"].season}}<br>
+            Income Sources: {{session["new_covenant"].income_sources}}<br>
+            Tithes: {{session["new_covenant"].tithes}}<br>
+            Current Treasury: {{session["new_covenant"].treasury}}<br>
+            Inflation Enabled? {{session["new_covenant"].inflation_enabled}}<br>
+            Current Inflation Amount: {{session["new_covenant"].inflation}}<br>
+            Starting Year: {{session["new_covenant"].current_year}}<br><br>
+
+            Covenfolken:
+            <a href="{{url_for('modify_covenfolken')}}">
+                <button>Edit Covenfolken</button>
+            </a><br><br>
+            {% for name,object in session["new_covenant"].covenfolken.covenfolk.items() %}
+                {% if object.classification == "horse" %}
+                    <div>{{name}}</div>
+                {% else %}
+                    <div>{{name}} -- {{object.rarity}} {{object.classification}}
+                        {% if object.classification == "crafter" or object.classification == "specialist" %}
+                            -- Level {{object.skill}} {{object.profession}}<br>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+            <br><br>
+
+
+            Armory:
+            <a href="{{url_for('modify_armory')}}">
+                <button>Edit Armory</button>
+            </a>
+            <br>
+            blahlbsaldk<br><br>
+
+            Laboratories:
+            <a href="{{url_for('modify_laboratories')}}">
+                <button>Edit Laboratories</button>
+            </a>
+            <br>
+            blablabh<br><br>
+        </div>
+    </body>
+</html>

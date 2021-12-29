@@ -1,0 +1,92 @@
+<html>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    </head>
+		<style>
+				.input-wrapper div {
+						margin-bottom: 10px;
+				}
+				.remove_input {
+						margin-top: 10px;
+						margin-left: 15px;
+						vertical-align: text-bottom;
+				}
+				.add_lab {
+						margin-top: 1000px;
+						margin-left: 10px;
+						vertical-align: text-bottom;
+				}
+		</style>
+    <body>
+        <div class="main">
+            <form class="modify_covenant_laboratories" action="{{url_for('modify_laboratories')}}" method="POST">
+                Laboratories:<a href="javascript:void(0);" class="add_lab add_laboratory" title="Add lab"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
+                <div class="laboratory_wrapper">
+                    {% for name, laboratory in session["new_covenant"].laboratories.labs.items() %}
+                        <div>
+                            <hr>
+                            Lab Name: <input class="laboratory_input" value={{name}} name="laboratory_name" type="text" required>
+                            <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
+                            Lab Owner: <input class="laboratory_input" value={{laboratory.owner}} name="laboratory_owner" type="text" required><br>
+                            Lab Usage: <select name="usage">
+                                <option value="light">Light</option>
+                                <option value="typical">Typical</option>
+                                <option value="heavy">Heavy</option>
+                            </select><br>
+                            Lab Size: <input class="laboratory_input" value={{laboratory.size}} name="laboratory_size" type="number" required><br>
+                            Lab Unused Virtue Points: <input class="laboratory_input" value={{laboratory.virtue_points}} name="laboratory_virtue_points" type="number" required><br>
+                            Lab Unusued Flaw Points: <input class="laboratory_input" value={{laboratory.flaw_points}} name="laboratory_flaw_points" type="number" required><br>
+                            Lab Minor Fortifications: <input class="laboratory_input" value={{laboratory.minor_fortifications}} name="laboratory_minor_fortifications" type="number" required><br>
+                            Lab Major Fortifications: <input class="laboratory_input" value={{laboratory.major_fortifications}} name="laboratory_major_fortifications" type="number" required><br>
+                            Extra Lab Upkeep: <input class="laboratory_input" value={{laboratory.extra_upkeep}} name="laboratory_extra_upkeep" type="number" required><br>
+                        </div>
+                    {% endfor %}
+                </div><br>
+
+                <button class="submit" type="submit">Proceed</button>
+            </form>
+        </div>
+    <script>
+        $(document).ready(function(){
+            
+           var max_input_fields = 100;
+
+           var add_laboratory = $('.add_laboratory');
+           var laboratory_wrapper = $('.laboratory_wrapper');
+           var new_laboratory = `
+               <div>
+                   <hr>
+                   Lab Name: <input class="laboratory_input"  name="laboratory_name" type="text" required>
+                   <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
+                   Lab Owner: <input class="laboratory_input" placeholder="Lab Owner" name="laboratory_owner" type="text" required><br>
+                   Lab Usage: <select name="usage">
+                       <option value="light">Light</option>
+                       <option value="typical">Typical</option>
+                       <option value="heavy">Heavy</option>
+                   </select><br>
+                   Lab Size: <input class="laboratory_input" placeholder="Lab Size" name="laboratory_size" type="number" required><br>
+                   Lab Unused Virtue Points: <input class="laboratory_input" placeholder="Virtue Points" name="laboratory_virtue_points" type="number" required><br>
+                   Lab Unused Flaw Points: <input class="laboratory_input" placeholder="Flaw Points" name="laboratory_flaw_points" type="number" required><br>
+                   Lab Minor Fortifications: <input class="laboratory_input" placeholder="Minor Fortifications" name="laboratory_minor_fortifications" type="number" required><br>
+                   Lab Major Fortifications: <input class="laboratory_input" placeholder="Major Fortifications" name="laboratory_major_fortifications" type="number" required><br>
+                   Extra Lab Upkeep: <input class="laboratory_input" placeholder="Extra Upkeep" name="laboratory_extra_upkeep" type="number" required><br>
+               </div>`
+            var new_laboratory_input = 1;
+            var add_laboratory_count = 1
+
+            $(add_laboratory).click(function(){
+                if(add_laboratory_count < max_input_fields){
+                    add_laboratory_count++; 
+                    $(laboratory_wrapper).append(new_laboratory); 
+                }
+            });
+            $(laboratory_wrapper).on('click', '.remove_input', function(e){
+                e.preventDefault();
+                $(this).parent('div').remove();
+                add_laboratory_count--;
+            });
+
+        });
+    </script>
+    </body>
+</html>
