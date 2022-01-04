@@ -91,7 +91,7 @@
                     {% for light_siege in session["new_covenant"].armory.select_equipment_type("light_siege") %}
                         <div>
                             <input class="armory_input" value={{light_siege.name}} name="light_siege_name" type="text" required>
-                            <select name="light_siege_quality">
+                            <select class="light_siege_quality" name="light_siege_quality">
                                 <option value="inexpensive">Inexpensive</option>
                                 <option value="standard">Standard</option>
                                 <option value="expensive">Expensive</option>
@@ -106,7 +106,7 @@
                     {% for heavy_siege in session["new_covenant"].armory.select_equipment_type("heavy_siege") %}
                         <div>
                             <input class="armory_input" value={{heavy_siege.name}} name="heavy_siege_name" type="text" required>
-                            <select name="heavy_siege_quality">
+                            <select class="heavy_siege_quality" name="heavy_siege_quality">
                                 <option value="inexpensive">Inexpensive</option>
                                 <option value="standard">Standard</option>
                                 <option value="expensive">Expensive</option>
@@ -254,7 +254,7 @@
             var new_heavy_siege = `
                 <div>
                     <input class="armory_input heavy_siege_name" placeholder="Siege Name" name="heavy_siege_name" type="text" required>
-                    <select class_name="heavy_siege_quality" name="heavy_siege_quality">
+                    <select class="heavy_siege_quality" name="heavy_siege_quality">
                         <option value="inexpensive">Inexpensive</option>
                         <option value="standard">Standard</option>
                         <option value="expensive">Expensive</option>
@@ -311,6 +311,7 @@
                 var quick_add_type = document.getElementById('armory_quick_add_type').value;
                 var quick_add_name = document.getElementById('armory_quick_add_name').value;
                 var quick_add_quality = document.getElementById('armory_quick_add_quality').value;
+                console.log("QAQ:", quick_add_quality)
                 var total = 0
                 let name_elements = []
                 if (quick_add_type === "Weapons") {
@@ -320,11 +321,9 @@
                             $(weapon_wrapper).append(new_weapon); 
                             name_field = [...document.querySelectorAll(".weapon_name")].pop();
                             name_field.value = quick_add_name;
-                            quality_field_list = [...document.querySelectorAll(".weapon_quality")];
-                            let test2 = quality_field_list[quality_field_list.length - 1];
-                            console.log("TEST2:", test2)
-                            console.log("TEST3:", quick_add_quality)
-                            test2.value = quick_add_quality.toLowerCase()
+                            let quality_field_list = [...document.querySelectorAll(".weapon_quality")];
+                            let quality_field = quality_field_list[quality_field_list.length - 1];
+                            quality_field.value = quick_add_quality.toLowerCase()
                             add_weapon_count++;
                         }
                     }
@@ -335,8 +334,10 @@
                             $(partial_wrapper).append(new_partial); 
                             name_field = [...document.querySelectorAll(".partial_name")].pop()
                             name_field.value = quick_add_name
-                            quality_field_list = [...document.querySelectorAll(".partial_quality")]
-                            let test2 = quality_field_list[quality_field_list.length - 1]
+                            let quality_field_list = [...document.querySelectorAll(".partial_quality")]
+                            console.log("QFL:", quality_field_list)
+                            let quality_field = quality_field_list[quality_field_list.length - 1]
+                            quality_field.value = quick_add_quality.toLowerCase()
                             add_partial_count++;
                         }
                     }
@@ -347,8 +348,9 @@
                             $(full_wrapper).append(new_full); 
                             name_field = [...document.querySelectorAll(".full_name")].pop()
                             name_field.value = quick_add_name
-                            quality_field_list = [...document.querySelectorAll(".full_quality")]
-                            let test2 = quality_field_list[quality_field_list.length - 1]
+                            let quality_field_list = [...document.querySelectorAll(".full_quality")]
+                            let quality_field = quality_field_list[quality_field_list.length - 1]
+                            quality_field.value = quick_add_quality.toLowerCase()
                             add_full_count++;
                         }
                     }
@@ -359,8 +361,10 @@
                             $(light_siege_wrapper).append(new_light_siege); 
                             name_field = [...document.querySelectorAll(".light_siege_name")].pop()
                             name_field.value = quick_add_name
-                            quality_field_list = [...document.querySelectorAll(".light_siege_quality")]
-                            let test2 = quality_field_list[quality_field_list.length - 1]
+                            let quality_field_list = [...document.querySelectorAll(".light_siege_quality")]
+                            console.log("QFL:", quality_field_list)
+                            let quality_field = quality_field_list[quality_field_list.length - 1]
+                            quality_field.value = quick_add_quality.toLowerCase()
                             add_light_siege_count++;
                         }
                     }
@@ -371,8 +375,10 @@
                             $(heavy_siege_wrapper).append(new_heavy_siege); 
                             name_field = [...document.querySelectorAll(".heavy_siege_name")].pop()
                             name_field.value = quick_add_name
-                            quality_field_list = [...document.querySelectorAll(".heavy_siege_quality")]
-                            let test2 = quality_field_list[quality_field_list.length - 1]
+                            let quality_field_list = [...document.querySelectorAll(".heavy_siege_quality")]
+                            console.log("QFL:", quality_field_list)
+                            let quality_field = quality_field_list[quality_field_list.length - 1]
+                            quality_field.value = quick_add_quality.toLowerCase()
                             add_heavy_siege_count++;
                         }
                     }
