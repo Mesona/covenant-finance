@@ -69,6 +69,14 @@ class Armory:
         self.light_siege = defaultdict(dict)
         self.heavy_siege = defaultdict(dict)
         self.magic = []
+        self.equipment = {
+                "weapons": self.weapons,
+                "partial": self.partial,
+                "full": self.full,
+                "light_siege": self.light_siege,
+                "heavy_siege": self.heavy_siege,
+                "magic": self.magic,
+        }
 
     def calculate_all_savings(self) -> dict:
         """Generates a dictionary of all the covenant savings this armory provides."""

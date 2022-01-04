@@ -318,10 +318,13 @@
                     if (total <= max_input_fields) {
                         while (add_weapon_count < total) {
                             $(weapon_wrapper).append(new_weapon); 
-                            name_field = [...document.querySelectorAll(".weapon_name")].pop()
-                            name_field.value = quick_add_name
-                            quality_field_list = [...document.querySelectorAll(".weapon_quality")]
-                            let test2 = quality_field_list[quality_field_list.length - 1]
+                            name_field = [...document.querySelectorAll(".weapon_name")].pop();
+                            name_field.value = quick_add_name;
+                            quality_field_list = [...document.querySelectorAll(".weapon_quality")];
+                            let test2 = quality_field_list[quality_field_list.length - 1];
+                            console.log("TEST2:", test2)
+                            console.log("TEST3:", quick_add_quality)
+                            test2.value = quick_add_quality.toLowerCase()
                             add_weapon_count++;
                         }
                     }

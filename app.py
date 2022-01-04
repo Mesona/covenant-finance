@@ -339,12 +339,6 @@ def modify_covenfolken():
             )
             count+=1
 
-        app.logger.debug("====================== NEW =====================")
-        app.logger.debug(f"COVENFOLKEN: {covenfolken.display_covenfolk()}")
-        app.logger.debug("====================== OLD =====================")
-        app.logger.debug(f"OLD COVENFOLKEN: {covenant.covenfolken.display_covenfolk()}")
-        app.logger.debug("====================== END =====================")
-
         covenant.covenfolken = covenfolken
 
         if new:
@@ -373,15 +367,60 @@ def modify_armory():
         return render_template("modify_armory.html")
 
     if request.method == "POST":
-        name = request.form["name"]
-        equipment_type = request.form["equipment_type"]
-        quality = request.form["quality"]
-        saving_category = request.form["saving_category"]
-        saving_value = request.form["saving_value"]
-        description = request.form["description"]
+        if session.get("new_covenant"):
+            new = True
+            covenant = session["new_covenant"]
+        else:
+            new = False
+            covenant = session["current_covenant"]
 
-        app.new_covenant.armory.add_equipment(name, equipment_type,
-                quality, saving_category, saving_value, description)
+        armory = Armory()
+
+        equipment_types = ["weapon", "partial", "full", "light_siege", "heavy_siege", "magic"]
+        for equipment_type in equipment_types:
+            name = f"{equipment_type}_name"
+            quality = f"{equipment_type}_quality"
+
+            equipment_name = request.form.getlist(name)
+            equipment_quality = request.form.getlist(quality)
+
+            equipment = 0
+            while equipment < len(equipment_name):
+                armory.add_equipment(
+                        equipment_name[equipment],
+                        equipment_type,
+                        equipment_quality[equipment],
+                )
+
+                equipment += 1
+
+        magic = request.form.getlist("magic_name")
+        magic_saving_category = request.form.getlist("magic_saving_category")
+        magic_saving_value = request.form.getlist("magic_saving_value")
+        magic_description = request.form.getlist("magic_description")
+
+        equipment = 0
+        while equipment < len(magic):
+            armory.add_equipment(
+                    magic[equipment],
+                    "magic",
+                    "magic",
+                    magic_saving_category[equipment],
+                    magic_saving_value[equipment],
+                    magic_description[equipment],
+            )
+
+            equipment += 1
+
+
+        covenant.armory = armory
+        print("TEST:", armory)
+
+        if new:
+            session["new_covenant"] = covenant
+            return render_template("create_covenant_landing.html")
+        else:
+            session["current_covenant"] = covenant
 
         return render_template("create_covenant_landing.html")
 

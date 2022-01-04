@@ -32,9 +32,26 @@
             Armory:
             <a href="{{url_for('modify_armory')}}">
                 <button>Edit Armory</button>
-            </a>
-            <br>
-            blahlbsaldk<br><br>
+            </a><br><br>
+            {% for name,equipment in session["new_covenant"].armory.equipment.items() %}
+                {% if equipment %}
+                    {% if name == "magic" %}
+                        <div>
+                            {{name}}
+                            {{equipment}}
+                        </div>
+                    {% else %}
+                        <div>
+                            {{name}}:<br>
+                            {% for key, val in equipment.items() %}
+                                {{key}}: {{val}}<br>
+                            {% endfor %}
+                           
+                        </div>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+            <br><br>
 
             Laboratories:
             <a href="{{url_for('modify_laboratories')}}">
