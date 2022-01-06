@@ -37,8 +37,12 @@
                 {% if equipment %}
                     {% if name == "magic" %}
                         <div>
-                            {{name}}
-                            {{equipment}}
+                            {{name}}:<br>
+                            {% for equip in equipment %}
+                                {{equip["name"]}}:<br>
+                                * Savings: {{equip["saving_category"]}} {{equip["saving_value"]}}<br>
+                                * {{equip["description"]}}<br><br>
+                            {% endfor %}
                         </div>
                     {% else %}
                         <div>

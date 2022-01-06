@@ -396,7 +396,6 @@ def modify_armory():
 
         magic = request.form.getlist("magic_name")
         magic_saving_category = request.form.getlist("magic_saving_category")
-        print("MSC:", magic_saving_category)
         magic_saving_value = request.form.getlist("magic_saving_value")
         magic_description = request.form.getlist("magic_description")
 
