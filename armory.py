@@ -121,14 +121,16 @@ class Armory:
         """Returns a list of dictionaries, one per item, for use with front end displays."""
         equipment_target = self.select_equipment_type(equipment_type)
         equipment = []
-
-        for equip, data in equipment_target.items():
-            for quality, quantity in data.items():
-                for _ in range(quantity):
-                    equipment.append({
-                        "name": equip,
-                        "quality": quality
-                    })
+        if equipment_type == "magic":
+            return equipment_target
+        else:
+            for equip, data in equipment_target.items():
+                for quality, quantity in data.items():
+                    for _ in range(quantity):
+                        equipment.append({
+                            "name": equip,
+                            "quality": quality
+                        })
 
         return equipment
 

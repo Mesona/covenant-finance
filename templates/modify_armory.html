@@ -168,12 +168,20 @@
 
                 Magic Equipment:<a href="javascript:void(0);" class="add_equipment add_magic" title="Add magic"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
                 <div class="magic_wrapper">
-                    {% for magic in session["new_covenant"].armory.select_equipment_type("magic") %}
+                    {% for equip in session["new_covenant"].armory.list_equipment_type("magic") %}
                         <div>
-                            <input class="armory_input" value={{magic.name}} name="magic_name" type="text" required>
-                            <input class="armory_input" value={{magic.saving_category}} name="magic_saving_category" type="text" required>
-                            <input class="armory_input" value={{magic.saving_value}} name="magic_saving_value" type="text" required>
-                            <input class="armory_input" value={{magic.description}} name="magic_description" type="text" required>
+                            <input class="armory_input" value={{equip["name"]}} name="magic_name" type="text" required>
+                            <select class="armory_input" name="magic_saving_category">
+                                {% for saving_category in saving_categories %}
+                                    {% if saving_category == equip["saving_category"] %}
+                                        <option value="{{saving_category}}" selected="selected">{{saving_category}}</option>
+                                    {% else %}
+                                        <option value="{{saving_category}}">{{saving_category}}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                            <input class="armory_input" value={{equip["saving_value"]}} name="magic_saving_value" type="text" required>
+                            <input class="armory_input" value={{equip["description"]}} name="magic_description" type="text" required>
                             <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
                         </div>
                     {% endfor %}
@@ -332,7 +340,11 @@
             var new_magic = `
                 <div>
                     <input class="armory_input" placeholder="Magic Item Name" name="magic_name" type="text" required>
-                    <input class="armory_input" placeholder="Magic Item Saving Category" name="magic_saving_category" type="text" required>
+                    <select class="armory_input" name="magic_saving_category">
+                        {% for saving_category in saving_categories %}
+                            <option value="{{saving_category}}">{{saving_category}}</option>
+                        {% endfor %}
+                    </select>
                     <input class="armory_input" placeholder="Magic Item Saving Value" name="magic_saving_value" type="text" required>
                     <input class="armory_input" placeholder="Magic Item Description" name="magic_description" type="text" required>
                     <a href="javascript:void(0);" class="remove_input" title="Remove input">

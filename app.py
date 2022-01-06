@@ -364,7 +364,7 @@ def modify_covenfolken():
 @app.route("/modify_armory", methods = ["POST", "GET"])
 def modify_armory():
     if request.method == "GET":
-        return render_template("modify_armory.html")
+        return render_template("modify_armory.html", saving_categories=SAVING_CATEGORIES)
 
     if request.method == "POST":
         if session.get("new_covenant"):
@@ -376,7 +376,7 @@ def modify_armory():
 
         armory = Armory()
 
-        equipment_types = ["weapon", "partial", "full", "light_siege", "heavy_siege", "magic"]
+        equipment_types = ["weapon", "partial", "full", "light_siege", "heavy_siege"]
         for equipment_type in equipment_types:
             name = f"{equipment_type}_name"
             quality = f"{equipment_type}_quality"
@@ -396,6 +396,7 @@ def modify_armory():
 
         magic = request.form.getlist("magic_name")
         magic_saving_category = request.form.getlist("magic_saving_category")
+        print("MSC:", magic_saving_category)
         magic_saving_value = request.form.getlist("magic_saving_value")
         magic_description = request.form.getlist("magic_description")
 
