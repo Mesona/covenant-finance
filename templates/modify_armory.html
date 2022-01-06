@@ -43,13 +43,23 @@
             <form class="modify_covenant_armory" action="{{url_for('modify_armory')}}" method="POST">
                 Weapons:<a href="javascript:void(0);" class="add_equipment add_weapon" title="Add weapon"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
                 <div class="weapon_wrapper">
-                    {% for weapon in session["new_covenant"].armory.select_equipment_type("weapon") %}
+                    {% for equip in session["new_covenant"].armory.list_equipment_type("weapon") %}
                         <div>
-                            <input class="armory_input weapon_name" value={{weapon.name}} name="weapon_name" type="text" required>
+                            <input class="armory_input weapon_name" value={{equip["name"]}} name="weapon_name" type="text" required>
                             <select name="weapon_quality">
-                                <option value="inexpensive">Inexpensive</option>
-                                <option value="standard">Standard</option>
-                                <option value="expensive">Expensive</option>
+                                {% if equip["quality"] == "inexpensive" %}
+                                    <option value="inexpensive" selected="selected">Inexpensive</option>
+                                    <option value="standard">Standard</option>
+                                    <option value="expensive">Expensive</option>
+                                {% elif equip["quality"] == "standard" %}
+                                    <option value="inexpensive">Inexpensive</option>
+                                    <option value="standard" selected="selected">Standard</option>
+                                    <option value="expensive">Expensive</option>
+                                {% else %}
+                                    <option value="inexpensive">Inexpensive</option>
+                                    <option value="standard">Standard</option>
+                                    <option value="expensive" selected="selected">Expensive</option>
+                                {% endif %}
                             </select>
                             <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
                         </div>
@@ -58,13 +68,23 @@
 
                 Partial Armors:<a href="javascript:void(0);" class="add_equipment add_partial" title="Add partial"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
                 <div class="partial_wrapper">
-                    {% for partial in session["new_covenant"].armory.select_equipment_type("partial") %}
+                    {% for equip in session["new_covenant"].armory.list_equipment_type("partial") %}
                         <div>
-                            <input class="armory_input" value={{partial.name}} name="partial_name" type="text" required>
-                            <select class="partial_quality" name="partial_quality">
-                                <option value="inexpensive">Inexpensive</option>
-                                <option value="standard">Standard</option>
-                                <option value="expensive">Expensive</option>
+                            <input class="armory_input" value={{equip["name"]}} name="partial_name" type="text" required>
+                            <select name="partial_quality">
+                                {% if equip["quality"] == "inexpensive" %}
+                                    <option value="inexpensive" selected="selected">Inexpensive</option>
+                                    <option value="standard">Standard</option>
+                                    <option value="expensive">Expensive</option>
+                                {% elif equip["quality"] == "standard" %}
+                                    <option value="inexpensive">Inexpensive</option>
+                                    <option value="standard" selected="selected">Standard</option>
+                                    <option value="expensive">Expensive</option>
+                                {% else %}
+                                    <option value="inexpensive">Inexpensive</option>
+                                    <option value="standard">Standard</option>
+                                    <option value="expensive" selected="selected">Expensive</option>
+                                {% endif %}
                             </select>
                             <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
                         </div>
@@ -73,13 +93,23 @@
 
                 Full Armor:<a href="javascript:void(0);" class="add_equipment add_full" title="Add full"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
                 <div class="full_wrapper">
-                    {% for full in session["new_covenant"].armory.select_equipment_type("full") %}
+                    {% for equip in session["new_covenant"].armory.list_equipment_type("full") %}
                         <div>
-                            <input class="armory_input" value={{full.name}} name="full_name" type="text" required>
+                            <input class="armory_input" value={{equip["name"]}} name="full_name" type="text" required>
                             <select name="full_quality">
-                                <option value="inexpensive">Inexpensive</option>
-                                <option value="standard">Standard</option>
-                                <option value="expensive">Expensive</option>
+                                {% if equip["quality"] == "inexpensive" %}
+                                    <option value="inexpensive" selected="selected">Inexpensive</option>
+                                    <option value="standard">Standard</option>
+                                    <option value="expensive">Expensive</option>
+                                {% elif equip["quality"] == "standard" %}
+                                    <option value="inexpensive">Inexpensive</option>
+                                    <option value="standard" selected="selected">Standard</option>
+                                    <option value="expensive">Expensive</option>
+                                {% else %}
+                                    <option value="inexpensive">Inexpensive</option>
+                                    <option value="standard">Standard</option>
+                                    <option value="expensive" selected="selected">Expensive</option>
+                                {% endif %}
                             </select>
                             <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
                         </div>
@@ -88,13 +118,23 @@
 
                 Light Siege:<a href="javascript:void(0);" class="add_equipment add_light_siege" title="Add light_siege"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
                 <div class="light_siege_wrapper">
-                    {% for light_siege in session["new_covenant"].armory.select_equipment_type("light_siege") %}
+                    {% for equip in session["new_covenant"].armory.list_equipment_type("light_siege") %}
                         <div>
-                            <input class="armory_input" value={{light_siege.name}} name="light_siege_name" type="text" required>
+                            <input class="armory_input" value={{equip["name"]}} name="light_siege_name" type="text" required>
                             <select class="light_siege_quality" name="light_siege_quality">
-                                <option value="inexpensive">Inexpensive</option>
-                                <option value="standard">Standard</option>
-                                <option value="expensive">Expensive</option>
+                                {% if equip["quality"] == "inexpensive" %}
+                                    <option value="inexpensive" selected="selected">Inexpensive</option>
+                                    <option value="standard">Standard</option>
+                                    <option value="expensive">Expensive</option>
+                                {% elif equip["quality"] == "standard" %}
+                                    <option value="inexpensive">Inexpensive</option>
+                                    <option value="standard" selected="selected">Standard</option>
+                                    <option value="expensive">Expensive</option>
+                                {% else %}
+                                    <option value="inexpensive">Inexpensive</option>
+                                    <option value="standard">Standard</option>
+                                    <option value="expensive" selected="selected">Expensive</option>
+                                {% endif %}
                             </select>
                             <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
                         </div>
@@ -103,13 +143,23 @@
 
                 Heavy Siege:<a href="javascript:void(0);" class="add_equipment add_heavy_siege" title="Add heavy_siege"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
                 <div class="heavy_siege_wrapper">
-                    {% for heavy_siege in session["new_covenant"].armory.select_equipment_type("heavy_siege") %}
+                    {% for equip in session["new_covenant"].armory.list_equipment_type("heavy_siege") %}
                         <div>
-                            <input class="armory_input" value={{heavy_siege.name}} name="heavy_siege_name" type="text" required>
+                            <input class="armory_input" value={{equip["name"]}} name="heavy_siege_name" type="text" required>
                             <select class="heavy_siege_quality" name="heavy_siege_quality">
-                                <option value="inexpensive">Inexpensive</option>
-                                <option value="standard">Standard</option>
-                                <option value="expensive">Expensive</option>
+                                {% if equip["quality"] == "inexpensive" %}
+                                    <option value="inexpensive" selected="selected">Inexpensive</option>
+                                    <option value="standard">Standard</option>
+                                    <option value="expensive">Expensive</option>
+                                {% elif equip["quality"] == "standard" %}
+                                    <option value="inexpensive">Inexpensive</option>
+                                    <option value="standard" selected="selected">Standard</option>
+                                    <option value="expensive">Expensive</option>
+                                {% else %}
+                                    <option value="inexpensive">Inexpensive</option>
+                                    <option value="standard">Standard</option>
+                                    <option value="expensive" selected="selected">Expensive</option>
+                                {% endif %}
                             </select>
                             <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
                         </div>

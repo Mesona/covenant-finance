@@ -116,6 +116,22 @@ class Armory:
         else:
             raise ValueError(f"Invalid equipment type of {equipment_type}!")
 
+    # TODO: Add test for me
+    def list_equipment_type(self, equipment_type: str) -> list:
+        """Returns a list of dictionaries, one per item, for use with front end displays."""
+        equipment_target = self.select_equipment_type(equipment_type)
+        equipment = []
+
+        for equip, data in equipment_target.items():
+            for quality, quantity in data.items():
+                for _ in range(quantity):
+                    equipment.append({
+                        "name": equip,
+                        "quality": quality
+                    })
+
+        return equipment
+
     def add_equipment(
             self,
             name: str,

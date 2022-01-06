@@ -388,7 +388,7 @@ def modify_armory():
             while equipment < len(equipment_name):
                 armory.add_equipment(
                         equipment_name[equipment],
-                        equipment_type,
+                        equipment_type.replace("_", " "),
                         equipment_quality[equipment],
                 )
 

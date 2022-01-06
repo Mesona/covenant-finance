@@ -44,10 +44,12 @@
                         <div>
                             {{name}}:<br>
                             {% for key, val in equipment.items() %}
-                                {{key}}: {{val}}<br>
+                                {% for quality, number in val.items() %}
+                                    * {{key}}: {{number}} {{quality}}<br>
+                                {% endfor %}
                             {% endfor %}
                            
-                        </div>
+                        </div><br>
                     {% endif %}
                 {% endif %}
             {% endfor %}
