@@ -256,6 +256,15 @@ def modify_laboratories():
         return render_template("modify_laboratories.html")
 
     if request.method == "POST":
+        if session.get("new_covenant"):
+            new = True
+            covenant = session["new_covenant"]
+        else:
+            new = False
+            covenant = session["current_covenant"]
+
+        labs = Laboratories()
+
         name = request.form["covenant_name"]
         owner = request.form["laboratory_owner"]
         size = request.form["laboratory_size"]
