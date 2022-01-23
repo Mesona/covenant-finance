@@ -30,15 +30,15 @@
                             Lab Owner: <input class="laboratory_input" value={{laboratory.owner}} name="laboratory_owner" type="text" required><br>
                             Lab Usage: <select name="usage">
                                 <option value="light">Light</option>
-                                <option value="typical">Typical</option>
+                                <option value="typical" selected="selected">Typical</option>
                                 <option value="heavy">Heavy</option>
                             </select><br>
-                            Lab Size: <input class="laboratory_input" value={{laboratory.size}} name="laboratory_size" type="number" required><br>
-                            Lab Unused Virtue Points: <input class="laboratory_input" value={{laboratory.virtue_points}} name="laboratory_virtue_points" type="number" required><br>
-                            Lab Unusued Flaw Points: <input class="laboratory_input" value={{laboratory.flaw_points}} name="laboratory_flaw_points" type="number" required><br>
-                            Lab Minor Fortifications: <input class="laboratory_input" value={{laboratory.minor_fortifications}} name="laboratory_minor_fortifications" type="number" required><br>
-                            Lab Major Fortifications: <input class="laboratory_input" value={{laboratory.major_fortifications}} name="laboratory_major_fortifications" type="number" required><br>
-                            Extra Lab Upkeep: <input class="laboratory_input" value={{laboratory.extra_upkeep}} name="laboratory_extra_upkeep" type="number" required><br>
+                            Lab Size: <input class="laboratory_input" placeholder=0 value={{laboratory.size}} name="laboratory_size" type="number" required><br>
+                            Lab Unused Virtue Points: <input class="laboratory_input" placeholder=0 value={{laboratory.virtue_points}} name="laboratory_virtue_points" type="number" required><br>
+                            Lab Unusued Flaw Points: <input class="laboratory_input" placeholder=0 value={{laboratory.flaw_points}} name="laboratory_flaw_points" type="number" required><br>
+                            Lab Minor Fortifications: <input class="laboratory_input" placeholder=0 value={{laboratory.minor_fortifications}} name="laboratory_minor_fortifications" type="number" required><br>
+                            Lab Major Fortifications: <input class="laboratory_input" placeholder=0 value={{laboratory.major_fortifications}} name="laboratory_major_fortifications" type="number" required><br>
+                            Extra Lab Upkeep: <input class="laboratory_input" placeholder=0 value={{laboratory.extra_upkeep}} name="laboratory_extra_upkeep" type="number" required><br>
                         </div>
                     {% endfor %}
                 </div><br>

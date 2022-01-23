@@ -265,18 +265,37 @@ def modify_laboratories():
 
         labs = Laboratories()
 
-        name = request.form["covenant_name"]
-        owner = request.form["laboratory_owner"]
-        size = request.form["laboratory_size"]
-        virtue_points = request.form["virtue_points"]
-        flaw_points = request.form["flaw_points"]
-        extra_upkeep = request.form["extra_upkeep"]
-        usage = request.form["usage"]
-        minor_fortifications = request.form["minor_fortifications"]
-        major_fortifications = request.form["major_fortifications"]
+        names = request.form.getlist("laboratory_name")
+        owners = request.form.getlist("laboratory_owner")
+        sizes = request.form.getlist("laboratory_size")
+        virtue_points = request.form.getlist("laboratory_virtue_points")
+        flaw_points = request.form.getlist("laboratory_flaw_points")
+        extra_upkeeps = request.form.getlist("laboratory_extra_upkeep")
+        usages = request.form.getlist("usage")
+        minor_fortifications = request.form.getlist("laboratory_minor_fortifications")
+        major_fortifications = request.form.getlist("major_fortifications")
+
         # TODO: Validate name is unique and fields are all valid
-        app.new_covenant.laboratories.add_lab(name, owner, size, virtue_points, flaw_points,
-                extra_upkeep, usage, minor_fortifications, major_fortifications)
+        for i in range(len(names)):
+            name = names[i]
+            owner = owners[i]
+            size = sizes[i]
+            vp = virtue_points[i]
+            fp = flaw_points[i]
+            eu = extra_upkeeps[i]
+            usage = usages[i]
+            min_f = minor_fortifications[i]
+            maj_f = major_fortifications[i]
+            labs.add_lab(name, owner, size, vp, fp,
+                    eu, usage, min_f, maj_f)
+
+        covenant.laboratories = labs
+
+        if new:
+            session["new_covenant"] = covenant
+            return render_template("create_covenant_landing.html")
+        else:
+            session["current_covenant"] = covenant
 
         return render_template("create_covenant_landing.html")
 
