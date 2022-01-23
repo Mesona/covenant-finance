@@ -273,19 +273,19 @@ def modify_laboratories():
         extra_upkeeps = request.form.getlist("laboratory_extra_upkeep")
         usages = request.form.getlist("usage")
         minor_fortifications = request.form.getlist("laboratory_minor_fortifications")
-        major_fortifications = request.form.getlist("major_fortifications")
+        major_fortifications = request.form.getlist("laboratory_major_fortifications")
 
         # TODO: Validate name is unique and fields are all valid
         for i in range(len(names)):
             name = names[i]
             owner = owners[i]
-            size = sizes[i]
-            vp = virtue_points[i]
-            fp = flaw_points[i]
-            eu = extra_upkeeps[i]
+            size = int(sizes[i])
+            vp = int(virtue_points[i])
+            fp = int(flaw_points[i])
+            eu = int(extra_upkeeps[i])
             usage = usages[i]
-            min_f = minor_fortifications[i]
-            maj_f = major_fortifications[i]
+            min_f = int(minor_fortifications[i])
+            maj_f = int(major_fortifications[i])
             labs.add_lab(name, owner, size, vp, fp,
                     eu, usage, min_f, maj_f)
 
