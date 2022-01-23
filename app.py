@@ -7,7 +7,7 @@ from flask_bcrypt import Bcrypt
 from flask_session import Session
 from database_password import PASSWORD, SECRET_KEY
 import psycopg2
-from covenant import Covenant
+from covenant import Covenant, save_covenant
 from laboratory import Laboratories
 from covenfolk import Covenfolken, SAVING_CATEGORIES
 from armory import Armory
@@ -48,16 +48,27 @@ def initialize_database():
 
     cursor = create_cursor(connection)
 
+    login = "CREATE TABLE login (id SERIAL PRIMARY KEY, username VARCHAR(128) UNIQUE NOT NULL, email VARCHAR(128) UNIQUE, password VARCHAR(256));"
+    #covenant = "create table covenant (id serial primary key, name varchar(128), cov json, login_id serial references login(id));"
+    covenant = "CREATE TABLE covenant (id SERIAL PRIMARY KEY, name VARCHAR(128) NOT NULL, cov JSON, login_id VARCHAR(128));"
+
     try:
-        login = "create table login (id serial primary key, username varchar(128) unique = True, email varchar(128) unique = True, password varchar(256));"
-        covenant = "create table covenant (id serial primary key, name varchar(128), cov json, login_id serial references login(id));"
-        cursor.execute(login)
+        print("CREATING COVENANT TABLE!")
         cursor.execute(covenant)
-    except:
+        print("Committing COVENANT TABLE!")
+        connection.commit()
+    except psycopg2.errors.DuplicateTable:
+        print("COVENANT TABLE CREATION ERRORED!")
         pass
 
-    print("Committing!")
-    connection.commit()
+    try:
+        print("CREATING LOGIN TABLE!")
+        cursor.execute(login)
+        print("Committing LOGIN TABLE!")
+        connection.commit()
+    except psycopg2.errors.DuplicateTable:
+        print("LOGIN TABLE CREATION ERRORED!")
+        pass
 
     print("Closing!")
     close_database(connection)
@@ -70,20 +81,28 @@ def add_user_to_database(cursor, username, email, password):
     cursor.execute("INSERT INTO login (username, email, password) values (%s, %s, %s)", (username, email, password))
     print(f"User {username} added to the database!")
 
-def add_covenant_to_database(covenant):
-    #cur.execute("INSERT INTO cov (name, cov, login_id) values (%s, %s, %s)", (covenant.name, covenant, user_id))
-    pass
+def add_covenant_to_database(cursor, covenant):
+    connection = create_connection()
+    print("COVENANT:", covenant)
+    print("CURSOR:", cursor)
+    cursor.execute("INSERT INTO covenant (name, cov, login_id) values (%s, %s, %s)", (covenant.name, save_covenant(covenant), g.username))
+    connection.commit()
+    print("Covenant successfully added to database!")
 
-def update_database():
-    pass
-    #add_user_to_database()
-    #add_covenant_to_database()
-    #cursor.commit()
-
-def fetch_user_id(cursor, email):
-    cursor.execute(f"SELECT id from login where email='{email}';")
-    user_id = cursor.fetchone()[0]
-    return user_id
+#def save_covenant_to_database(cursor, covenant):
+#    cursor.execute("INSERT INTO cov (name, cov, login_id) values (%s, %s, %s)", (covenant.name, covenant, user_id))
+#    pass
+#
+#def update_database():
+#    pass
+#    #add_user_to_database()
+#    #add_covenant_to_database()
+#    #cursor.commit()
+#
+#def fetch_user_id(cursor, email):
+#    cursor.execute(f"SELECT id from login where email='{email}';")
+#    user_id = cursor.fetchone()[0]
+#    return user_id
 
 ######################################
 
@@ -98,9 +117,9 @@ def logout():
 
 @app.before_request
 def before_request():
-    g.username = None
+    g.username = None  # pylint: disable=assigning-non-slot
     if "username" in session:
-        g.username = session["username"]
+        g.username = session["username"]  # pylint: disable=assigning-non-slot
 
 @app.route("/home")
 def home():
@@ -111,6 +130,8 @@ def home():
 
         try:
             covenants = cursor.execute("SELECT * FROM covenant WHERE login_id=%s", [user_id])
+            session["user_id"] = user_id
+            session["cursor"] = cursor
         except:
             covenants = {}
 
@@ -120,7 +141,7 @@ def home():
 
 
 def clean_session():
-    session["new_covenant"] = None
+    session["new_covenant"] = False
     session["current_covenant"] = None
 
 
@@ -158,7 +179,7 @@ def authenticate():
 @app.route("/process_new_covenant", methods=["POST"])
 def process_new_covenant():
     # Create covenant core
-    covenant = session["new_covenant"]
+    covenant = session["current_covenant"]
 
     covenant.name = request.form["covenant_name"]
     covenant.season = request.form["covenant_season"]
@@ -189,23 +210,17 @@ def process_new_covenant():
     if not hasattr(covenant, "laboratories"):
         covenant.laboratories = Laboratories()
 
-    session['new_covenant'] = covenant
+    session['current_covenant'] = covenant
     return render_template("create_covenant_landing.html")
 
 
 @app.route("/process_covenfolk_modifications", methods=["POST"])
 def process_covenfolk_modifications():
-    if session.get("new_covenant"):
-        new = True
-        covenant = session["new_covenant"]
-    else:
-        new = False
-        covenant = session["current_covenant"]
+    covenant = session["current_covenant"]
 
     covenfolk = request.form["modify_covenant_covenfolken"]
-    print("COVENFOLK:", covenfolk)
-    if new:
-        return render_template("create_covenant_landing.html")
+
+    return render_template("create_covenant_landing.html")
 
 
 @app.route('/register')
@@ -213,29 +228,32 @@ def register():
     return render_template('register.html')
 
 
-@app.route('/login', methods = ['POST', 'GET'])
-def login():
-    bcrypt = Bcrypt()
-
-    if request.method == 'GET':
-        return "Login via the login Form"
-
-    if request.method == 'POST':
-        username = request.form['username']
-        email = request.form['email']
-        password = request.form['password']
-        connection = create_connection()
-        cursor = create_cursor(connection)
-        add_user_to_database(cursor, username, email, bcrypt.generate_password_hash(password).decode("utf-8"))
-        connection.commit()
-
-        close_connections(connection, cursor)
-        return redirect(url_for("home"))
+#@app.route('/login', methods = ['POST', 'GET'])
+#def login():
+#    bcrypt = Bcrypt()
+#
+#    if request.method == 'GET':
+#        return "Login via the login Form"
+#
+#    if request.method == 'POST':
+#        username = request.form['username']
+#        email = request.form['email']
+#        password = request.form['password']
+#        connection = create_connection()
+#        cursor = create_cursor(connection)
+#        add_user_to_database(cursor, username, email, bcrypt.generate_password_hash(password).decode("utf-8"))
+#        session["current_user"] = username
+#        print("SESSION USERNAME:", username)
+#        connection.commit()
+#
+#        close_connections(connection, cursor)
+#        return redirect(url_for("home"))
 
 @app.route("/create_covenant", methods = ["GET"])
 def create_covenant():
     if not session.get("new_covenant"):
-        session["new_covenant"] = Covenant()
+        session["current_covenant"] = Covenant()
+        session["new_covenant"] = True
 
     if request.method == "GET":
         return render_template("create_covenant.html")
@@ -249,6 +267,18 @@ def create_covenant_landing():
     elif request.method == "POST":
         return render_template("create_covenant_landing.html")
 
+@app.route("/finalize_covenant", methods = ["POST", "GET"])
+def finalize_covenant():
+    connection = create_connection()
+    cursor = create_cursor(connection)
+
+    add_covenant_to_database(cursor, session["current_covenant"])
+
+    return render_template("create_covenant_landing.html")
+
+@app.route("/advance_covenant", methods = ["POST"])
+def advance_covenant():
+    return render_template("create_covenant_landing.html")
 
 @app.route("/modify_laboratories", methods = ["POST", "GET"])
 def modify_laboratories():
@@ -256,12 +286,7 @@ def modify_laboratories():
         return render_template("modify_laboratories.html")
 
     if request.method == "POST":
-        if session.get("new_covenant"):
-            new = True
-            covenant = session["new_covenant"]
-        else:
-            new = False
-            covenant = session["current_covenant"]
+        covenant = session["current_covenant"]
 
         labs = Laboratories()
 
@@ -291,11 +316,7 @@ def modify_laboratories():
 
         covenant.laboratories = labs
 
-        if new:
-            session["new_covenant"] = covenant
-            return render_template("create_covenant_landing.html")
-        else:
-            session["current_covenant"] = covenant
+        session["current_covenant"] = covenant
 
         return render_template("create_covenant_landing.html")
 
@@ -305,12 +326,7 @@ def modify_covenfolken():
         return render_template("modify_covenfolken.html", saving_categories=SAVING_CATEGORIES)
 
     if request.method == "POST":
-        if session.get("new_covenant"):
-            new = True
-            covenant = session["new_covenant"]
-        else:
-            new = False
-            covenant = session["current_covenant"]
+        covenant = session["current_covenant"]
 
         form = request.form
         json = request.json
@@ -368,13 +384,9 @@ def modify_covenfolken():
             count+=1
 
         covenant.covenfolken = covenfolken
+        session["current_covenant"] = covenant
 
-        if new:
-            session["new_covenant"] = covenant
-            return render_template("create_covenant_landing.html")
-        else:
-            session["current_covenant"] = covenant
-            #return render_template(TBD)
+        return render_template("create_covenant_landing.html")
 
     #if request.method == "POST":
     #    name = request.form["name"]
@@ -395,12 +407,7 @@ def modify_armory():
         return render_template("modify_armory.html", saving_categories=SAVING_CATEGORIES)
 
     if request.method == "POST":
-        if session.get("new_covenant"):
-            new = True
-            covenant = session["new_covenant"]
-        else:
-            new = False
-            covenant = session["current_covenant"]
+        covenant = session["current_covenant"]
 
         armory = Armory()
 
@@ -442,13 +449,8 @@ def modify_armory():
 
 
         covenant.armory = armory
-        print("TEST:", armory)
 
-        if new:
-            session["new_covenant"] = covenant
-            return render_template("create_covenant_landing.html")
-        else:
-            session["current_covenant"] = covenant
+        session["current_covenant"] = covenant
 
         return render_template("create_covenant_landing.html")
 

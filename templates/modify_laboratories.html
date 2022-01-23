@@ -22,7 +22,7 @@
             <form class="modify_covenant_laboratories" action="{{url_for('modify_laboratories')}}" method="POST">
                 Laboratories:<a href="javascript:void(0);" class="add_lab add_laboratory" title="Add lab"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
                 <div class="laboratory_wrapper">
-                    {% for name, laboratory in session["new_covenant"].laboratories.labs.items() %}
+                    {% for name, laboratory in session["current_covenant"].laboratories.labs.items() %}
                         <div>
                             <hr>
                             Lab Name: <input class="laboratory_input" value={{name}} name="laboratory_name" type="text" required>

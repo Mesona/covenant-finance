@@ -21,26 +21,26 @@
         <div class="main">
             CREATE COVENANT
             <form class="create_covenent_initial" action="{{url_for('process_new_covenant')}}" method="POST">
-                Covenant Name: <input class="create_covenant_input" placeholder="Covenant Name" name="covenant_name" type="text" value={{session["new_covenant"].name}} required><br>
-                Covenant Season: <input class="create_covenant_input" placeholder="Covenant Season" name="covenant_season" type="text" value={{session["new_covenant"].season}} required><br>
+                Covenant Name: <input class="create_covenant_input" placeholder="Covenant Name" name="covenant_name" type="text" value={{session["current_covenant"].name}} required><br>
+                Covenant Season: <input class="create_covenant_input" placeholder="Covenant Season" name="covenant_season" type="text" value={{session["current_covenant"].season}} required><br>
                 <p>Income Sources:<a href="javascript:void(0);" class="add_input" title="Add input"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
                 <div class="income_sources_wrapper">
-                    {% for income_source, income_value in session["new_covenant"].income_sources.items() %}
+                    {% for income_source, income_value in session["current_covenant"].income_sources.items() %}
                         <div>
                             <input class="create_covenant_input" placeholder="Income Source" value={{income_source}}  name="covenant_income_sources_names" type="text" required><input class="create_covenant_input" value={{income_value}} placeholder="Income Source Annual Value" name="covenant_income_sources_values" type="number" required>
                             <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
                         </div>
                     {% endfor %}
                 </div>
-                Annual Tithes Owed: <input class="create_covenant_input" placeholder="Tithes" name="covenant_tithes" type="text" value={{session["new_covenant"].tithes}} required><br>
-                Starting Treasury: <input class="create_covenant_input" placeholder="Starting Treasury Amount" name="covenant_treasury" type="text" value={{session["new_covenant"].treasury}} required><br>
-                Starting Year: <input class="create_covenant_input" placeholder="Starting year" name="starting_year" type="text" value={{session["new_covenant"].starting_year}} required placeholder="Starting Year"><br>
+                Annual Tithes Owed: <input class="create_covenant_input" placeholder="Tithes" name="covenant_tithes" type="text" value={{session["current_covenant"].tithes}} required><br>
+                Starting Treasury: <input class="create_covenant_input" placeholder="Starting Treasury Amount" name="covenant_treasury" type="text" value={{session["current_covenant"].treasury}} required><br>
+                Starting Year: <input class="create_covenant_input" placeholder="Starting year" name="starting_year" type="text" value={{session["current_covenant"].starting_year}} required placeholder="Starting Year"><br>
                 <p>Enable Inflation?</p>
                 <input class="create_covenant_input" name="covenant_inflation_enabled" type="radio" value="Yes" required>
                 <label for="Yes">Yes</label>
                 <input class="create_covenant_input" name="covenant_inflation_enabled" type="radio" value="No" required selected="selected">
                 <label for="No">No</label></br><br>
-                Initial Inflation Value: <input class="create_covenant_input" placeholder="Covenant starting inflation value" name="covenant_initial_inflation" type="text" value={{session["new_covenant"].inflation}} required><br>
+                Initial Inflation Value: <input class="create_covenant_input" placeholder="Covenant starting inflation value" name="covenant_initial_inflation" type="text" value={{session["current_covenant"].inflation}} required><br>
                 <button class="submit" type="submit">Proceed</button>
             </form>
         </div>

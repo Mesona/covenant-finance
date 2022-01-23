@@ -43,7 +43,7 @@
             <form class="modify_covenant_armory" action="{{url_for('modify_armory')}}" method="POST">
                 Weapons:<a href="javascript:void(0);" class="add_equipment add_weapon" title="Add weapon"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
                 <div class="weapon_wrapper">
-                    {% for equip in session["new_covenant"].armory.list_equipment_type("weapon") %}
+                    {% for equip in session["current_covenant"].armory.list_equipment_type("weapon") %}
                         <div>
                             <input class="armory_input weapon_name" value={{equip["name"]}} name="weapon_name" type="text" required>
                             <select name="weapon_quality">
@@ -68,7 +68,7 @@
 
                 Partial Armors:<a href="javascript:void(0);" class="add_equipment add_partial" title="Add partial"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
                 <div class="partial_wrapper">
-                    {% for equip in session["new_covenant"].armory.list_equipment_type("partial") %}
+                    {% for equip in session["current_covenant"].armory.list_equipment_type("partial") %}
                         <div>
                             <input class="armory_input" value={{equip["name"]}} name="partial_name" type="text" required>
                             <select name="partial_quality">
@@ -93,7 +93,7 @@
 
                 Full Armor:<a href="javascript:void(0);" class="add_equipment add_full" title="Add full"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
                 <div class="full_wrapper">
-                    {% for equip in session["new_covenant"].armory.list_equipment_type("full") %}
+                    {% for equip in session["current_covenant"].armory.list_equipment_type("full") %}
                         <div>
                             <input class="armory_input" value={{equip["name"]}} name="full_name" type="text" required>
                             <select name="full_quality">
@@ -118,7 +118,7 @@
 
                 Light Siege:<a href="javascript:void(0);" class="add_equipment add_light_siege" title="Add light_siege"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
                 <div class="light_siege_wrapper">
-                    {% for equip in session["new_covenant"].armory.list_equipment_type("light_siege") %}
+                    {% for equip in session["current_covenant"].armory.list_equipment_type("light_siege") %}
                         <div>
                             <input class="armory_input" value={{equip["name"]}} name="light_siege_name" type="text" required>
                             <select class="light_siege_quality" name="light_siege_quality">
@@ -143,7 +143,7 @@
 
                 Heavy Siege:<a href="javascript:void(0);" class="add_equipment add_heavy_siege" title="Add heavy_siege"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
                 <div class="heavy_siege_wrapper">
-                    {% for equip in session["new_covenant"].armory.list_equipment_type("heavy_siege") %}
+                    {% for equip in session["current_covenant"].armory.list_equipment_type("heavy_siege") %}
                         <div>
                             <input class="armory_input" value={{equip["name"]}} name="heavy_siege_name" type="text" required>
                             <select class="heavy_siege_quality" name="heavy_siege_quality">
@@ -168,7 +168,7 @@
 
                 Magic Equipment:<a href="javascript:void(0);" class="add_equipment add_magic" title="Add magic"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
                 <div class="magic_wrapper">
-                    {% for equip in session["new_covenant"].armory.list_equipment_type("magic") %}
+                    {% for equip in session["current_covenant"].armory.list_equipment_type("magic") %}
                         <div>
                             <input class="armory_input" value={{equip["name"]}} name="magic_name" type="text" required>
                             <select class="armory_input" name="magic_saving_category">

@@ -42,7 +42,7 @@
                 <hr>
                 Mages:<a href="javascript:void(0);" class="add_magi add_covenfolk" title="Add magi"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
                 <div class="covenfolken_magi_wrapper">
-                    {% for magi in session["new_covenant"].covenfolken.get_covenfolk_of_classification("magi") %}
+                    {% for magi in session["current_covenant"].covenfolken.get_covenfolk_of_classification("magi") %}
                         <div>
                             <input class="magi_name covenfolk_input" value="{{magi.name}}" name="magi_name" type="text" required>
                             <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
@@ -53,7 +53,7 @@
                 <hr>
                 Crafters:<a href="javascript:void(0);" class="add_crafter add_covenfolk" title="Add crafter"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
                 <div class="covenfolken_crafter_wrapper">
-                    {% for crafter in session["new_covenant"].covenfolken.get_covenfolk_of_classification("crafter") %}
+                    {% for crafter in session["current_covenant"].covenfolken.get_covenfolk_of_classification("crafter") %}
                         <div>
                             <input class="crafter_name covenfolk_input" value="{{crafter.name}}" name="crafter_name" type="text" required>
                             <input class="covenfolk_input" value="{{crafter.profession}}" name="crafter_profession" type="text" required>
@@ -84,7 +84,7 @@
                 <hr>
                 Specialists:<a href="javascript:void(0);" class="add_specialist add_covenfolk" title="Add specialist"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
                 <div class="covenfolken_specialist_wrapper">
-                    {% for specialist in session["new_covenant"].covenfolken.get_covenfolk_of_classification("specialist") %}
+                    {% for specialist in session["current_covenant"].covenfolken.get_covenfolk_of_classification("specialist") %}
                         <div>
                             <input class="specialist_name covenfolk_input" value="{{specialist.name}}" name="specialist_name" type="text" required>
                             <input class="covenfolk_input" value="{{specialist.profession}}" name="specialist_profession" type="text" required>
@@ -115,7 +115,7 @@
                 <hr>
                 Companions:<a href="javascript:void(0);" class="add_companion add_covenfolk" title="Add companion"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
                 <div class="covenfolken_companion_wrapper">
-                    {% for companion in session["new_covenant"].covenfolken.get_covenfolk_of_classification("companion") %}
+                    {% for companion in session["current_covenant"].covenfolken.get_covenfolk_of_classification("companion") %}
                         <div>
                             <input class="companion_name covenfolk_input" value="{{companion.name}}" name="companion_name" type="text" required>
                             <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
@@ -126,7 +126,7 @@
                 <hr>
                 Grogs:<a href="javascript:void(0);" class="add_grog add_covenfolk" title="Add grog"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
                 <div class="covenfolken_grog_wrapper">
-                    {% for grog in session["new_covenant"].covenfolken.get_covenfolk_of_classification("grog") %}
+                    {% for grog in session["current_covenant"].covenfolken.get_covenfolk_of_classification("grog") %}
                         <div>
                             <input class="grog_name covenfolk_input" value="{{grog.name}}" name="grog_name" type="text" required>
                             <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
@@ -137,7 +137,7 @@
                 <hr>
                 Nobles:<a href="javascript:void(0);" class="add_noble add_covenfolk" title="Add noble"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
                 <div class="covenfolken_noble_wrapper">
-                    {% for noble in session["new_covenant"].covenfolken.get_covenfolk_of_classification("noble") %}
+                    {% for noble in session["current_covenant"].covenfolken.get_covenfolk_of_classification("noble") %}
                         <div>
                             <input class="noble_name covenfolk_input" value="{{noble.name}}" name="noble_name" type="text" required>
                             <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
@@ -148,7 +148,7 @@
                 <hr>
                 Dependants:<a href="javascript:void(0);" class="add_dependant add_covenfolk" title="Add dependant"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
                 <div class="covenfolken_dependant_wrapper">
-                    {% for dependant in session["new_covenant"].covenfolken.get_covenfolk_of_classification("dependant") %}
+                    {% for dependant in session["current_covenant"].covenfolken.get_covenfolk_of_classification("dependant") %}
                         <div>
                             <input class="dependant_name covenfolk_input" value="{{dependant.name}}" name="dependant_name" type="text" required>
                             <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
@@ -159,7 +159,7 @@
                 <hr>
                 Laborers:<a href="javascript:void(0);" class="add_laborer add_covenfolk" title="Add laborer"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
                 <div class="covenfolken_laborer_wrapper">
-                    {% for laborer in session["new_covenant"].covenfolken.get_covenfolk_of_classification("laborer") %}
+                    {% for laborer in session["current_covenant"].covenfolken.get_covenfolk_of_classification("laborer") %}
                         <div>
                             <input class="laborer_name covenfolk_input" value="{{laborer.name}}" name="laborer_name" type="text" required>
                             <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
@@ -170,7 +170,7 @@
                 <hr>
                 Servants:<a href="javascript:void(0);" class="add_servant add_covenfolk" title="Add servant"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
                 <div class="covenfolken_servant_wrapper">
-                    {% for servant in session["new_covenant"].covenfolken.get_covenfolk_of_classification("servant") %}
+                    {% for servant in session["current_covenant"].covenfolken.get_covenfolk_of_classification("servant") %}
                         <div>
                             <input class="servant_name covenfolk_input" value="{{servant.name}}" name="servant_name" type="text" required>
                             <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
@@ -181,7 +181,7 @@
                 <hr>
                 Teamsters:<a href="javascript:void(0);" class="add_teamster add_covenfolk" title="Add teamster"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
                 <div class="covenfolken_teamster_wrapper">
-                    {% for teamster in session["new_covenant"].covenfolken.get_covenfolk_of_classification("teamster") %}
+                    {% for teamster in session["current_covenant"].covenfolken.get_covenfolk_of_classification("teamster") %}
                         <div>
                             <input class="teamster_name covenfolk_input" value="{{teamster.name}}" name="teamster_name" type="text" required>
                             <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
@@ -192,7 +192,7 @@
                 <hr>
                 Large Livestock:<a href="javascript:void(0);" class="add_animal add_covenfolk" title="Add animals"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
                 <div class="covenfolken_animal_wrapper">
-                    {% for animal in session["new_covenant"].covenfolken.get_covenfolk_of_classification("horse") %}
+                    {% for animal in session["current_covenant"].covenfolken.get_covenfolk_of_classification("horse") %}
                         <div>
                             <input class="animal_name covenfolk_input" value="{{animal.name}}" name="animal_name" type="text" required>
                             <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>

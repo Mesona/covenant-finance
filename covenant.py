@@ -39,16 +39,20 @@ base_covenfolk_point_costs = {
 }
 
 
-def save_covenant(covenant, path):
+def save_covenant(covenant, path=None):
     import jsonpickle
     if covenant.expenses == float("inf"):
         covenant.expenses = 9999999
     dump = jsonpickle.encode(covenant, indent=4)
-    with open(path, "w+") as f:
-        f.write(dump)
 
-    print(f"Covenant successfully saved to {path}")
-        
+    if path:
+        with open(path, "w+") as f:
+            f.write(dump)
+
+        print(f"Covenant successfully saved to {path}")
+    else:
+        return dump
+
 
 def load_covenant(path):
     import jsonpickle
@@ -99,6 +103,7 @@ Please select between spring, summer, autumn, and winter.
         self.inflation = inflation
         self.expenses = float("inf")  # Prevents inflation from taking effect the first year
         self.current_year = int(current_year)
+
             
     def calculate_covenfolk_points(self):
         point_cost = 0
@@ -133,9 +138,6 @@ Please select between spring, summer, autumn, and winter.
         for classification in covenfolk_roles:
             number_of_matching_covenfolk = self.covenfolken.total_count_of(classification)
             covenfolk_points += self.calculate_covenfolk_point_costs(classification) * number_of_matching_covenfolk
-            print("CURRENT CLASSIFICATION:", classification)
-            print("NUMBER OF MATCHING:", number_of_matching_covenfolk)
-            print("CURRENT POINT TOTAL:", covenfolk_points)
 
         covenfolk_points -= (self.covenfolken.total_count_of("laborer") * 2)
         teamster_minimums = math.ceil(covenfolk_points / 10)
@@ -254,6 +256,6 @@ Please select between spring, summer, autumn, and winter.
     def bank(self, silver):
         self.treasury += silver
 
-    def advance_year(self):
+    def advance_year(self, additional_costs=0):
         self.update_expenditures()
-        self.treasury = self.treasury + self.total_income() - self.total_expenditure()
+        self.treasury = self.treasury + self.total_income() - self.total_expenditure() - additional_costs
