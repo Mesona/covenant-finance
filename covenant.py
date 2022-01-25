@@ -51,10 +51,14 @@ def save_covenant(covenant, path=None):
 
         print(f"Covenant successfully saved to {path}")
     else:
-        return dump
+        return jsonpickle.encode(dump)
 
 
-def load_covenant(path):
+def load_covenant_from_string(covenant):
+    import jsonpickle
+    return jsonpickle.decode(covenant)
+
+def load_covenant_from_file(path):
     import jsonpickle
 
     with open(path, "r") as f:

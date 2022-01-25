@@ -48,27 +48,22 @@ def initialize_database():
 
     cursor = create_cursor(connection)
 
-    login = "CREATE TABLE login (id SERIAL PRIMARY KEY, username VARCHAR(128) UNIQUE NOT NULL, email VARCHAR(128) UNIQUE, password VARCHAR(256));"
+    login = "CREATE TABLE login (id SERIAL PRIMARY KEY, username VARCHAR(128) UNIQUE NOT NULL, email VARCHAR(128) UNIQUE NOT NULL, password VARCHAR(256) NOT NULL);"
     #covenant = "create table covenant (id serial primary key, name varchar(128), cov json, login_id serial references login(id));"
-    covenant = "CREATE TABLE covenant (id SERIAL PRIMARY KEY, name VARCHAR(128) NOT NULL, cov JSON, login_id VARCHAR(128));"
+    covenant = "CREATE TABLE covenant (id SERIAL PRIMARY KEY, name VARCHAR(128) NOT NULL, cov VARCHAR NOT NULL, user_id VARCHAR(128) NOT NULL);"
 
     try:
-        print("CREATING COVENANT TABLE!")
+        print("CREATING TABLES!")
         cursor.execute(covenant)
-        print("Committing COVENANT TABLE!")
         connection.commit()
     except psycopg2.errors.DuplicateTable:
-        print("COVENANT TABLE CREATION ERRORED!")
-        pass
+        print("COVENANT TABLE CREATION ERRORED! DOES IT ALREADY EXIST?")
 
     try:
-        print("CREATING LOGIN TABLE!")
         cursor.execute(login)
-        print("Committing LOGIN TABLE!")
         connection.commit()
     except psycopg2.errors.DuplicateTable:
-        print("LOGIN TABLE CREATION ERRORED!")
-        pass
+        print("LOGIN TABLE CREATION ERRORED! DOES IT ALREADY EXIST?")
 
     print("Closing!")
     close_database(connection)
@@ -82,12 +77,7 @@ def add_user_to_database(cursor, username, email, password):
     print(f"User {username} added to the database!")
 
 def add_covenant_to_database(cursor, covenant):
-    connection = create_connection()
-    print("COVENANT:", covenant)
-    print("CURSOR:", cursor)
-    cursor.execute("INSERT INTO covenant (name, cov, login_id) values (%s, %s, %s)", (covenant.name, save_covenant(covenant), g.username))
-    connection.commit()
-    print("Covenant successfully added to database!")
+    cursor.execute("INSERT INTO covenant (name, cov, user_id) values (%s, %s, %s)", (covenant.name, save_covenant(covenant), g.username))
 
 #def save_covenant_to_database(cursor, covenant):
 #    cursor.execute("INSERT INTO cov (name, cov, login_id) values (%s, %s, %s)", (covenant.name, covenant, user_id))
@@ -127,6 +117,7 @@ def home():
         connection = create_connection()
         cursor = create_cursor(connection)
         user_id = cursor.execute("SELECT id FROM login WHERE username=%s", [g.username])
+        user_email = cursor.execute("SELECT email FROM login WHERE username=%s", [g.username])
 
         try:
             covenants = cursor.execute("SELECT * FROM covenant WHERE login_id=%s", [user_id])
@@ -228,26 +219,26 @@ def register():
     return render_template('register.html')
 
 
-#@app.route('/login', methods = ['POST', 'GET'])
-#def login():
-#    bcrypt = Bcrypt()
-#
-#    if request.method == 'GET':
-#        return "Login via the login Form"
-#
-#    if request.method == 'POST':
-#        username = request.form['username']
-#        email = request.form['email']
-#        password = request.form['password']
-#        connection = create_connection()
-#        cursor = create_cursor(connection)
-#        add_user_to_database(cursor, username, email, bcrypt.generate_password_hash(password).decode("utf-8"))
-#        session["current_user"] = username
-#        print("SESSION USERNAME:", username)
-#        connection.commit()
-#
-#        close_connections(connection, cursor)
-#        return redirect(url_for("home"))
+@app.route('/login', methods = ['POST', 'GET'])
+def login():
+    bcrypt = Bcrypt()
+
+    if request.method == 'GET':
+        return "Login via the login Form"
+
+    if request.method == 'POST':
+        username = request.form['username']
+        email = request.form['email']
+        password = request.form['password']
+        connection = create_connection()
+        cursor = create_cursor(connection)
+        add_user_to_database(cursor, username, email, bcrypt.generate_password_hash(password).decode("utf-8"))
+        print("SESSION USERNAME:", username)
+        print("SESSION EMAIL:", email)
+        connection.commit()
+
+        close_connections(connection, cursor)
+        return redirect(url_for("home"))
 
 @app.route("/create_covenant", methods = ["GET"])
 def create_covenant():
@@ -273,6 +264,13 @@ def finalize_covenant():
     cursor = create_cursor(connection)
 
     add_covenant_to_database(cursor, session["current_covenant"])
+    connection.commit()
+    print("Covenant successfully added to database!")
+    cursor.execute("SELECT * FROM covenant;")
+    connection.commit()
+    print("CLOSING CONNECTION")
+
+    close_database(connection)
 
     return render_template("create_covenant_landing.html")
 

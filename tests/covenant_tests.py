@@ -242,7 +242,7 @@ class DescribeSaveCovenant:
 class DescribeLoadCovenant:
     @staticmethod
     def it_loads_covenant():
-        from covenant import save_covenant, load_covenant
+        from covenant import save_covenant, load_covenant_from_file
         cov = Covenant()
         cov.inflation = 100
         cov.covenfolken.add_covenfolk("Barg", "magi")
@@ -250,7 +250,7 @@ class DescribeLoadCovenant:
         cov.armory.add_equipment("earthquake machine", "heavy siege", "expensive")
         cov.laboratories.add_lab("Haunted mansion")
         save_covenant(cov, "cov.json")
-        loaded = load_covenant("cov.json")
+        loaded = load_covenant_from_file("cov.json")
         assert loaded.covenfolken.covenfolk["Barg"]
         assert loaded.armory.heavy_siege["earthquake machine"] == {"expensive": 1}
         assert loaded.armory.weapons["pistol"] == {}
