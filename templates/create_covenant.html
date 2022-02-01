@@ -16,6 +16,12 @@
 						margin-left: 10px;
 						vertical-align: text-bottom;
 				}
+				.visible {
+            visibility: visible;
+				}
+				.hidden {
+            visibility: hidden;
+				}
 		</style>
     <body>
         <div class="main">
@@ -39,13 +45,25 @@
                 <input class="create_covenant_input" name="covenant_inflation_enabled" type="radio" value="Yes" required>
                 <label for="Yes">Yes</label>
                 <input class="create_covenant_input" name="covenant_inflation_enabled" type="radio" value="No" required selected="selected">
-                <label for="No">No</label></br><br>
-                Initial Inflation Value: <input class="create_covenant_input" placeholder="Covenant starting inflation value" name="covenant_initial_inflation" type="text" value={{session["current_covenant"].inflation}} required><br>
+                <label for="No" checked="checked">No</label></br><br>
+                <div class="hidden" id="covenant_inflation">
+                    Initial Inflation Value: <input class="create_covenant_input" placeholder="Covenant starting inflation value" name="covenant_initial_inflation" type="text" value={{session["current_covenant"].inflation}} required><br>
+                </div>
                 <button class="submit" type="submit">Proceed</button>
             </form>
         </div>
     <script>
         $(document).ready(function(){
+            $('input[type="radio"]').click(function(){
+                var demovalue = $(this).val(); 
+                console.log("DEMOVALUE:", demovalue)
+                var div = document.getElementById("covenant_inflation");
+                if (demovalue === "No") {
+                    div.className = "hidden"
+                } else if (demovalue == "Yes") {
+                    div.className = "visible"
+                }
+            });
             var max_input_fields = 10;
             var add_input = $('.add_input');
             var input_wrapper = $('.income_sources_wrapper');
