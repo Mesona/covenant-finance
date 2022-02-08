@@ -13,11 +13,16 @@
     <div id = "covList">
     </div>
     <script>
-        let covs = {{covenants}}
+        let covenants = {{session["covenant_names"]}}
         let covList = "<ul>"
-        covenants.forEach(function(covs) {
-            covList += "<li>" + covs.name + "</li>";
-        });
+        console.log("ONE:", covenants)
+        if (covenants !== undefined) {
+            console.log("YO")
+            covenants.forEach(function(covs) {
+                console.log("COVS:", covs)
+                covList += "<li>" + covs + "</li>";
+            });
+        }
         covList += "</ul>"
         document.getElementById("covList").innerHTML = covList;
     </script>

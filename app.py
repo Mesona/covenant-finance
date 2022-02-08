@@ -7,7 +7,7 @@ from flask_bcrypt import Bcrypt
 from flask_session import Session
 from database_password import PASSWORD, SECRET_KEY
 import psycopg2
-from covenant import Covenant, save_covenant
+from covenant import Covenant, save_covenant, load_covenant_from_string
 from laboratory import Laboratories
 from covenfolk import Covenfolken, SAVING_CATEGORIES
 from armory import Armory
@@ -50,7 +50,7 @@ def initialize_database():
 
     login = "CREATE TABLE login (id SERIAL PRIMARY KEY, username VARCHAR(128) UNIQUE NOT NULL, email VARCHAR(128) UNIQUE NOT NULL, password VARCHAR(256) NOT NULL);"
     #covenant = "create table covenant (id serial primary key, name varchar(128), cov json, login_id serial references login(id));"
-    covenant = "CREATE TABLE covenant (id SERIAL PRIMARY KEY, name VARCHAR(128) NOT NULL, cov VARCHAR NOT NULL, user_id VARCHAR(128) NOT NULL);"
+    covenant = "CREATE TABLE covenant (id SERIAL PRIMARY KEY, name VARCHAR(128) NOT NULL UNIQUE, cov VARCHAR NOT NULL, user_id VARCHAR(128) NOT NULL);"
 
     try:
         print("CREATING TABLES!")
@@ -113,20 +113,36 @@ def before_request():
 
 @app.route("/home")
 def home():
+    print("IN HOME")
     if g.username:
+        print("g.username EXISTS")
         connection = create_connection()
         cursor = create_cursor(connection)
         user_id = cursor.execute("SELECT id FROM login WHERE username=%s", [g.username])
         user_email = cursor.execute("SELECT email FROM login WHERE username=%s", [g.username])
 
         try:
-            covenants = cursor.execute("SELECT * FROM covenant WHERE login_id=%s", [user_id])
+            print("TRYING COVENANTS")
+            #covenants = cursor.execute("SELECT * FROM covenant WHERE user_id=%s", [user_id])
+            command = f"SELECT name FROM covenant WHERE user_id='{user_id}'"
+            cursor.execute(command)
+            covenant_names = cursor.fetchall()
+            #covenant_names = []
+            #for covenant in covenant_dump:
+            #    name = covenant[0]
+            #    print("NAME 2:", name)
+            #    covenant_names.append(name)
+            #print("COVENANTS:", covenant_names)
+            connection.commit()
+            close_database(connection)
+            session["covenant_names"] = covenant_names
             session["user_id"] = user_id
             session["cursor"] = cursor
+            print("ALL THE WAY HERE")
         except:
             covenants = {}
 
-        return render_template("home.html", username = g.username, covenants = covenants)
+        return render_template("home.html", username = g.username, covenants=session["covenant_names"])
     else:
         return render_template("login.html")
 
@@ -159,8 +175,27 @@ def authenticate():
         if len(user) > 0:
             session.pop("username",None)
             if (bcrypt.check_password_hash(hashed_pw, password)) == True:  
+                print("GOING HOME NOW, LOGIN SUCCESSFUL")
                 session["username"] = request.form["username"]
-                return render_template("home.html", username=username)
+                command = f"SELECT name FROM covenant WHERE user_id='{username}'"
+                #print("COMMAND:", command)
+                cursor.execute(command)
+                covenant_names = cursor.fetchall()
+                print("USERNAME", username)
+                #print("DUMP:", covenant_dump)
+                connection.commit()
+                close_database(connection)
+                #covenant_names = []
+                #print("LENGTH:", len(covenant_dump))
+                #print("COV NAMES START:", covenant_names)
+                #for covenant in covenant_dump:
+                #    name = covenant[0]
+                #    print("NAME:", name)
+                #    covenant_names.append(str(name))
+                #print("COVS:", covenant_names)
+                session["covenant_names"] = covenant_names
+                print("SESSION:", session)
+                return render_template("home.html", username=username, covenants=session["covenant_names"])
             else:
                 flash("Invalid Username or Password !!")
                 return render_template("login.html")
@@ -272,7 +307,7 @@ def finalize_covenant():
 
     close_database(connection)
 
-    return render_template("create_covenant_landing.html")
+    return render_template("home.html")
 
 @app.route("/advance_covenant", methods = ["POST"])
 def advance_covenant():
