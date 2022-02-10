@@ -12,20 +12,13 @@
     </div>
     <div id = "covList">
     </div>
-    <script>
-        let covenants = {{session["covenant_names"]}}
-        let covList = "<ul>"
-        console.log("ONE:", covenants)
-        if (covenants !== undefined) {
-            console.log("YO")
-            covenants.forEach(function(covs) {
-                console.log("COVS:", covs)
-                covList += "<li>" + covs + "</li>";
-            });
-        }
-        covList += "</ul>"
-        document.getElementById("covList").innerHTML = covList;
-    </script>
+    <ul>
+    {% for covenant in covenants %}
+        <li>
+            <a href="{{url_for('load_existing_covenant', covenant_name=covenant)}}">{{covenant}}</a>
+        </li>
+    {% endfor %}
+    </ul>
 
     <a href="create_covenant">
         <button>Create new Covenant</button>

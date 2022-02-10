@@ -122,27 +122,23 @@ def home():
         user_email = cursor.execute("SELECT email FROM login WHERE username=%s", [g.username])
 
         try:
-            print("TRYING COVENANTS")
-            #covenants = cursor.execute("SELECT * FROM covenant WHERE user_id=%s", [user_id])
             command = f"SELECT name FROM covenant WHERE user_id='{user_id}'"
             cursor.execute(command)
-            covenant_names = cursor.fetchall()
-            #covenant_names = []
-            #for covenant in covenant_dump:
-            #    name = covenant[0]
-            #    print("NAME 2:", name)
-            #    covenant_names.append(name)
-            #print("COVENANTS:", covenant_names)
+            covenant_dump = cursor.fetchall()
             connection.commit()
             close_database(connection)
-            session["covenant_names"] = covenant_names
+
+            covenant_names = []
+            for covenant in covenant_dump:
+                name = covenant[0]
+                covenant_names.append(name)
+
             session["user_id"] = user_id
             session["cursor"] = cursor
-            print("ALL THE WAY HERE")
         except:
             covenants = {}
 
-        return render_template("home.html", username = g.username, covenants=session["covenant_names"])
+        return render_template("home.html", username = g.username, covenants=covenant_names)
     else:
         return render_template("login.html")
 
@@ -175,27 +171,21 @@ def authenticate():
         if len(user) > 0:
             session.pop("username",None)
             if (bcrypt.check_password_hash(hashed_pw, password)) == True:  
-                print("GOING HOME NOW, LOGIN SUCCESSFUL")
                 session["username"] = request.form["username"]
+
                 command = f"SELECT name FROM covenant WHERE user_id='{username}'"
-                #print("COMMAND:", command)
                 cursor.execute(command)
-                covenant_names = cursor.fetchall()
-                print("USERNAME", username)
-                #print("DUMP:", covenant_dump)
                 connection.commit()
+
+                covenant_dump = cursor.fetchall()
                 close_database(connection)
-                #covenant_names = []
-                #print("LENGTH:", len(covenant_dump))
-                #print("COV NAMES START:", covenant_names)
-                #for covenant in covenant_dump:
-                #    name = covenant[0]
-                #    print("NAME:", name)
-                #    covenant_names.append(str(name))
-                #print("COVS:", covenant_names)
-                session["covenant_names"] = covenant_names
-                print("SESSION:", session)
-                return render_template("home.html", username=username, covenants=session["covenant_names"])
+
+                covenant_names = []
+                for covenant in covenant_dump:
+                    name = covenant[0]
+                    covenant_names.append(name)
+
+                return render_template("home.html", username=username, covenants=covenant_names)
             else:
                 flash("Invalid Username or Password !!")
                 return render_template("login.html")
@@ -237,6 +227,33 @@ def process_new_covenant():
         covenant.laboratories = Laboratories()
 
     session['current_covenant'] = covenant
+    return render_template("create_covenant_landing.html")
+
+
+@app.route("/load_existing_covenant", methods=["GET", "POST"])
+def load_existing_covenant():
+    covenant_name = request.args.get("covenant_name", type = str)
+
+    connection = create_connection()
+    cursor = create_cursor(connection)
+
+    print("USER ID:", g.username)
+    print("OCVENANT NAME:", covenant_name)
+    print("ARGS:", request.args)
+    command = f"SELECT cov FROM covenant WHERE user_id='{g.username}' AND name='{covenant_name}'"
+    cursor.execute(command)
+
+    covenant_dump = cursor.fetchall()[0][0]
+    print("DUMP:", covenant_dump)
+    print("DUMP TYPE:", type(covenant_dump))
+    covenant = load_covenant_from_string(covenant_dump)
+    print("COVENANT:", covenant)
+
+    connection.commit()
+    close_database(connection)
+
+    session['current_covenant'] = covenant
+    #session['current_covenant'] = covenant_dump
     return render_template("create_covenant_landing.html")
 
 

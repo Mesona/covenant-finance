@@ -43,20 +43,24 @@ def save_covenant(covenant, path=None):
     import jsonpickle
     if covenant.expenses == float("inf"):
         covenant.expenses = 9999999
-    dump = jsonpickle.encode(covenant, indent=4)
+    frozen = jsonpickle.encode(covenant)
 
     if path:
         with open(path, "w+") as f:
-            f.write(dump)
+            f.write(frozen)
 
         print(f"Covenant successfully saved to {path}")
     else:
-        return jsonpickle.encode(dump)
+        return frozen
 
 
 def load_covenant_from_string(covenant):
     import jsonpickle
-    return jsonpickle.decode(covenant)
+    test = jsonpickle.decode(covenant)
+    print("COV CLASS:", type(test))
+    print("ARMORY CLASS:", type(test.armory))
+    return test
+
 
 def load_covenant_from_file(path):
     import jsonpickle
@@ -76,7 +80,9 @@ class Covenant:
             income_sources = {"source": 100},
             tithes = {},
             treasury = 50.0,
-            laboratories = {},
+            laboratories = Laboratories(),
+            covenfolken = Covenfolken(),
+            armory = Armory(),
             inflation_enabled = True,
             inflation = 0,
             current_year = 1220,
@@ -99,9 +105,9 @@ Please select between spring, summer, autumn, and winter.
         self.income_sources = income_sources
         self.tithes = tithes
         self.treasury = treasury
-        self.covenfolken = Covenfolken()
-        self.laboratories = Laboratories()
-        self.armory = Armory()
+        self.covenfolken = covenfolken
+        self.laboratories = laboratories
+        self.armory = armory
         self.treasury = treasury
         self.inflation_enabled = inflation_enabled
         self.inflation = inflation
