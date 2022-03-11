@@ -7,10 +7,10 @@ from flask_bcrypt import Bcrypt
 from flask_session import Session
 from database_password import PASSWORD, SECRET_KEY
 import psycopg2
-from covenant import Covenant, save_covenant, load_covenant_from_string
-from laboratory import Laboratories
-from covenfolk import Covenfolken, SAVING_CATEGORIES
-from armory import Armory
+from src.covenant import Covenant, save_covenant, load_covenant_from_string
+from src.laboratory import Laboratories
+from src.covenfolk import Covenfolken, SAVING_CATEGORIES
+from src.armory import Armory
 import logging
 
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import pytest
-from armory import Armory, valid_equipment_type, valid_quality, EQUIPMENT_QUALITIES
+from src.armory import Armory, valid_equipment_type, valid_quality, EQUIPMENT_QUALITIES
 
 class DescribeValidQuality:
 

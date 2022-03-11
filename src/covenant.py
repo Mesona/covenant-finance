@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 
 import math
-from covenfolk import Covenfolken
-from armory import Armory
-from laboratory import Laboratories
 from collections import defaultdict
-#from models import CovenantModel
+from src.covenfolk import Covenfolken
+from src.armory import Armory
+from src.laboratory import Laboratories
 
 base_covenfolk_point_costs = {
         "cheap": {
