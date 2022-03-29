@@ -114,6 +114,7 @@ def before_request():
 @app.route("/home")
 def home():
     print("IN HOME")
+    print("SCN 0:", session.get("covenant_names"))
     if g.username:
         print("g.username EXISTS")
         connection = create_connection()
@@ -141,6 +142,11 @@ def home():
             covenants = {}
 
         print("P3")
+        session["covenant_names"] = covenant_names  # pylint: disable=assigning-non-slot
+        print("SCN:", session["covenant_names"])
+        return render_template("home.html", username = g.username, covenants=covenant_names)
+    elif g.username:
+        print("ALL DATA REQUIRED IS GATHERED")
         return render_template("home.html", username = g.username, covenants=covenant_names)
     else:
         return render_template("login.html")
@@ -202,6 +208,11 @@ def process_new_covenant():
 
     covenant.name = request.form["covenant_name"]
     covenant.season = request.form["covenant_season"]
+
+    print("SCN 2:", session["covenant_names"])
+    if covenant.name in session["covenant_names"]:
+        flash("Covenant names must be unique!")
+        return
 
     income_sources = {}
     for income_source, income_value in zip(
@@ -320,26 +331,26 @@ def finalize_covenant():
 
     add_covenant_to_database(cursor, session["current_covenant"])
     connection.commit()
-    print("Covenant successfully added to database!")
     cursor.execute("SELECT * FROM covenant;")
     connection.commit()
-    print("CLOSING CONNECTION")
 
-    # TODO: Modularlize 328-337 and DRY from def home()
-    command = f"SELECT name FROM covenant WHERE user_id='{g.username}'"
-    cursor.execute(command)
-    covenant_dump = cursor.fetchall()
-    connection.commit()
+    ## TODO: Modularlize 328-337 and DRY from def home()
+    #command = f"SELECT name FROM covenant WHERE user_id='{g.username}'"
+    #cursor.execute(command)
+    #covenant_dump = cursor.fetchall()
+    #connection.commit()
 
-    covenant_names = []
-    for covenant in covenant_dump:
-        name = covenant[0]
-        covenant_names.append(name)
+    #covenant_names = []
+    #for covenant in covenant_dump:
+    #    name = covenant[0]
+    #    covenant_names.append(name)
 
     close_database(connection)
 
-    #return render_template("home.html")
-    return render_template("home.html", username=g.username, covenants=covenant_names)
+    g.covenant_names = g.covenant_names.append(session["current_covenant"].name)  # pylint: disable=assigning-non-slot
+
+    return render_template("home.html")
+    #return render_template("home.html", username=g.username, covenants=covenant_names)
 
 @app.route("/advance_covenant", methods = ["POST"])
 def advance_covenant():

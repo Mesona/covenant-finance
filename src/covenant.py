@@ -56,8 +56,6 @@ def save_covenant(covenant, path=None):
 def load_covenant_from_string(covenant):
     import jsonpickle
     test = jsonpickle.decode(covenant)
-    print("COV CLASS:", type(test))
-    print("ARMORY CLASS:", type(test.armory))
     return test
 
 
