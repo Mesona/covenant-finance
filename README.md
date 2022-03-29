@@ -5,6 +5,9 @@ TODO:
   * Example usage
   * Add "Advance year" function
   * Front end tests
+  * Cap number of covenants a user can have
+  * User registration email validation
+  * Cap number of income sources a covenant can have
 
 BUGS TO FIX:
   * Login with non existant user throws error

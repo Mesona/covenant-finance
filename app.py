@@ -121,6 +121,7 @@ def home():
         user_id = cursor.execute("SELECT id FROM login WHERE username=%s", [g.username])
         user_email = cursor.execute("SELECT email FROM login WHERE username=%s", [g.username])
 
+        print("P1")
         try:
             command = f"SELECT name FROM covenant WHERE user_id='{user_id}'"
             cursor.execute(command)
@@ -132,12 +133,14 @@ def home():
             for covenant in covenant_dump:
                 name = covenant[0]
                 covenant_names.append(name)
+            print("P2")
 
             session["user_id"] = user_id
             session["cursor"] = cursor
         except:
             covenants = {}
 
+        print("P3")
         return render_template("home.html", username = g.username, covenants=covenant_names)
     else:
         return render_template("login.html")
@@ -322,9 +325,21 @@ def finalize_covenant():
     connection.commit()
     print("CLOSING CONNECTION")
 
+    # TODO: Modularlize 328-337 and DRY from def home()
+    command = f"SELECT name FROM covenant WHERE user_id='{g.username}'"
+    cursor.execute(command)
+    covenant_dump = cursor.fetchall()
+    connection.commit()
+
+    covenant_names = []
+    for covenant in covenant_dump:
+        name = covenant[0]
+        covenant_names.append(name)
+
     close_database(connection)
 
-    return render_template("home.html")
+    #return render_template("home.html")
+    return render_template("home.html", username=g.username, covenants=covenant_names)
 
 @app.route("/advance_covenant", methods = ["POST"])
 def advance_covenant():
