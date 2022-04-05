@@ -157,49 +157,46 @@ def clean_session():
     session["current_covenant"] = None
 
 
-@app.route("/authentication", methods=["POST","GET"])
+@app.route("/authentication", methods=["POST"])
 def authenticate():
     import os
     bcrypt = Bcrypt()
     clean_session()
 
-    if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
+    username = request.form["username"]
+    password = request.form["password"]
 
-        if session.get("connection") == None:
-            connection = create_connection()
-            cursor = create_cursor(connection)
+    if session.get("connection") == None:
+        connection = create_connection()
+        cursor = create_cursor(connection)
 
-        cursor.execute("SELECT username,password FROM login WHERE username=%s",[username])
+    cursor.execute("SELECT username,password FROM login WHERE username=%s",[username])
 
-        user = cursor.fetchone()
-        username = user[0]
-        hashed_pw = user[1]
- 
-        if len(user) > 0:
-            session.pop("username",None)
-            if (bcrypt.check_password_hash(hashed_pw, password)) == True:  
-                session["username"] = request.form["username"]
+    user = cursor.fetchone()
+    username = user[0]
+    hashed_pw = user[1]
 
-                command = f"SELECT name FROM covenant WHERE user_id='{username}'"
-                cursor.execute(command)
-                connection.commit()
+    if len(user) > 0:
+        session.pop("username",None)
+        if (bcrypt.check_password_hash(hashed_pw, password)) == True:  
+            session["username"] = request.form["username"]
 
-                covenant_dump = cursor.fetchall()
-                close_database(connection)
+            command = f"SELECT name FROM covenant WHERE user_id='{username}'"
+            cursor.execute(command)
+            connection.commit()
 
-                covenant_names = []
-                for covenant in covenant_dump:
-                    name = covenant[0]
-                    covenant_names.append(name)
+            covenant_dump = cursor.fetchall()
+            close_database(connection)
 
-                return render_template("home.html", username=username, covenants=covenant_names)
-            else:
-                flash("Invalid Username or Password !!")
-                return render_template("login.html")
-    else:
-        return render_template("login.html")
+            covenant_names = []
+            for covenant in covenant_dump:
+                name = covenant[0]
+                covenant_names.append(name)
+
+            return render_template("home.html", username=username, covenants=covenant_names)
+        else:
+            flash("Invalid Username or Password !!")
+            return render_template("login.html")
 
 @app.route("/process_new_covenant", methods=["POST"])
 def process_new_covenant():
@@ -285,26 +282,33 @@ def register():
     return render_template('register.html')
 
 
-@app.route('/login', methods = ['POST', 'GET'])
-def login():
+@app.route('/login', methods = ['POST'])
+def handle_create_new_user():
     bcrypt = Bcrypt()
 
-    if request.method == 'GET':
-        return "Login via the login Form"
+    username = request.form['username']
+    email = request.form['email']
+    password = request.form['password']
+    connection = create_connection()
+    cursor = create_cursor(connection)
 
-    if request.method == 'POST':
-        username = request.form['username']
-        email = request.form['email']
-        password = request.form['password']
-        connection = create_connection()
-        cursor = create_cursor(connection)
-        add_user_to_database(cursor, username, email, bcrypt.generate_password_hash(password).decode("utf-8"))
-        print("SESSION USERNAME:", username)
-        print("SESSION EMAIL:", email)
-        connection.commit()
+    cursor.execute("SELECT username FROM login")
+    connection.commit()
+    users = cursor.fetchall()
 
+    print("USERS:", users)
+    if (username,) in users:
         close_connections(connection, cursor)
-        return redirect(url_for("home"))
+        flash("Username already taken! Please try another!")
+        return render_template("register.html")
+
+    add_user_to_database(cursor, username, email, bcrypt.generate_password_hash(password).decode("utf-8"))
+    print("SESSION USERNAME:", username)
+    print("SESSION EMAIL:", email)
+    connection.commit()
+
+    close_connections(connection, cursor)
+    return redirect(url_for("home"))
 
 @app.route("/create_covenant", methods = ["GET"])
 def create_covenant():
