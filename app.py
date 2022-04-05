@@ -292,14 +292,13 @@ def handle_create_new_user():
     connection = create_connection()
     cursor = create_cursor(connection)
 
-    cursor.execute("SELECT username FROM login")
+    cursor.execute("SELECT username, email FROM login")
     connection.commit()
-    users = cursor.fetchall()
+    data = cursor.fetchall()
 
-    print("USERS:", users)
-    if (username,) in users:
+    if any([ username in i for i in data]) or any([ email in i for i in data]):
         close_connections(connection, cursor)
-        flash("Username already taken! Please try another!")
+        flash("Username and email must be unique! Please try another!")
         return render_template("register.html")
 
     add_user_to_database(cursor, username, email, bcrypt.generate_password_hash(password).decode("utf-8"))
