@@ -115,29 +115,35 @@ def before_request():
 def home():
     print("IN HOME")
     print("SCN 0:", session.get("covenant_names"))
-    if g.username:
-        print("g.username EXISTS")
+    if g.username and not session.get("covenant_names"):
+        print("USERNAME:", g.username)
         connection = create_connection()
         cursor = create_cursor(connection)
-        user_id = cursor.execute("SELECT id FROM login WHERE username=%s", [g.username])
-        user_email = cursor.execute("SELECT email FROM login WHERE username=%s", [g.username])
 
-        print("P1")
+        user_id_query = "SELECT id FROM login WHERE username = %s"
+        cursor.execute(user_id_query, g.username)
+        user_id = cursor.fetchone()[0]
+        print("USER_ID", user_id)
+
+        user_email_query = "SELECT email FROM login WHERE username = %s"
+        cursor.execute(user_email_query, g.username)
+        user_email = cursor.fetchone()[0]
+        print("USER_EMAIL:", user_email)
+
         try:
-            command = f"SELECT name FROM covenant WHERE user_id='{user_id}'"
-            cursor.execute(command)
+            command = f"SELECT name FROM covenant WHERE user_id=%s"
+            cursor.execute(command, g.username)
             covenant_dump = cursor.fetchall()
-            connection.commit()
             close_database(connection)
+            print("DUMP:", covenant_dump)
 
             covenant_names = []
             for covenant in covenant_dump:
                 name = covenant[0]
                 covenant_names.append(name)
-            print("P2")
+            print("P2:", covenant_names)
 
             session["user_id"] = user_id
-            session["cursor"] = cursor
         except:
             covenants = {}
 
@@ -145,9 +151,9 @@ def home():
         session["covenant_names"] = covenant_names  # pylint: disable=assigning-non-slot
         print("SCN:", session["covenant_names"])
         return render_template("home.html", username = g.username, covenants=covenant_names)
-    elif g.username:
+    elif g.username and session.get("covenant_names"):
         print("ALL DATA REQUIRED IS GATHERED")
-        return render_template("home.html", username = g.username, covenants=covenant_names)
+        return render_template("home.html", username = g.username, covenants=session["covenant_names"])
     else:
         return render_template("login.html")
 
@@ -173,6 +179,9 @@ def authenticate():
     cursor.execute("SELECT username,password FROM login WHERE username=%s",[username])
 
     user = cursor.fetchone()
+
+    close_database(connection)
+
     username = user[0]
     hashed_pw = user[1]
 
@@ -181,19 +190,20 @@ def authenticate():
         if (bcrypt.check_password_hash(hashed_pw, password)) == True:  
             session["username"] = request.form["username"]
 
-            command = f"SELECT name FROM covenant WHERE user_id='{username}'"
-            cursor.execute(command)
-            connection.commit()
+            #command = f"SELECT name FROM covenant WHERE user_id='{username}'"
+            #cursor.execute(command)
+            #connection.commit()
 
-            covenant_dump = cursor.fetchall()
-            close_database(connection)
+            #covenant_dump = cursor.fetchall()
+            #close_database(connection)
 
-            covenant_names = []
-            for covenant in covenant_dump:
-                name = covenant[0]
-                covenant_names.append(name)
+            #covenant_names = []
+            #for covenant in covenant_dump:
+            #    name = covenant[0]
+            #    covenant_names.append(name)
 
-            return render_template("home.html", username=username, covenants=covenant_names)
+            return redirect(url_for("home"))
+            #return redirect(url_for("home", username=username, covenants=covenant_names))
         else:
             flash("Invalid Username or Password !!")
             return render_template("login.html")
@@ -302,8 +312,6 @@ def handle_create_new_user():
         return render_template("register.html")
 
     add_user_to_database(cursor, username, email, bcrypt.generate_password_hash(password).decode("utf-8"))
-    print("SESSION USERNAME:", username)
-    print("SESSION EMAIL:", email)
     connection.commit()
 
     close_connections(connection, cursor)
