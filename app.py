@@ -96,7 +96,7 @@ def add_covenant_to_database(cursor, covenant):
 
 
 def get_covenant_names(cursor, connection):
-    if not session["covenant_names"]:
+    if not session.get("covenant_names"):
         command = f"SELECT name FROM covenant WHERE user_id=%s"
         cursor.execute(command, g.username)
         covenant_dump = cursor.fetchall()
@@ -240,7 +240,14 @@ def process_new_covenant():
         income_sources[income_source] = income_value
 
     covenant.income_sources = income_sources
-    covenant.tithes = request.form["covenant_tithes"]
+    #covenant.tithes = request.form["covenant_tithes"]
+    covenant_tithes = {}
+    for tithe_source, tithe_value in zip(
+            request.form.getlist('tithe_sources_names'),
+            request.form.getlist('tithe_sources_values'),
+        ):
+        covenant_tithes[tithe_source] = tithe_value
+
     covenant.treasury = request.form["covenant_treasury"]
     covenant.inflation_enabled = request.form["covenant_inflation_enabled"]
     covenant.inflation = request.form["covenant_initial_inflation"]

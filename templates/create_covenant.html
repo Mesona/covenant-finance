@@ -45,14 +45,22 @@
                         </div>
                     {% endfor %}
                 </div>
-                Annual Tithes Owed: <input class="create_covenant_input" placeholder="Tithes" name="covenant_tithes" type="text" value={{session["current_covenant"].tithes}} required><br>
+                <p>Annual Tithes Owed:<a href="javascript:void(0);" class="add_tithe_input" placeholder="Tithes" name="covenant_tithes"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
+                <div class="tithes_wrapper">
+                    {% for tithe_source, tithe_value in session["current_covenant"].tithes.items() %}
+                        <div>
+                            <input class="create_covenant_input" placeholder="Tithe Source" value={{tithe_source}}  name="tithe_sources_names" type="text" required><input class="create_covenant_input" value={{tithe_value}} placeholder="Tithe Annual Value" name="tithe_sources_values" type="number" required>
+                            <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
+                        </div>
+                    {% endfor %}
+                </div>
                 Starting Treasury: <input class="create_covenant_input" placeholder="Starting Treasury Amount" name="covenant_treasury" type="text" value={{session["current_covenant"].treasury}} required><br>
-                Starting Year: <input class="create_covenant_input" placeholder="Starting year" name="starting_year" type="text" value={{session["current_covenant"].starting_year}} required placeholder="Starting Year"><br>
+                Starting Year: <input class="create_covenant_input" placeholder="Starting year" name="starting_year" type="text" value={{session["current_covenant"].starting_year}} required><br>
                 <p>Enable Inflation?</p>
                 <input class="create_covenant_input" name="covenant_inflation_enabled" type="radio" value="Yes" required>
                 <label for="Yes">Yes</label>
-                <input class="create_covenant_input" name="covenant_inflation_enabled" type="radio" value="No" required selected="selected">
-                <label for="No" checked="checked" selected="selected">No</label></br><br>
+                <input checked="checked" class="create_covenant_input" name="covenant_inflation_enabled" type="radio" value="No" required selected="selected">
+                <label for="No">No</label></br><br>
                 <div class="hidden" id="covenant_inflation">
                     Initial Inflation Value: <input class="create_covenant_input" placeholder="Covenant starting inflation value" name="covenant_initial_inflation" type="text" value={{session["current_covenant"].inflation}} required><br>
                 </div>
@@ -71,6 +79,7 @@
                     div.className = "visible"
                 }
             });
+
             var max_input_fields = 10;
             var add_input = $('.add_input');
             var input_wrapper = $('.income_sources_wrapper');
@@ -82,10 +91,29 @@
                     $(input_wrapper).append(new_input); 
                 }
             });
+
             $(input_wrapper).on('click', '.remove_input', function(e){
                 e.preventDefault();
                 $(this).parent('div').remove();
                 add_input_count--;
+            });
+
+            var max_tithe_input_fields = 10;
+            var add_tithe_input = $('.add_tithe_input');
+            var input_tithe_wrapper = $('.tithes_wrapper');
+            var new_tithe_input = '<div><input class="create_covenant_input" placeholder="Tithe Source" name="tithe_sources_names" type="text" required><input class="create_covenant_input" placeholder="Tithe Annual Value" name="tithe_sources_values" type="number" required><a href="javascript:void(0);" class="remove_input" title="Remove input"><img height=20 width=20 src="/static/icon_minus.png" /></a><br></div>';
+            var add_tithe_input_count = 1; 
+            $(add_tithe_input).click(function(){
+                if(add_tithe_input_count < max_tithe_input_fields){
+                    add_tithe_input_count++; 
+                    $(input_tithe_wrapper).append(new_tithe_input); 
+                }
+            });
+
+            $(input_tithe_wrapper).on('click', '.remove_input', function(e){
+                e.preventDefault();
+                $(this).parent('div').remove();
+                add_tithe_input_count--;
             });
         });
     </script>
