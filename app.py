@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from flask import Flask, flash, redirect, render_template, \
-     request, url_for, session, flash, g
+     request, url_for, session, g
 #from flask_mail import Mail, Message
 from flask_bcrypt import Bcrypt
 from flask_session import Session
@@ -50,7 +50,7 @@ def initialize_database():
 
     login = "CREATE TABLE login (id SERIAL PRIMARY KEY, username VARCHAR(128) UNIQUE NOT NULL, email VARCHAR(128) UNIQUE NOT NULL, password VARCHAR(256) NOT NULL);"
     #covenant = "create table covenant (id serial primary key, name varchar(128), cov json, login_id serial references login(id));"
-    covenant = "CREATE TABLE covenant (id SERIAL PRIMARY KEY, name VARCHAR(128) NOT NULL UNIQUE, cov VARCHAR NOT NULL, user_id VARCHAR(128) NOT NULL);"
+    covenant = "CREATE TABLE covenant (id SERIAL PRIMARY KEY, name VARCHAR(128) NOT NULL, cov VARCHAR NOT NULL, user_id VARCHAR(128) NOT NULL);"
 
     try:
         print("CREATING TABLES!")
@@ -94,6 +94,32 @@ def add_covenant_to_database(cursor, covenant):
 #    user_id = cursor.fetchone()[0]
 #    return user_id
 
+
+def get_covenant_names(cursor, connection):
+    if not session["covenant_names"]:
+        command = f"SELECT name FROM covenant WHERE user_id=%s"
+        cursor.execute(command, g.username)
+        covenant_dump = cursor.fetchall()
+        close_database(connection)
+        print("DUMP:", covenant_dump)
+
+        covenant_names = []
+        for covenant in covenant_dump:
+            name = covenant[0]
+            covenant_names.append(name)
+        print("P2:", covenant_names)
+        session["covenant_names"] = covenant_names
+
+        return covenant_names
+    else:
+        return session["covenant_names"]
+
+
+def append_to_covenant_names(covenant_name):
+    session["covenant_names"].append(covenant_name)
+    return session["covenant_names"]
+
+
 ######################################
 
 @app.route("/")
@@ -130,24 +156,10 @@ def home():
         user_email = cursor.fetchone()[0]
         print("USER_EMAIL:", user_email)
 
-        try:
-            command = f"SELECT name FROM covenant WHERE user_id=%s"
-            cursor.execute(command, g.username)
-            covenant_dump = cursor.fetchall()
-            close_database(connection)
-            print("DUMP:", covenant_dump)
+        covenant_names = get_covenant_names(cursor, connection)
 
-            covenant_names = []
-            for covenant in covenant_dump:
-                name = covenant[0]
-                covenant_names.append(name)
-            print("P2:", covenant_names)
+        session["user_id"] = user_id
 
-            session["user_id"] = user_id
-        except:
-            covenants = {}
-
-        print("P3")
         session["covenant_names"] = covenant_names  # pylint: disable=assigning-non-slot
         print("SCN:", session["covenant_names"])
         return render_template("home.html", username = g.username, covenants=covenant_names)
@@ -216,10 +228,9 @@ def process_new_covenant():
     covenant.name = request.form["covenant_name"]
     covenant.season = request.form["covenant_season"]
 
-    print("SCN 2:", session["covenant_names"])
     if covenant.name in session["covenant_names"]:
         flash("Covenant names must be unique!")
-        return
+        return render_template("create_covenant.html")
 
     income_sources = {}
     for income_source, income_value in zip(
@@ -340,10 +351,18 @@ def finalize_covenant():
     connection = create_connection()
     cursor = create_cursor(connection)
 
+    print("SESSION COVENANT:", session["current_covenant"].name)
     add_covenant_to_database(cursor, session["current_covenant"])
     connection.commit()
     cursor.execute("SELECT * FROM covenant;")
     connection.commit()
+
+    close_database(connection)
+    covenant_names = append_to_covenant_names(session["current_covenant"].name)
+
+    #g.covenant_names = g.covenant_names.append(session["current_covenant"].name)  # pylint: disable=assigning-non-slot
+
+    return render_template("home.html", username = g.username, covenants=covenant_names)
 
     ## TODO: Modularlize 328-337 and DRY from def home()
     #command = f"SELECT name FROM covenant WHERE user_id='{g.username}'"
@@ -356,11 +375,6 @@ def finalize_covenant():
     #    name = covenant[0]
     #    covenant_names.append(name)
 
-    close_database(connection)
-
-    g.covenant_names = g.covenant_names.append(session["current_covenant"].name)  # pylint: disable=assigning-non-slot
-
-    return render_template("home.html")
     #return render_template("home.html", username=g.username, covenants=covenant_names)
 
 @app.route("/advance_covenant", methods = ["POST"])
