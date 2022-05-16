@@ -228,9 +228,9 @@ def process_new_covenant():
     covenant.name = request.form["covenant_name"]
     covenant.season = request.form["covenant_season"]
 
-    if covenant.name in session["covenant_names"]:
-        flash("Covenant names must be unique!")
-        return render_template("create_covenant.html")
+    #if covenant.name in session["covenant_names"]:
+    #    flash("Covenant names must be unique!")
+    #    return render_template("create_covenant.html")
 
     income_sources = {}
     for income_source, income_value in zip(
@@ -359,6 +359,11 @@ def finalize_covenant():
     cursor = create_cursor(connection)
 
     print("SESSION COVENANT:", session["current_covenant"].name)
+
+    if session["current_covenant"].name in session["covenant_names"]:
+        flash("Covenant names must be unique!")
+        return render_template("create_covenant_landing.html")
+
     add_covenant_to_database(cursor, session["current_covenant"])
     connection.commit()
     cursor.execute("SELECT * FROM covenant;")
@@ -368,6 +373,7 @@ def finalize_covenant():
     covenant_names = append_to_covenant_names(session["current_covenant"].name)
 
     #g.covenant_names = g.covenant_names.append(session["current_covenant"].name)  # pylint: disable=assigning-non-slot
+    session["new_covenant"] = False
 
     return render_template("home.html", username = g.username, covenants=covenant_names)
 

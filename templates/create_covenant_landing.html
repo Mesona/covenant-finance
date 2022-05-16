@@ -1,4 +1,13 @@
 <html>
+    <head>
+        {% with messages = get_flashed_messages() %}  
+        {% if messages %}  
+              {% for message in messages %}  
+                   <p style="text-align: center; color: #9C27B0;">{{ message }}</p>  
+              {% endfor %}  
+        {% endif %}  
+        {% endwith %}
+    </head>
     <body>
         <div class="main">
             COVENANT OVERVIEW<button class="submit" type="submit"><a href="{{url_for('create_covenant')}}">Edit Attributes</a></button><br>

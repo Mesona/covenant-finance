@@ -35,7 +35,15 @@
             CREATE COVENANT
             <form class="create_covenent_initial" action="{{url_for('process_new_covenant')}}" method="POST">
                 Covenant Name: <input class="create_covenant_input" placeholder="Covenant Name" name="covenant_name" type="text" value={{session["current_covenant"].name}} required><br>
-                Covenant Season: <input class="create_covenant_input" placeholder="Covenant Season" name="covenant_season" type="text" value={{session["current_covenant"].season}} required><br>
+                Covenant Season: <select class="create_covenant_input" name="covenant_season" type="text" value={{session["current_covenant"].season}}>
+                    {% for season in ["spring", "summer", "autumn", "winter"] %}
+                        {% if session["current_covenant"].season == season %}
+                            <option name=season selected>{{ season.capitalize() }}</option>
+                        {% else %}
+                            <option name=season>{{ season.capitalize() }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
                 <p>Income Sources:<a href="javascript:void(0);" class="add_input" title="Add input"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
                 <div class="income_sources_wrapper">
                     {% for income_source, income_value in session["current_covenant"].income_sources.items() %}
@@ -116,6 +124,9 @@
                 add_tithe_input_count--;
             });
         });
+
+        // var select = document.getElementsByTagName("SELECT")[0];
+        // select.selectedIndex = 1;
     </script>
     </body>
 </html>
