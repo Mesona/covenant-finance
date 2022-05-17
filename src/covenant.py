@@ -42,7 +42,7 @@ def save_covenant(covenant, path=None):
     import jsonpickle
     if covenant.expenses == float("inf"):
         covenant.expenses = 9999999
-    frozen = jsonpickle.encode(covenant)
+    frozen = jsonpickle.encode(covenant, keys=True)
 
     if path:
         with open(path, "w+") as f:
@@ -55,7 +55,7 @@ def save_covenant(covenant, path=None):
 
 def load_covenant_from_string(covenant):
     import jsonpickle
-    test = jsonpickle.decode(covenant)
+    test = jsonpickle.decode(covenant, keys=True)
     return test
 
 
@@ -239,6 +239,8 @@ Please select between spring, summer, autumn, and winter.
         return self.expenses + self.inflation
                    
     def total_income(self):
+        print("SYM:", self.income_sources.values())
+        print("SUM:", sum(self.income_sources.values()))
         return sum(self.income_sources.values())
 
     def change_season(self, season):
@@ -265,4 +267,9 @@ Please select between spring, summer, autumn, and winter.
 
     def advance_year(self, additional_costs=0):
         self.update_expenditures()
+        print("T:", type(self.treasury))
+        print("TI:", type(self.total_income()))
+        print("TE:", type(self.total_expenditure()))
+        print("AC:", type(additional_costs))
         self.treasury = self.treasury + self.total_income() - self.total_expenditure() - additional_costs
+

@@ -173,16 +173,18 @@ def home():
         return render_template("login.html")
 
 
-def clean_session():
+def clean_user_session():
     session["new_covenant"] = False
     session["current_covenant"] = None
+    if g.get("username"):
+        g.username = None
 
 
 @app.route("/authentication", methods=["POST"])
 def authenticate():
     import os
     bcrypt = Bcrypt()
-    clean_session()
+    clean_user_session()
 
     username = request.form["username"]
     password = request.form["password"]
@@ -223,6 +225,19 @@ def authenticate():
             flash("Invalid Username or Password !!")
             return render_template("login.html")
 
+
+@app.route("/advance_covenant", methods=["POST"])
+def advance_covenant():
+    disbursement = float(request.form["disbursement"])
+    covenant = session["current_covenant"]
+
+    covenant.advance_year(disbursement)
+
+    session["current_covenant"] = covenant
+
+    return redirect("create_covenant_landing")
+
+
 @app.route("/process_new_covenant", methods=["POST"])
 def process_new_covenant():
     # Create covenant core
@@ -236,7 +251,7 @@ def process_new_covenant():
             request.form.getlist('covenant_income_sources_names'),
             request.form.getlist('covenant_income_sources_values'),
         ):
-        income_sources[income_source] = income_value
+        income_sources[income_source] = float(income_value)
 
     covenant.income_sources = income_sources
     #covenant.tithes = request.form["covenant_tithes"]
@@ -245,12 +260,12 @@ def process_new_covenant():
             request.form.getlist('tithe_sources_names'),
             request.form.getlist('tithe_sources_values'),
         ):
-        covenant_tithes[tithe_source] = tithe_value
+        covenant_tithes[tithe_source] = float(tithe_value)
 
-    covenant.treasury = request.form["covenant_treasury"]
+    covenant.treasury = float(request.form["covenant_treasury"])
     covenant.inflation_enabled = request.form["covenant_inflation_enabled"]
-    covenant.inflation = request.form["covenant_initial_inflation"]
-    covenant.current_year = request.form["starting_year"]
+    covenant.inflation = float(request.form["covenant_initial_inflation"])
+    covenant.current_year = int(request.form["starting_year"])
 
     # Covenfolk content
     if not hasattr(covenant, "covenfolken"):
@@ -336,9 +351,11 @@ def handle_create_new_user():
 
 @app.route("/create_covenant", methods = ["GET"])
 def create_covenant():
+    print("C1:", session.get("new_covenant"))
     if not session.get("new_covenant"):
         session["current_covenant"] = Covenant()
         session["new_covenant"] = True
+        print("C1.5:", session.get("new_covenant"))
 
     if request.method == "GET":
         return render_template("create_covenant.html")
@@ -346,6 +363,7 @@ def create_covenant():
 @app.route("/create_covenant_landing", methods = ["POST", "GET"])
 def create_covenant_landing():
     """Shows the current state of the covenant being built. Should have buttons to add equipment, add labs, add covenfolk."""
+    print("C3:", session.get("new_covenant"))
     if request.method == "GET":
         return render_template("create_covenant_landing.html")
 
@@ -359,6 +377,7 @@ def finalize_covenant():
 
     print("SESSION COVENANT:", session["current_covenant"].name)
 
+    print("C2:", session.get("new_covenant"))
     if session["current_covenant"].name in session["covenant_names"] and session["new_covenant"] is True:
         flash("Covenant names must be unique!")
         return redirect("create_covenant_landing")
@@ -376,6 +395,7 @@ def finalize_covenant():
 
     #g.covenant_names = g.covenant_names.append(session["current_covenant"].name)  # pylint: disable=assigning-non-slot
     session["new_covenant"] = False
+    session["current_covenant"] = None
 
     return render_template("home.html", username = g.username, covenants=covenant_names)
 
@@ -392,9 +412,9 @@ def finalize_covenant():
 
     #return render_template("home.html", username=g.username, covenants=covenant_names)
 
-@app.route("/advance_covenant", methods = ["POST"])
-def advance_covenant():
-    return render_template("create_covenant_landing.html")
+#@app.route("/advance_covenant", methods = ["POST"])
+#def advance_covenant():
+#    return render_template("create_covenant_landing.html")
 
 @app.route("/modify_laboratories", methods = ["POST", "GET"])
 def modify_laboratories():
@@ -408,10 +428,10 @@ def modify_laboratories():
 
         names = request.form.getlist("laboratory_name")
         owners = request.form.getlist("laboratory_owner")
-        sizes = request.form.getlist("laboratory_size")
-        virtue_points = request.form.getlist("laboratory_virtue_points")
-        flaw_points = request.form.getlist("laboratory_flaw_points")
-        extra_upkeeps = request.form.getlist("laboratory_extra_upkeep")
+        sizes = int(request.form.getlist("laboratory_size"))
+        virtue_points = int(request.form.getlist("laboratory_virtue_points"))
+        flaw_points = int(request.form.getlist("laboratory_flaw_points"))
+        extra_upkeeps = int(request.form.getlist("laboratory_extra_upkeep"))
         usages = request.form.getlist("usage")
         minor_fortifications = request.form.getlist("laboratory_minor_fortifications")
         major_fortifications = request.form.getlist("laboratory_major_fortifications")
@@ -466,7 +486,7 @@ def modify_covenfolken():
         crafter_names = request.form.getlist("crafter_name")
         crafter_professions = request.form.getlist("crafter_profession")
         crafter_saving_categories = request.form.getlist("crafter_saving_category")
-        crafter_skills = request.form.getlist("crafter_skill")
+        crafter_skills = int(request.form.getlist("crafter_skill"))
         crafter_rarities = request.form.getlist("crafter_rarity")
 
         while count < len(crafter_names):
@@ -485,7 +505,7 @@ def modify_covenfolken():
         specialist_names = request.form.getlist("specialist_name")
         specialist_professions = request.form.getlist("specialist_profession")
         specialist_saving_categories = request.form.getlist("specialist_saving_category")
-        specialist_skills = request.form.getlist("specialist_skill")
+        specialist_skills = int(request.form.getlist("specialist_skill"))
         specialist_rarities = request.form.getlist("specialist_rarity")
 
         while count < len(specialist_names):

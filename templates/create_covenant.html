@@ -67,7 +67,7 @@
                     {% endfor %}
                 </div>
                 Starting Treasury: <input class="create_covenant_input" placeholder="Starting Treasury Amount" name="covenant_treasury" type="text" value={{session["current_covenant"].treasury}} required><br>
-                Starting Year: <input class="create_covenant_input" placeholder="Starting year" name="starting_year" type="text" value={{session["current_covenant"].starting_year}} required><br>
+                Starting Year: <input class="create_covenant_input" placeholder="Starting year" name="starting_year" type="text" required value={{session["current_covenant"].starting_year}}><br>
                 <p>Enable Inflation?</p>
                 <input class="create_covenant_input" name="covenant_inflation_enabled" type="radio" value="Yes" required>
                 <label for="Yes">Yes</label>
