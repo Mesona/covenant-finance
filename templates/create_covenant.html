@@ -32,7 +32,11 @@
 		</style>
     <body>
         <div class="main">
-            CREATE COVENANT
+            {% if session["new_covenant"] == "True" %}
+              CREATE COVENANT
+            {% else %}
+              MODIFY COVENANT
+            {% endif %}
             <form class="create_covenent_initial" action="{{url_for('process_new_covenant')}}" method="POST">
                 Covenant Name: <input class="create_covenant_input" placeholder="Covenant Name" name="covenant_name" type="text" value={{session["current_covenant"].name}} required><br>
                 Covenant Season: <select class="create_covenant_input" name="covenant_season" type="text" value={{session["current_covenant"].season}}>

@@ -17,7 +17,9 @@
             Tithes: {{session["current_covenant"].tithes}}<br>
             Current Treasury: {{session["current_covenant"].treasury}}<br>
             Inflation Enabled? {{session["current_covenant"].inflation_enabled}}<br>
-            Current Inflation Amount: {{session["current_covenant"].inflation}}<br>
+            {% if session["current_covenant"].inflation_enabled == "True" %}
+                Current Inflation Amount: {{session["current_covenant"].inflation}}<br>
+            {% endif %}
             {% if session["new_covenant"] %}
                 Starting Year: {{session["current_covenant"].current_year}}<br><br>
             {% else %}
@@ -89,17 +91,19 @@
             {% endfor %}
         </div>
         <div>
-            {% if session["new_covenant"] %}
-                <a href="{{url_for('finalize_covenant')}}">
+            <br>
+            {% if session["new_covenant"] == "True" %}
+                <a href="{{'finalize_covenant'}}">
                     <button>Create Covenant</button>
                 </a>
             {% else %}
-                <a href="{{url_for('finalize_covenant')}}">
-                    <button>Save Covenant</button>
-                </a>
                 Mage Disbursement: <input class="disbursement" name="disbursement" type="number">
                 <a href="{{url_for('advance_covenant')}}">
                     <button>Advance Covenant</button>
+                </a>
+                <br>
+                <a href="{{'finalize_covenant'}}">
+                    <button>Update Covenant</button>
                 </a>
             {% endif %}
         </div>

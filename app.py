@@ -79,6 +79,9 @@ def add_user_to_database(cursor, username, email, password):
 def add_covenant_to_database(cursor, covenant):
     cursor.execute("INSERT INTO covenant (name, cov, user_id) values (%s, %s, %s)", (covenant.name, save_covenant(covenant), g.username))
 
+def update_covenant_in_database(cursor, covenant):
+    cursor.execute("UPDATE covenant SET cov = %s WHERE name = %s AND user_id = %s", (save_covenant(covenant), covenant.name, g.username))
+
 #def save_covenant_to_database(cursor, covenant):
 #    cursor.execute("INSERT INTO cov (name, cov, login_id) values (%s, %s, %s)", (covenant.name, covenant, user_id))
 #    pass
@@ -228,10 +231,6 @@ def process_new_covenant():
     covenant.name = request.form["covenant_name"]
     covenant.season = request.form["covenant_season"]
 
-    #if covenant.name in session["covenant_names"]:
-    #    flash("Covenant names must be unique!")
-    #    return render_template("create_covenant.html")
-
     income_sources = {}
     for income_source, income_value in zip(
             request.form.getlist('covenant_income_sources_names'),
@@ -266,7 +265,7 @@ def process_new_covenant():
         covenant.laboratories = Laboratories()
 
     session['current_covenant'] = covenant
-    return render_template("create_covenant_landing.html")
+    return redirect("create_covenant_landing")
 
 
 @app.route("/load_existing_covenant", methods=["GET", "POST"])
@@ -360,17 +359,20 @@ def finalize_covenant():
 
     print("SESSION COVENANT:", session["current_covenant"].name)
 
-    if session["current_covenant"].name in session["covenant_names"]:
+    if session["current_covenant"].name in session["covenant_names"] and session["new_covenant"] is True:
         flash("Covenant names must be unique!")
-        return render_template("create_covenant_landing.html")
+        return redirect("create_covenant_landing")
+    elif session["new_covenant"] is False:
+        update_covenant_in_database(cursor, session["current_covenant"])
+    else:
+        add_covenant_to_database(cursor, session["current_covenant"])
+        covenant_names = append_to_covenant_names(session["current_covenant"].name)
 
-    add_covenant_to_database(cursor, session["current_covenant"])
     connection.commit()
     cursor.execute("SELECT * FROM covenant;")
     connection.commit()
 
     close_database(connection)
-    covenant_names = append_to_covenant_names(session["current_covenant"].name)
 
     #g.covenant_names = g.covenant_names.append(session["current_covenant"].name)  # pylint: disable=assigning-non-slot
     session["new_covenant"] = False
