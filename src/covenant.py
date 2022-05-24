@@ -272,4 +272,5 @@ Please select between spring, summer, autumn, and winter.
         print("TE:", type(self.total_expenditure()))
         print("AC:", type(additional_costs))
         self.treasury = self.treasury + self.total_income() - self.total_expenditure() - additional_costs
+        self.current_year += 1
 

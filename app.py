@@ -144,6 +144,8 @@ def before_request():
 def home():
     print("IN HOME")
     print("SCN 0:", session.get("covenant_names"))
+    session["current_covenant"] = None
+    session["new_covenant"] = None
     if g.username and not session.get("covenant_names"):
         print("USERNAME:", g.username)
         connection = create_connection()
@@ -228,7 +230,11 @@ def authenticate():
 
 @app.route("/advance_covenant", methods=["POST"])
 def advance_covenant():
-    disbursement = float(request.form["disbursement"])
+    try:
+        disbursement = float(request.form["disbursement"])
+    except ValueError:
+        disbursement = 0.0
+
     covenant = session["current_covenant"]
 
     covenant.advance_year(disbursement)
@@ -265,7 +271,8 @@ def process_new_covenant():
     covenant.treasury = float(request.form["covenant_treasury"])
     covenant.inflation_enabled = request.form["covenant_inflation_enabled"]
     covenant.inflation = float(request.form["covenant_initial_inflation"])
-    covenant.current_year = int(request.form["starting_year"])
+    covenant.current_year = int(request.form["current_year"])
+    covenant.tithes = covenant_tithes
 
     # Covenfolk content
     if not hasattr(covenant, "covenfolken"):
@@ -352,7 +359,8 @@ def handle_create_new_user():
 @app.route("/create_covenant", methods = ["GET"])
 def create_covenant():
     print("C1:", session.get("new_covenant"))
-    if not session.get("new_covenant"):
+    print("C1.1:", session.get("current_covenant"))
+    if not session.get("new_covenant") and not session.get("current_covenant"):
         session["current_covenant"] = Covenant()
         session["new_covenant"] = True
         print("C1.5:", session.get("new_covenant"))
@@ -378,11 +386,12 @@ def finalize_covenant():
     print("SESSION COVENANT:", session["current_covenant"].name)
 
     print("C2:", session.get("new_covenant"))
-    if session["current_covenant"].name in session["covenant_names"] and session["new_covenant"] is True:
+    if session["current_covenant"].name in session.get("covenant_names") and session.get("new_covenant") is True:
         flash("Covenant names must be unique!")
         return redirect("create_covenant_landing")
     elif session["new_covenant"] is False:
         update_covenant_in_database(cursor, session["current_covenant"])
+        covenant_names = session["covenant_names"]
     else:
         add_covenant_to_database(cursor, session["current_covenant"])
         covenant_names = append_to_covenant_names(session["current_covenant"].name)
