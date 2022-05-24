@@ -504,6 +504,7 @@ def modify_covenfolken():
         return render_template("modify_covenfolken.html", saving_categories=SAVING_CATEGORIES)
 
     if request.method == "POST":
+        print("C1")
         covenant = session["current_covenant"]
 
         form = request.form
@@ -511,9 +512,11 @@ def modify_covenfolken():
         values = request.values
         data = request.data
         args = request.args
+        print("C2")
         getlist = request.form.getlist("crafter_name")
         covenfolk_input = request.form.getlist("covenfolk_input")
         non_crafters = ["magi", "companion", "grog", "noble", "dependant", "laborer", "servant", "teamster", "animal"]
+        print("C3")
         covenfolken = Covenfolken()
         for nc in non_crafters:
             current = f"{nc}_name"
@@ -524,6 +527,7 @@ def modify_covenfolken():
                 else:
                     covenfolken.add_covenfolk(covenfolk, nc)
 
+        print("C4")
         count = 0
         crafter_names = request.form.getlist("crafter_name")
         crafter_professions = request.form.getlist("crafter_profession")
@@ -543,6 +547,7 @@ def modify_covenfolken():
             count+=1
 
 
+        print("C5")
         count = 0
         specialist_names = request.form.getlist("specialist_name")
         specialist_professions = request.form.getlist("specialist_profession")
@@ -561,6 +566,7 @@ def modify_covenfolken():
             )
             count+=1
 
+        print("C6")
         covenant.covenfolken = covenfolken
         session["current_covenant"] = covenant
 
