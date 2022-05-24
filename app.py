@@ -422,10 +422,12 @@ def finalize_covenant():
     if session["current_covenant"].name in session.get("covenant_names") and session.get("new_covenant") is True:
         flash("Covenant names must be unique!")
         return redirect("create_covenant_landing")
-    elif session["new_covenant"] is False:
+    elif not session["new_covenant"]:
+        print("YO")
         update_covenant_in_database(cursor, session["current_covenant"])
         covenant_names = session["covenant_names"]
     else:
+        print("OY")
         add_covenant_to_database(cursor, session["current_covenant"])
         covenant_names = append_to_covenant_names(session["current_covenant"].name)
 
@@ -439,7 +441,8 @@ def finalize_covenant():
     session["new_covenant"] = False
     session["current_covenant"] = None
 
-    return render_template("home.html", username = g.username, covenants=covenant_names)
+    #return redirect("home.html", username = g.username, covenants=covenant_names)
+    return redirect(url_for("home"))
 
     ## TODO: Modularlize 328-337 and DRY from def home()
     #command = f"SELECT name FROM covenant WHERE user_id='{g.username}'"
