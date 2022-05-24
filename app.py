@@ -512,17 +512,18 @@ def modify_covenfolken():
         print("C1")
         covenant = session["current_covenant"]
 
-        form = request.form
-        json = request.json
-        values = request.values
-        data = request.data
-        args = request.args
+        covenfolken = Covenfolken()
+
+        #form = request.form
+        #json = request.json
+        #values = request.values
+        #data = request.data
+        #args = request.args
         print("C2")
         getlist = request.form.getlist("crafter_name")
         covenfolk_input = request.form.getlist("covenfolk_input")
         non_crafters = ["magi", "companion", "grog", "noble", "dependant", "laborer", "servant", "teamster", "animal"]
         print("C3")
-        covenfolken = Covenfolken()
         for nc in non_crafters:
             current = f"{nc}_name"
             these_covenfolk = request.form.getlist(current)
