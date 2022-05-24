@@ -171,7 +171,10 @@ def home():
         cursor = create_cursor(connection)
 
         user_id_query = "SELECT id FROM login WHERE username = %s"
-        cursor.execute(user_id_query, g.username)
+        print("1")
+        #cursor.execute(user_id_query, g.username)
+        cursor.execute("SELECT id FROM login WHERE username = {0};".format(g.username))
+        print("2")
         user_id = cursor.fetchone()[0]
         print("USER_ID", user_id)
 
