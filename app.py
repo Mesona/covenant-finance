@@ -471,10 +471,10 @@ def modify_laboratories():
 
         names = request.form.getlist("laboratory_name")
         owners = request.form.getlist("laboratory_owner")
-        sizes = int(request.form.getlist("laboratory_size"))
-        virtue_points = int(request.form.getlist("laboratory_virtue_points"))
-        flaw_points = int(request.form.getlist("laboratory_flaw_points"))
-        extra_upkeeps = int(request.form.getlist("laboratory_extra_upkeep"))
+        sizes = request.form.getlist("laboratory_size")
+        virtue_points = request.form.getlist("laboratory_virtue_points")
+        flaw_points = request.form.getlist("laboratory_flaw_points")
+        extra_upkeeps = request.form.getlist("laboratory_extra_upkeep")
         usages = request.form.getlist("usage")
         minor_fortifications = request.form.getlist("laboratory_minor_fortifications")
         major_fortifications = request.form.getlist("laboratory_major_fortifications")
@@ -529,7 +529,7 @@ def modify_covenfolken():
         crafter_names = request.form.getlist("crafter_name")
         crafter_professions = request.form.getlist("crafter_profession")
         crafter_saving_categories = request.form.getlist("crafter_saving_category")
-        crafter_skills = int(request.form.getlist("crafter_skill"))
+        crafter_skills = request.form.getlist("crafter_skill")
         crafter_rarities = request.form.getlist("crafter_rarity")
 
         while count < len(crafter_names):
@@ -548,7 +548,7 @@ def modify_covenfolken():
         specialist_names = request.form.getlist("specialist_name")
         specialist_professions = request.form.getlist("specialist_profession")
         specialist_saving_categories = request.form.getlist("specialist_saving_category")
-        specialist_skills = int(request.form.getlist("specialist_skill"))
+        specialist_skills = request.form.getlist("specialist_skill")
         specialist_rarities = request.form.getlist("specialist_rarity")
 
         while count < len(specialist_names):
