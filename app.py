@@ -12,6 +12,7 @@ from src.laboratory import Laboratories
 from src.covenfolk import Covenfolken, SAVING_CATEGORIES
 from src.armory import Armory
 import logging
+import os
 
 
 app = Flask(__name__)
@@ -30,22 +31,17 @@ logger.addHandler(handler) # adds handler to the werkzeug WSGI logger
 
 
 def in_heroku():
-    from os import environ
-    for key in environ.keys():
+    for key in os.environ.keys():
         if "HEROKU" in key:
-            del environ
             return True
 
-    del environ
     return False
 
 
 def create_connection():
     print("AA")
     if in_heroku():
-        from os import environ
-        return psycopg2.connect(environ["DATABASE_URL"], sslmode='require')
-        del environ
+        return psycopg2.connect(os.environ["DATABASE_URL"], sslmode='require')
         #return psycopg2.connect(user="finance", database="postgresql-polished-48712", password=PASSWORD, sslmode='require')
     else:
         return psycopg2.connect(user="finance", database="finance", password=PASSWORD)
@@ -640,6 +636,6 @@ def modify_armory():
 
 if __name__ == "__main__":
     if in_heroku():
-        app.run(host="0.0.0.0", port=27383, debug=True)
+        app.run(host="0.0.0.0", port=os.environ["PORT"], debug=True)
     else:
         app.run(host="127.0.0.1", port=8000, debug=True)
