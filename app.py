@@ -27,8 +27,27 @@ logger.addHandler(handler) # adds handler to the werkzeug WSGI logger
 
 
 ######################################
+
+
+def in_heroku():
+    from os import environ
+    for key in environ.keys():
+        if "HEROKU" in key:
+            del environ
+            return True
+
+    del environ
+    return False
+
+
 def create_connection():
-    return psycopg2.connect(user="finance", database="finance", password=PASSWORD)
+    if in_heroku():
+        from os import environ
+        return psycopg2.connect(environ["DATABASE_URL"], sslmode='require')
+        del environ
+        #return psycopg2.connect(user="finance", database="postgresql-polished-48712", password=PASSWORD, sslmode='require')
+    else:
+        return psycopg2.connect(user="finance", database="finance", password=PASSWORD)
 
 def create_cursor(connection):
     return connection.cursor()
