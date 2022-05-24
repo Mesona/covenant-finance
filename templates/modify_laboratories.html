@@ -22,7 +22,7 @@
             <form class="modify_covenant_laboratories" action="{{url_for('modify_laboratories')}}" method="POST">
                 Laboratories:<a href="javascript:void(0);" class="add_lab add_laboratory" title="Add lab"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
                 <div class="laboratory_wrapper">
-                    {% for name, laboratory in session["new_covenant"].laboratories.labs.items() %}
+                    {% for name, laboratory in session["current_covenant"].laboratories.labs.items() %}
                         <div>
                             <hr>
                             Lab Name: <input class="laboratory_input" value={{name}} name="laboratory_name" type="text" required>
@@ -30,12 +30,12 @@
                             Lab Owner: <input class="laboratory_input" value={{laboratory.owner}} name="laboratory_owner" type="text" required><br>
                             Lab Usage: <select name="usage">
                                 <option value="light">Light</option>
-                                <option value="typical">Typical</option>
+                                <option value="typical" selected="selected">Typical</option>
                                 <option value="heavy">Heavy</option>
                             </select><br>
                             Lab Size: <input class="laboratory_input" value={{laboratory.size}} name="laboratory_size" type="number" required><br>
-                            Lab Unused Virtue Points: <input class="laboratory_input" value={{laboratory.virtue_points}} name="laboratory_virtue_points" type="number" required><br>
-                            Lab Unusued Flaw Points: <input class="laboratory_input" value={{laboratory.flaw_points}} name="laboratory_flaw_points" type="number" required><br>
+                            Lab Unused Virtue Points: <input class="laboratory_input" value={{laboratory.vp}} name="laboratory_virtue_points" type="number" required><br>
+                            Lab Unusued Flaw Points: <input class="laboratory_input" value={{laboratory.fp}} name="laboratory_flaw_points" type="number" required><br>
                             Lab Minor Fortifications: <input class="laboratory_input" value={{laboratory.minor_fortifications}} name="laboratory_minor_fortifications" type="number" required><br>
                             Lab Major Fortifications: <input class="laboratory_input" value={{laboratory.major_fortifications}} name="laboratory_major_fortifications" type="number" required><br>
                             Extra Lab Upkeep: <input class="laboratory_input" value={{laboratory.extra_upkeep}} name="laboratory_extra_upkeep" type="number" required><br>
@@ -58,18 +58,18 @@
                    <hr>
                    Lab Name: <input class="laboratory_input"  name="laboratory_name" type="text" required>
                    <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
-                   Lab Owner: <input class="laboratory_input" placeholder="Lab Owner" name="laboratory_owner" type="text" required><br>
+                   Lab Owner: <input class="laboratory_input" name="laboratory_owner" type="text" required><br>
                    Lab Usage: <select name="usage">
                        <option value="light">Light</option>
-                       <option value="typical">Typical</option>
+                       <option value="typical" selected="selected">Typical</option>
                        <option value="heavy">Heavy</option>
                    </select><br>
-                   Lab Size: <input class="laboratory_input" placeholder="Lab Size" name="laboratory_size" type="number" required><br>
-                   Lab Unused Virtue Points: <input class="laboratory_input" placeholder="Virtue Points" name="laboratory_virtue_points" type="number" required><br>
-                   Lab Unused Flaw Points: <input class="laboratory_input" placeholder="Flaw Points" name="laboratory_flaw_points" type="number" required><br>
-                   Lab Minor Fortifications: <input class="laboratory_input" placeholder="Minor Fortifications" name="laboratory_minor_fortifications" type="number" required><br>
-                   Lab Major Fortifications: <input class="laboratory_input" placeholder="Major Fortifications" name="laboratory_major_fortifications" type="number" required><br>
-                   Extra Lab Upkeep: <input class="laboratory_input" placeholder="Extra Upkeep" name="laboratory_extra_upkeep" type="number" required><br>
+                   Lab Size: <input class="laboratory_input" name="laboratory_size" type="number" required><br>
+                   Lab Unused Virtue Points: <input class="laboratory_input" name="laboratory_virtue_points" type="number" required><br>
+                   Lab Unused Flaw Points: <input class="laboratory_input" name="laboratory_flaw_points" type="number" required><br>
+                   Lab Minor Fortifications: <input class="laboratory_input" name="laboratory_minor_fortifications" type="number" required><br>
+                   Lab Major Fortifications: <input class="laboratory_input" name="laboratory_major_fortifications" type="number" required><br>
+                   Extra Lab Upkeep: <input class="laboratory_input" name="laboratory_extra_upkeep" type="number" required><br>
                </div>`
             var new_laboratory_input = 1;
             var add_laboratory_count = 1

@@ -1,5 +1,12 @@
 <html>
     <head>
+        {% with messages = get_flashed_messages() %}  
+        {% if messages %}  
+              {% for message in messages %}  
+                   <p style="text-align: center; color: #9C27B0;">{{ message }}</p>  
+              {% endfor %}  
+        {% endif %}  
+        {% endwith %}
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     </head>
 		<style>
@@ -16,36 +23,81 @@
 						margin-left: 10px;
 						vertical-align: text-bottom;
 				}
+				.visible {
+            visibility: visible;
+				}
+				.hidden {
+            visibility: hidden;
+				}
 		</style>
     <body>
         <div class="main">
-            CREATE COVENANT
+            {% if session["new_covenant"] == "True" %}
+              CREATE COVENANT
+            {% else %}
+              MODIFY COVENANT
+            {% endif %}
             <form class="create_covenent_initial" action="{{url_for('process_new_covenant')}}" method="POST">
-                Covenant Name: <input class="create_covenant_input" placeholder="Covenant Name" name="covenant_name" type="text" value={{session["new_covenant"].name}} required><br>
-                Covenant Season: <input class="create_covenant_input" placeholder="Covenant Season" name="covenant_season" type="text" value={{session["new_covenant"].season}} required><br>
+                Covenant Name: <input class="create_covenant_input" placeholder="Covenant Name" name="covenant_name" type="text" value={{session["current_covenant"].name}} required><br>
+                Covenant Season: <select class="create_covenant_input" name="covenant_season" type="text" value={{session["current_covenant"].season}}>
+                    {% for season in ["spring", "summer", "autumn", "winter"] %}
+                        {% if session["current_covenant"].season == season %}
+                            <option name=season selected>{{ season.capitalize() }}</option>
+                        {% else %}
+                            <option name=season>{{ season.capitalize() }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
                 <p>Income Sources:<a href="javascript:void(0);" class="add_input" title="Add input"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
                 <div class="income_sources_wrapper">
-                    {% for income_source, income_value in session["new_covenant"].income_sources.items() %}
+                    {% for income_source, income_value in session["current_covenant"].income_sources.items() %}
                         <div>
                             <input class="create_covenant_input" placeholder="Income Source" value={{income_source}}  name="covenant_income_sources_names" type="text" required><input class="create_covenant_input" value={{income_value}} placeholder="Income Source Annual Value" name="covenant_income_sources_values" type="number" required>
                             <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
                         </div>
                     {% endfor %}
                 </div>
-                Annual Tithes Owed: <input class="create_covenant_input" placeholder="Tithes" name="covenant_tithes" type="text" value={{session["new_covenant"].tithes}} required><br>
-                Starting Treasury: <input class="create_covenant_input" placeholder="Starting Treasury Amount" name="covenant_treasury" type="text" value={{session["new_covenant"].treasury}} required><br>
-                Starting Year: <input class="create_covenant_input" placeholder="Starting year" name="starting_year" type="text" value={{session["new_covenant"].starting_year}} required placeholder="Starting Year"><br>
+                <p>Annual Tithes Owed:<a href="javascript:void(0);" class="add_tithe_input" placeholder="Tithes" name="covenant_tithes"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
+                <div class="tithes_wrapper">
+                    {% for tithe_source, tithe_value in session["current_covenant"].tithes.items() %}
+                        <div>
+                            <input class="create_covenant_input" placeholder="Tithe Source" value={{tithe_source}}  name="tithe_sources_names" type="text" required><input class="create_covenant_input" value={{tithe_value}} placeholder="Tithe Annual Value" name="tithe_sources_values" type="number" required>
+                            <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
+                        </div>
+                    {% endfor %}
+                </div>
+                Starting Treasury: <input class="create_covenant_input" placeholder="Starting Treasury Amount" name="covenant_treasury" type="text" value={{session["current_covenant"].treasury}} required><br>
+
+                {% if session["new_covenant"] == "True" %}
+                    Starting Year: <input class="create_covenant_input" placeholder="Starting year" name="current_year" type="text" required value={{session["current_covenant"].current_year}}><br>
+                {% else %}
+                    Current Year: <input class="create_covenant_input" placeholder="Starting year" name="current_year" type="text" required value={{session["current_covenant"].current_year}}><br>
+                {% endif %}
+
                 <p>Enable Inflation?</p>
                 <input class="create_covenant_input" name="covenant_inflation_enabled" type="radio" value="Yes" required>
                 <label for="Yes">Yes</label>
-                <input class="create_covenant_input" name="covenant_inflation_enabled" type="radio" value="No" required selected="selected">
+                <input checked="checked" class="create_covenant_input" name="covenant_inflation_enabled" type="radio" value="No" required selected="selected">
                 <label for="No">No</label></br><br>
-                Initial Inflation Value: <input class="create_covenant_input" placeholder="Covenant starting inflation value" name="covenant_initial_inflation" type="text" value={{session["new_covenant"].inflation}} required><br>
+                <div class="hidden" id="covenant_inflation">
+                    Initial Inflation Value: <input class="create_covenant_input" placeholder="Covenant starting inflation value" name="covenant_initial_inflation" type="text" value={{session["current_covenant"].inflation}} required><br>
+                </div>
                 <button class="submit" type="submit">Proceed</button>
             </form>
         </div>
     <script>
         $(document).ready(function(){
+            $('input[type="radio"]').click(function(){
+                var demovalue = $(this).val(); 
+                console.log("DEMOVALUE:", demovalue)
+                var div = document.getElementById("covenant_inflation");
+                if (demovalue === "No") {
+                    div.className = "hidden"
+                } else if (demovalue == "Yes") {
+                    div.className = "visible"
+                }
+            });
+
             var max_input_fields = 10;
             var add_input = $('.add_input');
             var input_wrapper = $('.income_sources_wrapper');
@@ -57,12 +109,34 @@
                     $(input_wrapper).append(new_input); 
                 }
             });
+
             $(input_wrapper).on('click', '.remove_input', function(e){
                 e.preventDefault();
                 $(this).parent('div').remove();
                 add_input_count--;
             });
+
+            var max_tithe_input_fields = 10;
+            var add_tithe_input = $('.add_tithe_input');
+            var input_tithe_wrapper = $('.tithes_wrapper');
+            var new_tithe_input = '<div><input class="create_covenant_input" placeholder="Tithe Source" name="tithe_sources_names" type="text" required><input class="create_covenant_input" placeholder="Tithe Annual Value" name="tithe_sources_values" type="number" required><a href="javascript:void(0);" class="remove_input" title="Remove input"><img height=20 width=20 src="/static/icon_minus.png" /></a><br></div>';
+            var add_tithe_input_count = 1; 
+            $(add_tithe_input).click(function(){
+                if(add_tithe_input_count < max_tithe_input_fields){
+                    add_tithe_input_count++; 
+                    $(input_tithe_wrapper).append(new_tithe_input); 
+                }
+            });
+
+            $(input_tithe_wrapper).on('click', '.remove_input', function(e){
+                e.preventDefault();
+                $(this).parent('div').remove();
+                add_tithe_input_count--;
+            });
         });
+
+        // var select = document.getElementsByTagName("SELECT")[0];
+        // select.selectedIndex = 1;
     </script>
     </body>
 </html>

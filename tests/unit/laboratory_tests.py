@@ -1,5 +1,5 @@
 import pytest
-from laboratory import Laboratory, Laboratories
+from src.laboratory import Laboratory, Laboratories
 
 def demo_lab():
     lab = Laboratory(

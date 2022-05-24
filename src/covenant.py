@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 
 import math
-from covenfolk import Covenfolken
-from armory import Armory
-from laboratory import Laboratories
 from collections import defaultdict
-#from models import CovenantModel
+from src.covenfolk import Covenfolken
+from src.armory import Armory
+from src.laboratory import Laboratories
 
 base_covenfolk_point_costs = {
         "cheap": {
@@ -39,18 +38,28 @@ base_covenfolk_point_costs = {
 }
 
 
-def save_covenant(covenant, path):
+def save_covenant(covenant, path=None):
     import jsonpickle
     if covenant.expenses == float("inf"):
         covenant.expenses = 9999999
-    dump = jsonpickle.encode(covenant, indent=4)
-    with open(path, "w+") as f:
-        f.write(dump)
+    frozen = jsonpickle.encode(covenant, keys=True)
 
-    print(f"Covenant successfully saved to {path}")
-        
+    if path:
+        with open(path, "w+") as f:
+            f.write(frozen)
 
-def load_covenant(path):
+        print(f"Covenant successfully saved to {path}")
+    else:
+        return frozen
+
+
+def load_covenant_from_string(covenant):
+    import jsonpickle
+    test = jsonpickle.decode(covenant, keys=True)
+    return test
+
+
+def load_covenant_from_file(path):
     import jsonpickle
 
     with open(path, "r") as f:
@@ -68,7 +77,9 @@ class Covenant:
             income_sources = {"source": 100},
             tithes = {},
             treasury = 50.0,
-            laboratories = {},
+            laboratories = Laboratories(),
+            covenfolken = Covenfolken(),
+            armory = Armory(),
             inflation_enabled = True,
             inflation = 0,
             current_year = 1220,
@@ -91,14 +102,15 @@ Please select between spring, summer, autumn, and winter.
         self.income_sources = income_sources
         self.tithes = tithes
         self.treasury = treasury
-        self.covenfolken = Covenfolken()
-        self.laboratories = Laboratories()
-        self.armory = Armory()
+        self.covenfolken = covenfolken
+        self.laboratories = laboratories
+        self.armory = armory
         self.treasury = treasury
         self.inflation_enabled = inflation_enabled
         self.inflation = inflation
         self.expenses = float("inf")  # Prevents inflation from taking effect the first year
         self.current_year = int(current_year)
+
             
     def calculate_covenfolk_points(self):
         point_cost = 0
@@ -133,9 +145,6 @@ Please select between spring, summer, autumn, and winter.
         for classification in covenfolk_roles:
             number_of_matching_covenfolk = self.covenfolken.total_count_of(classification)
             covenfolk_points += self.calculate_covenfolk_point_costs(classification) * number_of_matching_covenfolk
-            print("CURRENT CLASSIFICATION:", classification)
-            print("NUMBER OF MATCHING:", number_of_matching_covenfolk)
-            print("CURRENT POINT TOTAL:", covenfolk_points)
 
         covenfolk_points -= (self.covenfolken.total_count_of("laborer") * 2)
         teamster_minimums = math.ceil(covenfolk_points / 10)
@@ -230,6 +239,8 @@ Please select between spring, summer, autumn, and winter.
         return self.expenses + self.inflation
                    
     def total_income(self):
+        print("SYM:", self.income_sources.values())
+        print("SUM:", sum(self.income_sources.values()))
         return sum(self.income_sources.values())
 
     def change_season(self, season):
@@ -254,6 +265,12 @@ Please select between spring, summer, autumn, and winter.
     def bank(self, silver):
         self.treasury += silver
 
-    def advance_year(self):
+    def advance_year(self, additional_costs=0):
         self.update_expenditures()
-        self.treasury = self.treasury + self.total_income() - self.total_expenditure()
+        print("T:", type(self.treasury))
+        print("TI:", type(self.total_income()))
+        print("TE:", type(self.total_expenditure()))
+        print("AC:", type(additional_costs))
+        self.treasury = self.treasury + self.total_income() - self.total_expenditure() - additional_costs
+        self.current_year += 1
+

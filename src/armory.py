@@ -69,6 +69,14 @@ class Armory:
         self.light_siege = defaultdict(dict)
         self.heavy_siege = defaultdict(dict)
         self.magic = []
+        self.equipment = {
+                "weapons": self.weapons,
+                "partial": self.partial,
+                "full": self.full,
+                "light_siege": self.light_siege,
+                "heavy_siege": self.heavy_siege,
+                "magic": self.magic,
+        }
 
     def calculate_all_savings(self) -> dict:
         """Generates a dictionary of all the covenant savings this armory provides."""
@@ -107,6 +115,24 @@ class Armory:
             return self.magic
         else:
             raise ValueError(f"Invalid equipment type of {equipment_type}!")
+
+    # TODO: Add test for me
+    def list_equipment_type(self, equipment_type: str) -> list:
+        """Returns a list of dictionaries, one per item, for use with front end displays."""
+        equipment_target = self.select_equipment_type(equipment_type)
+        equipment = []
+        if equipment_type == "magic":
+            return equipment_target
+        else:
+            for equip, data in equipment_target.items():
+                for quality, quantity in data.items():
+                    for _ in range(quantity):
+                        equipment.append({
+                            "name": equip,
+                            "quality": quality
+                        })
+
+        return equipment
 
     def add_equipment(
             self,

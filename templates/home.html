@@ -12,15 +12,13 @@
     </div>
     <div id = "covList">
     </div>
-    <script>
-        let covs = {{covenants}}
-        let covList = "<ul>"
-        covenants.forEach(function(covs) {
-            covList += "<li>" + covs.name + "</li>";
-        });
-        covList += "</ul>"
-        document.getElementById("covList").innerHTML = covList;
-    </script>
+    <ul>
+    {% for covenant in covenants %}
+        <li>
+            <a href="{{url_for('load_existing_covenant', covenant_name=covenant)}}">{{covenant}}</a>
+        </li>
+    {% endfor %}
+    </ul>
 
     <a href="create_covenant">
         <button>Create new Covenant</button>

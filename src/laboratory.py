@@ -5,23 +5,29 @@ class Laboratories:
         from collections import defaultdict
         self.labs = defaultdict(bool)
 
-    def is_lab_name_unique(self, name):
+    def lab_name_is_unique(self, name):
+        print("LAB NAME TEST:", name)
+        print("CURRENT LABS:", self.labs)
+        print("ACTUAL TEST:", self.labs[name])
         if self.labs[name]:
             return False
 
         return True
 
     def add_lab(self, *args):
+        # FIXME: No tests for these
         if isinstance(args[0], Laboratory):
             lab = args[0]
-            if self.is_lab_name_unique(lab.name):
+            if self.lab_name_is_unique(lab.name):
                 self.labs[lab.name] = lab
             else:
                 raise ValueError(f"Lab name {lab.name} is not unique!")
         else:
-            if self.is_lab_name_unique(args[0]):
+            if self.lab_name_is_unique(args[0]):
                 lab = Laboratory(*args)
                 self.labs[lab.name] = lab
+            else:
+                raise ValueError(f"Lab name {args[0]} is not unique!")
 
     def remove_lab(self, name):
         self.labs.pop(name)

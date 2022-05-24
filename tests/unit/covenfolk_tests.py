@@ -1,5 +1,5 @@
 import pytest
-from covenfolk import Covenfolken, Covenfolk, validate_classification, validate_saving_category
+from src.covenfolk import Covenfolken, Covenfolk, validate_classification, validate_saving_category
 
 def demo_folk():
     return Covenfolk(
