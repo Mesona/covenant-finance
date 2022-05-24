@@ -406,9 +406,11 @@ def create_covenant_landing():
     """Shows the current state of the covenant being built. Should have buttons to add equipment, add labs, add covenfolk."""
     print("C3:", session.get("new_covenant"))
     if request.method == "GET":
+        print("C31")
         return render_template("create_covenant_landing.html")
 
     elif request.method == "POST":
+        print("C32")
         return render_template("create_covenant_landing.html")
 
 @app.route("/finalize_covenant", methods = ["POST", "GET"])
@@ -572,6 +574,7 @@ def modify_covenfolken():
         print("C6")
         covenant.covenfolken = covenfolken
         session["current_covenant"] = covenant
+        print("C7")
 
         return render_template("create_covenant_landing.html")
 
