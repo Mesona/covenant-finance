@@ -173,7 +173,7 @@ def home():
         cursor = create_cursor(connection)
         print("b")
 
-        user_id_query = "SELECT id FROM login WHERE username = '%s'"
+        user_id_query = "SELECT id FROM login WHERE username = %s"
         print("1")
         cursor.execute(user_id_query, g.username)
         #cursor.execute("SELECT id FROM login WHERE username = {g.username}")
@@ -181,7 +181,7 @@ def home():
         user_id = cursor.fetchone()[0]
         print("USER_ID", user_id)
 
-        user_email_query = "SELECT email FROM login WHERE username = '%s'"
+        user_email_query = "SELECT email FROM login WHERE username = %s"
         cursor.execute(user_email_query, g.username)
         user_email = cursor.fetchone()[0]
         print("USER_EMAIL:", user_email)
