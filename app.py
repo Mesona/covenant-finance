@@ -41,6 +41,7 @@ def in_heroku():
 
 
 def create_connection():
+    print("AA")
     if in_heroku():
         from os import environ
         return psycopg2.connect(environ["DATABASE_URL"], sslmode='require')
@@ -48,6 +49,7 @@ def create_connection():
         #return psycopg2.connect(user="finance", database="postgresql-polished-48712", password=PASSWORD, sslmode='require')
     else:
         return psycopg2.connect(user="finance", database="finance", password=PASSWORD)
+    return psycopg2.connect(user="finance", database="finance", password=PASSWORD)
 
 def create_cursor(connection):
     return connection.cursor()
@@ -146,10 +148,13 @@ def append_to_covenant_names(covenant_name):
 
 @app.route("/")
 def root():
+    session["covenant_names"] = None
+    print("COVENANT NAMES WIPED:", session["covenant_names"])
     return render_template("login.html")
 
 @app.route("/logout")
 def logout():
+    clean_user_session()
     session.clear()
     return render_template("login.html")
 
@@ -168,17 +173,19 @@ def home():
     if g.username and not session.get("covenant_names"):
         print("USERNAME:", g.username)
         connection = create_connection()
+        print("a")
         cursor = create_cursor(connection)
+        print("b")
 
-        user_id_query = "SELECT id FROM login WHERE username = %s"
+        user_id_query = "SELECT id FROM login WHERE username = '%s'"
         print("1")
-        #cursor.execute(user_id_query, g.username)
-        cursor.execute("SELECT id FROM login WHERE username = {0};".format(g.username))
+        cursor.execute(user_id_query, g.username)
+        #cursor.execute("SELECT id FROM login WHERE username = {g.username}")
         print("2")
         user_id = cursor.fetchone()[0]
         print("USER_ID", user_id)
 
-        user_email_query = "SELECT email FROM login WHERE username = %s"
+        user_email_query = "SELECT email FROM login WHERE username = '%s'"
         cursor.execute(user_email_query, g.username)
         user_email = cursor.fetchone()[0]
         print("USER_EMAIL:", user_email)
@@ -194,14 +201,21 @@ def home():
         print("ALL DATA REQUIRED IS GATHERED")
         return render_template("home.html", username = g.username, covenants=session["covenant_names"])
     else:
+        print("OPTION 3")
         return render_template("login.html")
 
 
 def clean_user_session():
+    print("a")
     session["new_covenant"] = False
+    print("b")
+    session.clear()
+    print("c")
     session["current_covenant"] = None
+    print("d")
     if g.get("username"):
         g.username = None
+    print("e")
 
 
 @app.route("/authentication", methods=["POST"])
@@ -350,6 +364,8 @@ def process_covenfolk_modifications():
 
 @app.route('/register')
 def register():
+    clean_user_session()
+    session.clear()
     return render_template('register.html')
 
 
@@ -623,4 +639,7 @@ def modify_armory():
 
 
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=8000, debug=True)
+    if in_heroku():
+        app.run(host="0.0.0.0", port=27383, debug=True)
+    else:
+        app.run(host="127.0.0.1", port=8000, debug=True)
