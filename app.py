@@ -39,7 +39,6 @@ def in_heroku():
 
 
 def create_connection():
-    print("AA")
     if in_heroku():
         return psycopg2.connect(os.environ["DATABASE_URL"], sslmode='require')
         #return psycopg2.connect(user="finance", database="postgresql-polished-48712", password=PASSWORD, sslmode='require')
