@@ -116,7 +116,9 @@ def update_covenant_in_database(cursor, covenant):
 
 def get_covenant_names(cursor, connection):
     if not session.get("covenant_names"):
-        command = f"SELECT name FROM covenant WHERE user_id=%s"
+        command = f"SELECT name FROM covenant WHERE user_id = '{g.username}'"
+        print("COMMAND:", command)
+        #command = "SELECT name FROM covenant WHERE user_id=%s"
         cursor.execute(command, g.username)
         covenant_dump = cursor.fetchall()
         close_database(connection)
@@ -172,16 +174,20 @@ def home():
         cursor = create_cursor(connection)
         print("b")
 
-        user_id_query = "SELECT id FROM login WHERE username = %s"
+        user_id_query = f"SELECT id FROM login WHERE username = '{g.username}'"
+        #user_id_query = "SELECT id FROM login WHERE username = %s"
         print("1")
-        cursor.execute(user_id_query, g.username)
-        #cursor.execute("SELECT id FROM login WHERE username = {g.username}")
+        print("G.USERNAME:", g.username)
+        print("GU TYPE:", type(g.username))
+        print("UIDQ:", user_id_query)
+        cursor.execute(user_id_query)
         print("2")
         user_id = cursor.fetchone()[0]
         print("USER_ID", user_id)
 
-        user_email_query = "SELECT email FROM login WHERE username = %s"
-        cursor.execute(user_email_query, g.username)
+        user_email_query = f"SELECT email FROM login WHERE username = '{g.username}'"
+        cursor.execute(user_email_query)
+        #cursor.execute(user_email_query, g.username)
         user_email = cursor.fetchone()[0]
         print("USER_EMAIL:", user_email)
 
