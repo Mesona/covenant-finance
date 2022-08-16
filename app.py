@@ -601,7 +601,9 @@ def modify_covenfolken():
 @app.route("/modify_armory", methods = ["POST", "GET"])
 def modify_armory():
     if request.method == "GET":
-        return render_template("modify_armory.html", saving_categories=SAVING_CATEGORIES)
+        current_year = request.args.get("current_year", type = str)
+        print("CY:", current_year)
+        return render_template("modify_armory.html", saving_categories=SAVING_CATEGORIES, current_year = current_year)
 
     if request.method == "POST":
         covenant = session["current_covenant"]

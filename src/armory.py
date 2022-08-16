@@ -3,7 +3,7 @@
 from collections import defaultdict
 
 EQUIPMENT_QUALITIES = ["inexpensive", "standard", "expensive", "magic"]
-EQUIPMENT_TYPES = ["weapon", "partial", "full", "light siege", "heavy siege", "magic"]
+EQUIPMENT_TYPES = ["weapon", "partial", "full", "light siege", "heavy siege", "magic", "charged"]
 
 SAVINGS_CATEGORIES = [
         "buildings",
@@ -56,6 +56,9 @@ cost_conversion = {
         },
         "magic": {
             "magic": 0,
+        },
+        "charged": {
+            "charged": 0,
         }
 }
 
@@ -69,6 +72,7 @@ class Armory:
         self.light_siege = defaultdict(dict)
         self.heavy_siege = defaultdict(dict)
         self.magic = []
+        self.charged = []
         self.equipment = {
                 "weapons": self.weapons,
                 "partial": self.partial,
@@ -76,6 +80,7 @@ class Armory:
                 "light_siege": self.light_siege,
                 "heavy_siege": self.heavy_siege,
                 "magic": self.magic,
+                "charged": self.charged,
         }
 
     def calculate_all_savings(self) -> dict:
@@ -90,11 +95,16 @@ class Armory:
 
     def calculate_savings_of(self, saving_category: str) -> int:
         """Finds magic items of corresponding saving_category and sums their savings."""
-        matching_items = [item for item in self.magic if item["saving_category"] == saving_category]
         potential_savings = 0
+        matching_magic_items = [item for item in self.magic if item["saving_category"] == saving_category] 
+        matching_charged_items = [item for item in self.charged if item["saving_category"] == saving_category] 
 
-        for item in matching_items:
+        for item in matching_magic_items:
             potential_savings += item["saving_value"]
+
+        for item in matching_charged_items:
+            if item.magic_item_years_worth_of_charges != 0:
+                potential_savings += item["saving_value"]
 
         return potential_savings
 
@@ -113,6 +123,8 @@ class Armory:
             return self.heavy_siege
         elif equipment_type == "magic":
             return self.magic
+        elif equipment_type == "charged":
+            return self.charged
         else:
             raise ValueError(f"Invalid equipment type of {equipment_type}!")
 
@@ -122,6 +134,8 @@ class Armory:
         equipment_target = self.select_equipment_type(equipment_type)
         equipment = []
         if equipment_type == "magic":
+            return equipment_target
+        elif equipment_type == "charged":
             return equipment_target
         else:
             for equip, data in equipment_target.items():
@@ -141,7 +155,10 @@ class Armory:
             quality: str,
             saving_category="",
             saving_value=0,
-            description=""
+            description="",
+            charged=False,
+            magic_item_activation_year=0,
+            magic_item_years_worth_of_charges=0,
         ) -> None:
         """Adds a single piece of equipment to an Armory instance."""
         if not valid_quality(quality):
@@ -164,6 +181,21 @@ class Armory:
                         "saving_category": saving_category,
                         "saving_value": saving_value,
                         "description": description,
+                        "charged": charged,
+                        "magic_item_activation_year": magic_item_activation_year,
+                        "magic_item_years_worth_of_charges": magic_item_years_worth_of_charges,
+                    }
+            )
+        if equipment_type == "charged":
+            self.charged.append(
+                    {
+                        "name": name,
+                        "saving_category": saving_category,
+                        "saving_value": saving_value,
+                        "description": description,
+                        "charged": charged,
+                        "magic_item_activation_year": magic_item_activation_year,
+                        "magic_item_years_worth_of_charges": magic_item_years_worth_of_charges,
                     }
             )
         else:
@@ -173,6 +205,25 @@ class Armory:
             et[name][quality] += 1
 
         return "Successfully added equipment!"
+
+    def get_charged_items(self) -> list:
+        charged_items = []
+        charged_items = self.select_equipment_type("charged")
+        for key, val in charged_items.items():
+            if val["charged"]:
+                charged_items.append(val)
+
+        return charged_items
+
+    def advance_charged_items(self) -> bool:
+        charged_items = self.select_equipment_type("charged")
+        for key, val in charged_items.items():
+            if val["charged"] and val["magic_item_years_worth_of_charges"]:
+                self.charged[key].magic_item_years_worth_of_charges -= 1
+
+        return True
+
+
 
     def remove_equipment(
             self,
@@ -208,6 +259,7 @@ class Armory:
 
         equipment_qualities = EQUIPMENT_QUALITIES.copy()
         equipment_qualities.remove("magic")
+        equipment_qualities.remove("charged")
 
         et = self.select_equipment_type(equipment_type)
         for equipment in et.keys():
@@ -225,6 +277,7 @@ class Armory:
         """
         equipment_types = EQUIPMENT_TYPES.copy()
         equipment_types.remove("magic")
+        equipment_types.remove("charged")
 
         total_points = 0
         for equipment_type in equipment_types:

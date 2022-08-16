@@ -256,3 +256,15 @@ class DescribeArmory:
         all_savings = armory.calculate_all_savings()
         assert all_savings["buildings"] == {"magic": 1}
         assert all_savings["servants"] == {"magic": 5}
+
+    @staticmethod
+    def it_can_get_charged_items():
+        pass
+
+    @staticmethod
+    def it_can_update_charged_items_remaining_charges():
+        pass
+
+    @staticmethod
+    def it_does_not_count_depleted_magic_items_in_savings():
+        pass

@@ -47,7 +47,7 @@
 
 
             Armory:
-            <a href="{{url_for('modify_armory')}}">
+            <a href="{{url_for('modify_armory', current_year=session["current_covenant"].current_year)}}">
                 <button>Edit Armory</button>
             </a><br><br>
             {% for name,equipment in session["current_covenant"].armory.equipment.items() %}
