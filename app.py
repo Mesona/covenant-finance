@@ -610,6 +610,7 @@ def modify_armory():
 
         armory = Armory()
 
+        # Handling non magic equipment types
         equipment_types = ["weapon", "partial", "full", "light_siege", "heavy_siege"]
         for equipment_type in equipment_types:
             name = f"{equipment_type}_name"
@@ -628,12 +629,14 @@ def modify_armory():
 
                 equipment += 1
 
+        # Handling magic items
         magic = request.form.getlist("magic_name")
         magic_saving_category = request.form.getlist("magic_saving_category")
         magic_saving_value = request.form.getlist("magic_saving_value")
         magic_description = request.form.getlist("magic_description")
 
         equipment = 0
+        print("MAGIC:", magic)
         while equipment < len(magic):
             armory.add_equipment(
                     magic[equipment],
@@ -646,6 +649,29 @@ def modify_armory():
 
             equipment += 1
 
+        # Handing charged items
+        charged = request.form.getlist("charged_name")
+        charged_saving_category = request.form.getlist("charged_saving_category")
+        charged_saving_value = request.form.getlist("charged_saving_value")
+        charged_description = request.form.getlist("charged_description")
+        charged_item_activated = request.form.getlist("charged_item_activated")
+        charged_item_years_of_charges = request.form.getlist("charged_item_charges")
+
+        equipment = 0
+        print("CHARGED:", charged)
+        while equipment < len(charged):
+            armory.add_equipment(
+                    charged[equipment],
+                    "charged",
+                    "magic",
+                    charged_saving_category[equipment],
+                    charged_saving_value[equipment],
+                    charged_description[equipment],
+                    True,
+
+            )
+
+            equipment += 1
 
         covenant.armory = armory
 

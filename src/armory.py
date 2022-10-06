@@ -156,8 +156,7 @@ class Armory:
             saving_category="",
             saving_value=0,
             description="",
-            charged=False,
-            magic_item_activation_year=0,
+            charged_item_currently_active=False,
             magic_item_years_worth_of_charges=0,
         ) -> None:
         """Adds a single piece of equipment to an Armory instance."""
@@ -181,8 +180,7 @@ class Armory:
                         "saving_category": saving_category,
                         "saving_value": saving_value,
                         "description": description,
-                        "charged": charged,
-                        "magic_item_activation_year": magic_item_activation_year,
+                        "charged_item_currently_active": charged_item_currently_active,
                         "magic_item_years_worth_of_charges": magic_item_years_worth_of_charges,
                     }
             )
@@ -193,8 +191,7 @@ class Armory:
                         "saving_category": saving_category,
                         "saving_value": saving_value,
                         "description": description,
-                        "charged": charged,
-                        "magic_item_activation_year": magic_item_activation_year,
+                        "charged_item_currently_active": charged_item_currently_active,
                         "magic_item_years_worth_of_charges": magic_item_years_worth_of_charges,
                     }
             )
@@ -218,7 +215,7 @@ class Armory:
     def advance_charged_items(self) -> bool:
         charged_items = self.select_equipment_type("charged")
         for key, val in charged_items.items():
-            if val["charged"] and val["magic_item_years_worth_of_charges"]:
+            if val["charged_item_currently_active"] and val["magic_item_years_worth_of_charges"]:
                 self.charged[key].magic_item_years_worth_of_charges -= 1
 
         return True

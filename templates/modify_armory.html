@@ -191,8 +191,10 @@
                 <div class="charged_item_wrapper">
                     {% for equip in session["current_covenant"].armory.list_equipment_type("charged") %}
                         <div>
-                            <input class="armory_input" value={{equip["name"]}} name="charged_name" type="text" required>
-                            <select class="armory_input" name="magic_saving_category">
+                            Item Name: <input class="armory_input" value={{equip["name"]}} name="charged_name" type="text" required>
+                            <br>
+                            Item Saving Category: 
+                            <select class="armory_input" name="charged_saving_category">
                                 {% for saving_category in saving_categories %}
                                     {% if saving_category == equip["saving_category"] %}
                                         <option value="{{saving_category}}" selected="selected">{{saving_category}}</option>
@@ -201,15 +203,18 @@
                                     {% endif %}
                                 {% endfor %}
                             </select>
-                            <input class="armory_input" value={{equip["saving_value"]}} name="magic_saving_value" type="text" required>
-                            <input class="armory_input" value={{equip["description"]}} name="magic_description" type="text" required>
-                            Years worth of charges: <input class="armory_input" placeholder=0 name="magic_charged_charges" type="int" value={{equip["magic_item_years_worth_of_charges"]}}><br>
+                            <br>
+                            Description:
+                            <input class="armory_input" value={{equip["saving_value"]}} name="charged_saving_value" type="text" required>
+                            <input class="armory_input" value={{equip["description"]}} name="charged_description" type="text" required>
+                            <br>
+                            Years worth of charges: <input class="armory_input" placeholder=0 name="charged_item_charges" type="int" value={{equip["magic_item_years_worth_of_charges"]}}><br>
                             <div>
-                                {% if equip["magic_item_activation_year"] == 0 %}
-                                    <p>Activate Charged Item?</p>
-                                    <input class="armory_input" onclick="activate_charged_item(this)" type="checkbox">
+                                <p>Activate Charged Item?</p>
+                                {% if equip["charged_item_currently_active"] == "true" %}
+                                    <input class="armory_input" name="charged_item_activated" onclick="activate_charged_item(this)" type="checkbox" selected="selected">
                                 {% else %}
-                                    Activated Year: {{equip["magic_item_activation_year"]}}
+                                    <input class="armory_input" name="charged_item_activated" onclick="activate_charged_item(this)" type="checkbox">
                                 {% endif %}
                             </div>
                             <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
@@ -234,17 +239,22 @@
             var charged_item_wrapper = $('.charged_item_wrapper');
             var new_charged_item = `
                 <div>
-                    <input class="armory_input" placeholder="Magic Item Name" name="magic_name" type="text" required>
+                    Item Name: <input class="armory_input" placeholder="Magic Item Name" name="charged_name" type="text" required>
+                    <br>
+                    Item Saving Category: 
                     <select class="armory_input" name="magic_saving_category">
                         {% for saving_category in saving_categories %}
                             <option value="{{saving_category}}">{{saving_category}}</option>
                         {% endfor %}
                     </select>
                     <input class="armory_input" placeholder="Magic Item Saving Value" name="magic_saving_value" type="text" required>
+                    <br>
+                    Description:
                     <input class="armory_input" placeholder="Magic Item Description" name="magic_description" type="text" required>
-                    Years worth of charges: <input class="armory_input" placeholder=0 name="magic_charged_charges" type="int" value=0><br>
+                    <br>
+                    Years worth of charges: <input class="armory_input" placeholder=0 name="charged_item_charges" type="int" value=0><br>
                     <div>
-                        Activate Charged Item?<input class="armory_input" onclick="activate_charged_item(this)" type="checkbox">
+                        Activate Charged Item?<input class="armory_input" name="charged_item_activated" onclick="activate_charged_item(this)" type="checkbox">
                     </div>
                     <a href="javascript:void(0);" class="remove_input" title="Remove input">
                     <img width=20 height=20 src="/static/icon_minus.png"/></a>
