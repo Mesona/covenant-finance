@@ -10,22 +10,22 @@ SAVING_CATEGORIES = [
         "writing",
 ]
 
-def validate_classification(classification):
-    classifications = [
-            "magi",
-            "noble",
-            "companion",
-            "crafter",
-            "specialist",
-            "dependant",
-            "grog",
-            "laborer",
-            "servant",
-            "teamster",
-            "horse",
-    ]
+COVENFOLK_CLASSIFICATIONS = [
+        "magi",
+        "noble",
+        "companion",
+        "crafter",
+        "specialist",
+        "dependant",
+        "grog",
+        "laborer",
+        "servant",
+        "teamster",
+        "horse",
+]
 
-    if classification not in classifications:
+def validate_classification(classification):
+    if classification not in COVENFOLK_CLASSIFICATIONS:
         raise ValueError(f"""
 {classification} is not in the list of classifications!
 Please choose between these options: {classifications}
@@ -34,12 +34,10 @@ Please choose between these options: {classifications}
     return classification
 
 def validate_saving_category(category):
-    categories = SAVING_CATEGORIES
-
-    if category and category not in categories:
+    if category and category not in SAVING_CATEGORIES:
         raise ValueError(f"""
 {category} is not in the list of categories!
-Please choose between these options: {categories}
+Please choose between these options: {SAVING_CATEGORIES}
 """)
 
     return category
@@ -47,6 +45,9 @@ Please choose between these options: {categories}
 class Covenfolken:
     def __init__(self):
         self.covenfolk = {}
+
+    def get_covenfolk_classifications(self):
+        return COVENFOLK_CLASSIFICATIONS
 
     def calculate_savings_of(self, saving_category):
         from collections import defaultdict

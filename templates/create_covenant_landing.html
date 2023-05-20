@@ -32,16 +32,22 @@
             <a href="{{url_for('modify_covenfolken')}}">
                 <button>Edit Covenfolken</button>
             </a><br><br>
-            {% for name,object in session["current_covenant"].covenfolken.covenfolk.items() %}
-                {% if object.classification == "horse" %}
-                    <div>{{name}}</div>
-                {% else %}
-                    <div>{{name}} -- {{object.rarity}} {{object.classification}}
-                        {% if object.classification == "crafter" or object.classification == "specialist" %}
-                            -- Level {{object.skill}} {{object.profession}}<br>
-                        {% endif %}
-                    </div>
-                {% endif %}
+            {% for classification in session["current_covenant"].covenfolken.get_covenfolk_classifications() %}
+                <div>
+                    {{classification}}:<br>
+                    {% if classification == "crafter" or classification == "specialist" %}
+                        {% for covenfolk in session["current_covenant"].covenfolken.get_covenfolk_of_classification(classification) %}
+                            <div>
+                                {{covenfolk.name}} -- {{covenfolk.rarity}} {{covenfolk.profession}}<br>
+                                -- Skill level: {{covenfolk.skill}}
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div>
+                            {{ session["current_covenant"].covenfolken.get_covenfolk_of_classification(classification) | length }}
+                        </div>
+                    {% endif %}
+                </div><br>
             {% endfor %}
             <br><br>
 
