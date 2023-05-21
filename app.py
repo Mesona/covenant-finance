@@ -489,7 +489,7 @@ def modify_laboratories():
         minor_fortifications = request.form.getlist("laboratory_minor_fortifications")
         major_fortifications = request.form.getlist("laboratory_major_fortifications")
 
-        # TODO: Validate name is unique and fields are all valid
+        # TODO: Validate lab name is unique and fields are all valid
         for i in range(len(names)):
             name = names[i]
             owner = owners[i]

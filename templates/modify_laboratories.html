@@ -25,9 +25,9 @@
                     {% for name, laboratory in session["current_covenant"].laboratories.labs.items() %}
                         <div>
                             <hr>
-                            Lab Name: <input class="laboratory_input" value={{name}} name="laboratory_name" type="text" required>
+                            Lab Name: <input class="laboratory_input" value="{{laboratory.name}}" name="laboratory_name" type="text" required>
                             <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
-                            Lab Owner: <input class="laboratory_input" value={{laboratory.owner}} name="laboratory_owner" type="text" required><br>
+                            Lab Owner: <input class="laboratory_input" value="{{laboratory.owner}}" name="laboratory_owner" type="text" required><br>
                             Lab Usage: <select name="usage">
                                 <option value="light">Light</option>
                                 <option value="typical" selected="selected">Typical</option>
