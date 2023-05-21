@@ -658,7 +658,6 @@ def modify_armory():
         charged_item_years_of_charges = request.form.getlist("charged_item_charges")
 
         equipment = 0
-        print("CHARGED:", charged)
         while equipment < len(charged):
             armory.add_equipment(
                     charged[equipment],

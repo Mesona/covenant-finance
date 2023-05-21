@@ -166,7 +166,7 @@ class Armory:
         if not valid_equipment_type(equipment_type):
             raise ValueError(f"Equipment type {equipment_type} not recognized!")
 
-        if saving_category and equipment_type != "magic":
+        if saving_category and (equipment_type != "magic" and equipment_type != "charged"):
             raise ValueError(f"Only 'magic' items can provide savings, not {equipment_type}!")
 
         if equipment_type == "magic" and saving_category.lower() not in SAVINGS_CATEGORIES:

@@ -67,6 +67,17 @@
                                 * {{equip["description"]}}<br><br>
                             {% endfor %}
                         </div>
+                    {% elif name == "charged" %}
+                        <div>
+                            {{name}}:<br>
+                            {% for equip in equipment %}
+                                {{equip["name"]}}:<br>
+                                * Savings: {{equip["saving_category"]}} {{equip["saving_value"]}}<br>
+                                * {{equip["description"]}}<br>
+                                * Currently Active? {{equip["charged_item_currently_active"]}}<br>
+                                * Years of charges remaining: {{equip["magic_item_years_worth_of_charges"]}}<br><br>
+                            {% endfor %}
+                        </div>
                     {% else %}
                         <div>
                             {{name}}:<br>

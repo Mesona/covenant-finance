@@ -191,22 +191,22 @@
                 <div class="charged_item_wrapper">
                     {% for equip in session["current_covenant"].armory.list_equipment_type("charged") %}
                         <div>
-                            Item Name: <input class="armory_input" value={{equip["name"]}} name="charged_name" type="text" required>
+                            Item Name: <input class="armory_input" value="{{equip['name']}}" name="charged_name" type="text" required>
                             <br>
                             Item Saving Category: 
-                            <select class="armory_input" name="charged_saving_category">
+                            <select class="armory_input">
                                 {% for saving_category in saving_categories %}
                                     {% if saving_category == equip["saving_category"] %}
-                                        <option value="{{saving_category}}" selected="selected">{{saving_category}}</option>
+                                        <option name="charged_saving_category" value="{{saving_category}}" selected="selected">{{saving_category}}</option>
                                     {% else %}
-                                        <option value="{{saving_category}}">{{saving_category}}</option>
+                                        <option name="charged_saving_category" value="{{saving_category}}">{{saving_category}}</option>
                                     {% endif %}
                                 {% endfor %}
                             </select>
                             <br>
                             Description:
                             <input class="armory_input" value={{equip["saving_value"]}} name="charged_saving_value" type="text" required>
-                            <input class="armory_input" value={{equip["description"]}} name="charged_description" type="text" required>
+                            <input class="armory_input" value="{{equip['description']}}" name="charged_description" type="text" required>
                             <br>
                             Years worth of charges: <input class="armory_input" placeholder=0 name="charged_item_charges" type="int" value={{equip["magic_item_years_worth_of_charges"]}}><br>
                             <div>
@@ -242,15 +242,15 @@
                     Item Name: <input class="armory_input" placeholder="Magic Item Name" name="charged_name" type="text" required>
                     <br>
                     Item Saving Category: 
-                    <select class="armory_input" name="magic_saving_category">
+                    <select class="armory_input" name="charged_saving_category">
                         {% for saving_category in saving_categories %}
                             <option value="{{saving_category}}">{{saving_category}}</option>
                         {% endfor %}
                     </select>
-                    <input class="armory_input" placeholder="Magic Item Saving Value" name="magic_saving_value" type="text" required>
+                    <input class="armory_input" placeholder="Magic Item Saving Value" name="charged_saving_value" type="text" required>
                     <br>
                     Description:
-                    <input class="armory_input" placeholder="Magic Item Description" name="magic_description" type="text" required>
+                    <input class="armory_input" placeholder="Magic Item Description" name="charged_description" type="text" required>
                     <br>
                     Years worth of charges: <input class="armory_input" placeholder=0 name="charged_item_charges" type="int" value=0><br>
                     <div>
