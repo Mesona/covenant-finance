@@ -2,7 +2,7 @@
 
 from collections import defaultdict
 
-EQUIPMENT_QUALITIES = ["inexpensive", "standard", "expensive", "magic"]
+EQUIPMENT_QUALITIES = ["inexpensive", "standard", "expensive", "magic", "charged"]
 EQUIPMENT_TYPES = ["weapon", "partial", "full", "light siege", "heavy siege", "magic", "charged"]
 
 SAVINGS_CATEGORIES = [
@@ -214,6 +214,10 @@ class Armory:
 
     def advance_charged_items(self) -> bool:
         charged_items = self.select_equipment_type("charged")
+
+        if not charged_items:
+            return True
+
         for key, val in charged_items.items():
             if val["charged_item_currently_active"] and val["magic_item_years_worth_of_charges"]:
                 self.charged[key].magic_item_years_worth_of_charges -= 1

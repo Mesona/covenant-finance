@@ -271,7 +271,7 @@ Please select between spring, summer, autumn, and winter.
         print("TI:", type(self.total_income()))
         print("TE:", type(self.total_expenditure()))
         print("AC:", type(additional_costs))
-        self.treasury = self.treasury + self.total_income() - self.total_expenditure() - additional_costs
+        self.treasury = round((self.treasury + self.total_income() - self.total_expenditure() - additional_costs), 2)
         self.current_year += 1
         self.armory.advance_charged_items()
 
