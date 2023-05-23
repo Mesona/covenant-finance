@@ -5,17 +5,18 @@ Webpage Navigation Chart:
 https://lucid.app/lucidchart/2f313fc1-cce1-4b49-97aa-bbb3888e4326/edit?invitationId=inv_9190d9ef-9b74-41b4-82db-e20480a2a77f
 
 TODO BEFORE ALPHA:
-  * Example usage
-  * Front end tests
-  * Fix back end tests, too
-  * Add tests for charged items
-  * Cap number of covenants a user can have
-  * Cap number of income sources a covenant can have
-  * Income source value modifiers tied to inflation enabled/disabled
-  * Add crafter/specialst options for people who do things not directly related to cost savings
-  * Add column in covenfolk to show max savings possible per crafter/specialist
-  * Button to automatically calculate number of servants and teamsters required
-  * Limit database usage to prevent excess costs (might not be a problem in a free tier ec2 host?)
+  * User related:
+    * Income source value modifiers tied to inflation enabled/disabled
+    * Add column in covenfolk to show max savings possible per crafter/specialist
+    * Button to automatically calculate number of servants and teamsters required
+  * Dev related:
+    * Example usage for CLI
+    * Front end tests
+    * Fix back end tests, too
+    * Add tests for charged items
+    * Cap number of covenants a user can have
+    * Cap number of income sources a covenant can have
+    * Limit database usage to prevent excess costs (might not be a problem in a free tier ec2 host?)
 
 TODO BEFORE BETA:
   * User registration email validation

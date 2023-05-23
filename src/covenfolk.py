@@ -8,6 +8,7 @@ SAVING_CATEGORIES = [
         "provisions",
         "weapons and armor",
         "writing",
+        "other",
 ]
 
 COVENFOLK_CLASSIFICATIONS = [
@@ -28,7 +29,7 @@ def validate_classification(classification):
     if classification not in COVENFOLK_CLASSIFICATIONS:
         raise ValueError(f"""
 {classification} is not in the list of classifications!
-Please choose between these options: {classifications}
+Please choose between these options: {COVENFOLK_CLASSIFICATIONS}
 """)
 
     return classification
@@ -68,17 +69,11 @@ class Covenfolken:
 
     def calculate_all_savings(self):
         provided_savings = {}
-        saving_categories = [
-                "buildings",
-                "consumables",
-                "laboratories",
-                "provisions",
-                "weapons and armor",
-                "writing",
-        ]
 
-        for category in saving_categories: 
-            provided_savings[category] = self.calculate_savings_of(category)
+        for category in SAVING_CATEGORIES: 
+            # "other" is a category beause covenants may have specialists that do not contribute to cost savings
+            if category != "other":
+                provided_savings[category] = self.calculate_savings_of(category)
 
         return provided_savings
 
