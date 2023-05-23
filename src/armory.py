@@ -103,7 +103,7 @@ class Armory:
             potential_savings += item["saving_value"]
 
         for item in matching_charged_items:
-            if item.magic_item_years_worth_of_charges != 0:
+            if item["magic_item_years_worth_of_charges"] != 0:
                 potential_savings += item["saving_value"]
 
         return potential_savings
@@ -218,12 +218,11 @@ class Armory:
         if not charged_items:
             return True
 
-        for key, val in charged_items.items():
-            if val["charged_item_currently_active"] and val["magic_item_years_worth_of_charges"]:
-                self.charged[key].magic_item_years_worth_of_charges -= 1
+        for item in charged_items:
+            if item["charged_item_currently_active"] and item["magic_item_years_worth_of_charges"]:
+                item["magic_item_years_worth_of_charges"] -= 1
 
         return True
-
 
 
     def remove_equipment(

@@ -655,7 +655,7 @@ def modify_armory():
         charged_saving_value = request.form.getlist("charged_saving_value")
         charged_description = request.form.getlist("charged_description")
         charged_item_activated = request.form.getlist("charged_item_activated")
-        charged_item_years_of_charges = request.form.getlist("charged_item_charges")
+        charged_item_years_of_charges = request.form.getlist("magic_item_years_worth_of_charges")
 
         equipment = 0
         while equipment < len(charged):
@@ -664,10 +664,10 @@ def modify_armory():
                     "charged",
                     "magic",
                     charged_saving_category[equipment],
-                    charged_saving_value[equipment],
+                    int(charged_saving_value[equipment]),
                     charged_description[equipment],
-                    True,
-
+                    True if charged_item_activated[equipment] == "yes" else False,
+                    int(charged_item_years_of_charges[equipment]),
             )
 
             equipment += 1
