@@ -168,7 +168,9 @@
                 </div><br>
 
                 <hr>
-                Servants:<a href="javascript:void(0);" class="add_servant add_covenfolk" title="Add servant"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
+                Servants:<a href="javascript:void(0);" class="add_servant add_covenfolk" title="Add servant"><img width=20 height=20 src="/static/icon_plus.png"/></a>
+                <a href="javascript:void(0);" class="set_servants_to_minimum" title="Set Servants to Minimum"><button>Set servants to minumum</button></a>
+                <br></p>
                 <div class="covenfolken_servant_wrapper">
                     {% for servant in session["current_covenant"].covenfolken.get_covenfolk_of_classification("servant") %}
                         <div>
@@ -206,360 +208,269 @@
     <script>
         $(document).ready(function(){
             var max_input_fields = 100;
+            var covenfolk_count = {
+              "magi": 0,
+              "crafter": 0,
+              "specialist": 0,
+              "companion": 0,
+              "grog": 0,
+              "noble": 0,
+              "dependant": 0,
+              "laborer": 0,
+              "servant": 0,
+              "teamster": 0,
+              "animal": 0,
+						};
+
+
+            function add_new_covenfolk(classification, count = 1) {
+              var add_covenfolk = `add_${classification}`;
+              var add_covenfolk_wrapper = $(`.covenfolken_${classification}_wrapper`);
+              if (classification == "crafter") {
+								var new_covenfolk = `
+										<div>
+												<input class="crafter_name covenfolk_input" placeholder="Name" name="crafter_name" type="text" required>
+												<input class="covenfolk_input" placeholder="Profession" name="crafter_profession" type="text" required>
+												<select class="covenfolk_input" name="crafter_saving_category">
+														{% for saving_category in saving_categories %}
+																<option value="{{saving_category}}">{{saving_category}}</option>
+														{% endfor %}
+												</select>
+												<input class="covenfolk_input" placeholder="Skill Level" name="crafter_skill" type="number" required>
+												<select name="crafter_rarity">
+														<option value="common">Common</option>
+														<option value="rare">Rare</option>
+												</select>
+												<a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
+										</div>
+								`;
+              } else if (classification == "specialist") {
+								var new_covenfolk = `
+										<div>
+												<input class="specialist_name covenfolk_input" placeholder="Name" name="specialist_name" type="text" required>
+												<input class="covenfolk_input" placeholder="Profession" name="specialist_profession" type="text" required>
+												<select class="covenfolk_input" name="specialist_saving_category">
+														{% for saving_category in saving_categories %}
+																<option value="{{saving_category}}">{{saving_category}}</option>
+														{% endfor %}
+												</select>
+												<input class="covenfolk_input" placeholder="Skill Level" name="specialist_skill" type="number" required>
+												<select name="specialist_rarity">
+														<option value="common">Common</option>
+														<option value="rare">Rare</option>
+												</select>
+												<a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
+										</div>
+								`;
+              } else {
+							  var new_covenfolk = `<div><input class="${classification}_name covenfolk_input" placeholder="Covenfolk Name" name="${classification}_name" type="text" required><a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a></div>`;
+              }
+              var new_covenfolk_input = 0;
+              covenfolk_count[classification] = 0;
+
+							if(covenfolk_count[classification] < max_input_fields){
+									covenfolk_count[classification]++; 
+									$(add_covenfolk_wrapper).append(new_covenfolk); 
+							}
+
+							$(add_covenfolk_wrapper).on('click', '.remove_input', function(e){
+									e.preventDefault();
+									$(this).parent('div').remove();
+									covenfolk_count[classification]--;
+							});
+
+						}
 
             var add_magi = $('.add_magi');
-            var magi_wrapper = $('.covenfolken_magi_wrapper');
-            var new_magi = '<div><input class="magi_name covenfolk_input" placeholder="Covenfolk Name" name="magi_name" type="text" required><a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a></div>'
-            var new_magi_input = 1;
-            var add_magi_count = 1
-
             $(add_magi).click(function(){
-                if(add_magi_count < max_input_fields){
-                    add_magi_count++; 
-                    $(magi_wrapper).append(new_magi); 
-                }
-            });
-            $(magi_wrapper).on('click', '.remove_input', function(e){
-                e.preventDefault();
-                $(this).parent('div').remove();
-                add_magi_count--;
+                add_new_covenfolk("magi");
             });
 
             var add_companion = $('.add_companion');
-            var companion_wrapper = $('.covenfolken_companion_wrapper');
-            var new_companion = '<div><input class="companion_name covenfolk_input" placeholder="Covenfolk Name" name="companion_name" type="text" required><a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a></div>'
-            var new_companion_input = 1;
-            var add_companion_count = 1
-
             $(add_companion).click(function(){
-                if(add_companion_count < max_input_fields){
-                    add_companion_count++; 
-                    $(companion_wrapper).append(new_companion); 
-                }
-            });
-            $(companion_wrapper).on('click', '.remove_input', function(e){
-                e.preventDefault();
-                $(this).parent('div').remove();
-                add_companion_count--;
+                add_new_covenfolk("companion");
             });
 
             var add_noble = $('.add_noble');
-            var noble_wrapper = $('.covenfolken_noble_wrapper');
-            var new_noble = '<div><input class="noble_name covenfolk_input" placeholder="Covenfolk Name" name="noble_name" type="text" required><a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a></div>'
-            var new_noble_input = 1;
-            var add_noble_count = 1
-
             $(add_noble).click(function(){
-                if(add_noble_count < max_input_fields){
-                    add_noble_count++; 
-                    $(noble_wrapper).append(new_noble); 
-                }
-            });
-            $(noble_wrapper).on('click', '.remove_input', function(e){
-                e.preventDefault();
-                $(this).parent('div').remove();
-                add_noble_count--;
+                add_new_covenfolk("noble");
             });
 
             var add_crafter = $('.add_crafter');
-            var crafter_wrapper = $('.covenfolken_crafter_wrapper');
-            var new_crafter = `
-                <div>
-                    <input class="crafter_name covenfolk_input" placeholder="Name" name="crafter_name" type="text" required>
-                    <input class="covenfolk_input" placeholder="Profession" name="crafter_profession" type="text" required>
-                    <select class="covenfolk_input" name="crafter_saving_category">
-                        {% for saving_category in saving_categories %}
-                            <option value="{{saving_category}}">{{saving_category}}</option>
-                        {% endfor %}
-                    </select>
-                    <input class="covenfolk_input" placeholder="Skill Level" name="crafter_skill" type="number" required>
-                    <select name="crafter_rarity">
-                        <option value="common">Common</option>
-                        <option value="rare">Rare</option>
-                    </select>
-                    <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
-                </div>
-            `
-            var new_crafter_input = 1;
-            var add_crafter_count = 1;
-
             $(add_crafter).click(function(){
-                if(add_crafter_count < max_input_fields){
-                    add_crafter_count++; 
-                    $(crafter_wrapper).append(new_crafter); 
-                }
-            });
-            $(crafter_wrapper).on('click', '.remove_input', function(e){
-                e.preventDefault();
-                $(this).parent('div').remove();
-                add_crafter_count--;
+                add_new_covenfolk("crafter");
             });
 
             var add_specialist = $('.add_specialist');
-            var specialist_wrapper = $('.covenfolken_specialist_wrapper');
-            var new_specialist = `
-                <div>
-                    <input class="specialist_name covenfolk_input" placeholder="Name" name="specialist_name" type="text" required>
-                    <input class="covenfolk_input" placeholder="Profession" name="specialist_profession" type="text" required>
-                    <select class="covenfolk_input" name="specialist_saving_category">
-                        {% for saving_category in saving_categories %}
-                            <option value="{{saving_category}}">{{saving_category}}</option>
-                        {% endfor %}
-                    </select>
-                    <input class="covenfolk_input" placeholder="Skill Level" name="specialist_skill" type="number" required>
-                    <select name="specialist_rarity">
-                        <option value="common">Common</option>
-                        <option value="rare">Rare</option>
-                    </select>
-                    <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a><br>
-                </div>
-            `
-            var new_specialist_input = 1;
-            var add_specialist_count = 1;
-
             $(add_specialist).click(function(){
-                if(add_specialist_count < max_input_fields){
-                    add_specialist_count++; 
-                    $(specialist_wrapper).append(new_specialist); 
-                }
-            });
-            $(specialist_wrapper).on('click', '.remove_input', function(e){
-                e.preventDefault();
-                $(this).parent('div').remove();
-                add_specialist_count--;
+                add_new_covenfolk("specialist");
             });
 
             var add_dependant = $('.add_dependant');
-            var dependant_wrapper = $('.covenfolken_dependant_wrapper');
-            var new_dependant = '<div><input class="dependant_name covenfolk_input" placeholder="Covenfolk Name" name="dependant_name" type="text" required><a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a></div>'
-            var new_dependant_input = 1;
-            var add_dependant_count = 1;
-
             $(add_dependant).click(function(){
-                if(add_dependant_count < max_input_fields){
-                    add_dependant_count++; 
-                    $(dependant_wrapper).append(new_dependant); 
-                }
-            });
-            $(dependant_wrapper).on('click', '.remove_input', function(e){
-                e.preventDefault();
-                $(this).parent('div').remove();
-                add_dependant_count--;
+                add_new_covenfolk("dependant");
             });
 
             var add_grog = $('.add_grog');
-            var grog_wrapper = $('.covenfolken_grog_wrapper');
-            var new_grog = '<div><input class="grog_name covenfolk_input" placeholder="Covenfolk Name" name="grog_name" type="text" required><a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a></div>'
-            var new_grog_input = 1;
-            var add_grog_count = 1;
-
             $(add_grog).click(function(){
-                if(add_grog_count < max_input_fields){
-                    add_grog_count++; 
-                    $(grog_wrapper).append(new_grog); 
-                }
-            });
-            $(grog_wrapper).on('click', '.remove_input', function(e){
-                e.preventDefault();
-                $(this).parent('div').remove();
-                add_grog_count--;
+                add_new_covenfolk("grog");
             });
 
             var add_laborer = $('.add_laborer');
-            var laborer_wrapper = $('.covenfolken_laborer_wrapper');
-            var new_laborer = '<div><input class="laborer_name covenfolk_input" placeholder="Covenfolk Name" name="laborer_name" type="text" required><a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a></div>'
-            var new_laborer_input = 1;
-            var add_laborer_count = 1;
-
             $(add_laborer).click(function(){
-                if(add_laborer_count < max_input_fields){
-                    add_laborer_count++; 
-                    $(laborer_wrapper).append(new_laborer); 
-                }
-            });
-            $(laborer_wrapper).on('click', '.remove_input', function(e){
-                e.preventDefault();
-                $(this).parent('div').remove();
-                add_laborer_count--;
+                add_new_covenfolk("laborer");
             });
 
             var add_servant = $('.add_servant');
-            var servant_wrapper = $('.covenfolken_servant_wrapper');
-            var new_servant = '<div><input class="servant_name covenfolk_input" placeholder="Covenfolk Name" name="servant_name" type="text" required><a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a></div>'
-            var new_servant_input = 1;
-            var add_servant_count = 1;
-
             $(add_servant).click(function(){
-                if(add_servant_count < max_input_fields){
-                    add_servant_count++; 
-                    $(servant_wrapper).append(new_servant); 
-                }
+                add_new_covenfolk("servant");
             });
-            $(servant_wrapper).on('click', '.remove_input', function(e){
-                e.preventDefault();
-                $(this).parent('div').remove();
-                add_servant_count--;
-            });
+
+            var set_servants_to_minimum = $('.set_servants_to_minimum');
+            $(set_servants_to_minimum).click(function() {
+                number_of_servants = 3;
+								total = Number(quick_add_amount) + Number(covenfolk_count["servant"])
+								if (total <= max_input_fields) {
+										while (covenfolk_count["servant"] < total) {
+												$(servant_wrapper).append(new_servant); 
+												name_field = [...document.querySelectorAll(".servant_name")].pop();
+												name_field.value = `Servant ${covenfolk_count["servant"]}`;
+												covenfolk_count["servant"]++;
+										}
+								}
+                while (number_of_servants > 0) {
+									  add_new_covenfolk("servant");
+                    number_of_servants--;
+								}
+						});
 
             var add_teamster = $('.add_teamster');
-            var teamster_wrapper = $('.covenfolken_teamster_wrapper');
-            var new_teamster = '<div><input class="teamster_name covenfolk_input" placeholder="Covenfolk Name" name="teamster_name" type="text" required><a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a></div>'
-            var new_teamster_input = 1;
-            var add_teamster_count = 1;
-
             $(add_teamster).click(function(){
-                if(add_teamster_count < max_input_fields){
-                    add_teamster_count++; 
-                    $(teamster_wrapper).append(new_teamster); 
-                }
-            });
-
-            $(teamster_wrapper).on('click', '.remove_input', function(e){
-                e.preventDefault();
-                $(this).parent('div').remove();
-                add_teamster_count--;
+                add_new_covenfolk("teamster");
             });
 
             var add_animal = $('.add_animal');
-            var animal_wrapper = $('.covenfolken_animal_wrapper');
-            var new_animal = `
-                        <div>
-                            <input class="animal_name covenfolk_input" placeholder="Animal Name" name="animal_name" type="text" required>
-                            <a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a>
-                        </div>
-            `
-            var new_animal_input = 1;
-            var add_animal_count = 1;
-
             $(add_animal).click(function(){
-                if(add_animal_count < max_input_fields){
-                    add_animal_count++; 
-                    $(animal_wrapper).append(new_animal); 
-                }
-            });
-            $(animal_wrapper).on('click', '.remove_input', function(e){
-                e.preventDefault();
-                $(this).parent('div').remove();
-                add_animal_count--;
+                add_new_covenfolk("animal");
             });
 
-            var quick_add = $('.covenfolk_quick_add_button')
-            var quick_add_amount2 = $('.covenfolk_quick_add_amount')
-            var quick_add_type2 = $('.covenfolk_quick_add_type')
+            var quick_add = $('.covenfolk_quick_add_button');
+            var quick_add_amount2 = $('.covenfolk_quick_add_amount');
+            var quick_add_type2 = $('.covenfolk_quick_add_type');
             $(quick_add).click(function() {
                 var quick_add_amount = document.getElementById('covenfolk_quick_add_amount').value;
                 var quick_add_type = document.getElementById('covenfolk_quick_add_type').value;
-                var total = 0
-                let name_elements = []
+                var total = 0;
+                let name_elements = [];
+
                 if (quick_add_type === "Magi") {
-                    total = Number(quick_add_amount) + Number(add_magi_count)
+                    total = Number(quick_add_amount) + Number(covenfolk_count["magi"]);
                     if (total <= max_input_fields) {
-                        while (add_magi_count < total) {
+                        while (covenfolk_count["magi"] < total) {
                             $(magi_wrapper).append(new_magi); 
-                            name_field = [...document.querySelectorAll(".magi_name")].pop()
-                            name_field.value = `Magi ${add_magi_count}`
-                            add_magi_count++;
+                            name_field = [...document.querySelectorAll(".magi_name")].pop();
+                            name_field.value = `Magi ${covenfolk_count["magi"]}`;
+                            covenfolk_count["magi"]++;
                         }
                     }
                 } else if (quick_add_type === "Nobles") {
-                    total = Number(quick_add_amount) + Number(add_noble_count)
+                    total = Number(quick_add_amount) + Number(covenfolk_count["noble"]);
                     if (total <= max_input_fields) {
-                        while (add_noble_count < total) {
+                        while (covenfolk_count["noble"] < total) {
                             $(noble_wrapper).append(new_noble); 
-                            name_field = [...document.querySelectorAll(".noble_name")].pop()
-                            name_field.value = `Noble ${add_noble_count}`
-                            add_noble_count++;
+                            name_field = [...document.querySelectorAll(".noble_name")].pop();
+                            name_field.value = `Noble ${covenfolk_count["noble"]}`;
+                            covenfolk_count["noble"]++;
                         }
                     }
                 } else if (quick_add_type === "Companions") {
-                    total = Number(quick_add_amount) + Number(add_companion_count)
+                    total = Number(quick_add_amount) + Number(covenfolk_count["companion"]);
                     if (total <= max_input_fields) {
-                        while (add_companion_count < total) {
+                        while (covenfolk_count["companion"] < total) {
                             $(companion_wrapper).append(new_companion); 
-                            name_field = [...document.querySelectorAll(".companion_name")].pop()
-                            name_field.value = `Companion ${add_companion_count}`
-                            add_companion_count++;
+                            name_field = [...document.querySelectorAll(".companion_name")].pop();
+                            name_field.value = `Companion ${covenfolk_count["companion"]}`;
+                            covenfolk_count["companion"]++;
                         }
                     }
                 } else if (quick_add_type === "Crafters") {
-                    
-                    total = Number(quick_add_amount) + Number(add_crafter_count)
+                    total = Number(quick_add_amount) + Number(covenfolk_count["crafter"]);
                     if (total <= max_input_fields) {
-                        while (add_crafter_count < total) {
+                        while (covenfolk_count["crafter"] < total) {
                             $(crafter_wrapper).append(new_crafter); 
-                            name_field = [...document.querySelectorAll(".crafter_name")].pop()
-                            name_field.value = `Crafter ${add_crafter_count}`
-                            add_crafter_count++;
+                            name_field = [...document.querySelectorAll(".crafter_name")].pop();
+                            name_field.value = `Crafter ${covenfolk_count["crafter"]}`;
+                            covenfolk_count["crafter"]++;
                         }
                     }
                 } else if (quick_add_type === "Specialists") {
-                    total = Number(quick_add_amount) + Number(add_specialist_count)
+                    total = Number(quick_add_amount) + Number(covenfolk_count["specialist"]);
                     if (total <= max_input_fields) {
-                        while (add_specialist_count < total) {
+                        while (covenfolk_count["specialist"] < total) {
                             $(specialist_wrapper).append(new_specialist); 
-                            name_field = [...document.querySelectorAll(".specialist_name")].pop()
-                            name_field.value = `Specialist ${add_specialist_count}`
-                            add_specialist_count++;
+                            name_field = [...document.querySelectorAll(".specialist_name")].pop();
+                            name_field.value = `Specialist ${covenfolk_count["specialist"]}`;
+                            covenfolk_count["specialist"]++;
                         }
                     }
                 } else if (quick_add_type === "Dependants") {
-                    total = Number(quick_add_amount) + Number(add_dependant_count)
+                    total = Number(quick_add_amount) + Number(covenfolk_count["dependant"]);
                     if (total <= max_input_fields) {
-                        while (add_dependant_count < total) {
+                        while (covenfolk_count["dependant"] < total) {
                             $(dependant_wrapper).append(new_dependant); 
-                            name_field = [...document.querySelectorAll(".dependant_name")].pop()
-                            name_field.value = `Dependant ${add_dependant_count}`
-                            add_dependant_count++;
+                            name_field = [...document.querySelectorAll(".dependant_name")].pop();
+                            name_field.value = `Dependant ${covenfolk_count["dependant"]}`;
+                            covenfolk_count["dependant"]++;
                         }
                     }
                 } else if (quick_add_type === "Grogs") {
-                    total = Number(quick_add_amount) + Number(add_grog_count)
+                    total = Number(quick_add_amount) + Number(covenfolk_count["grog"]);
                     if (total <= max_input_fields) {
-                        while (add_grog_count < total) {
+                        while (covenfolk_count["grog"] < total) {
                             $(grog_wrapper).append(new_grog); 
-                            name_field = [...document.querySelectorAll(".grog_name")].pop()
-                            name_field.value = `Grog ${add_grog_count}`
-                            add_grog_count++;
+                            name_field = [...document.querySelectorAll(".grog_name")].pop();
+                            name_field.value = `Grog ${covenfolk_count["grog"]}`;
+                            covenfolk_count["grog"]++;
                         }
                     }
                 } else if (quick_add_type === "Laborers") {
-                    total = Number(quick_add_amount) + Number(add_laborer_count)
+                    total = Number(quick_add_amount) + Number(covenfolk_count["laborer"]);
                     if (total <= max_input_fields) {
-                        while (add_laborer_count < total) {
+                        while (covenfolk_count["laborer"] < total) {
                             $(laborer_wrapper).append(new_laborer); 
-                            name_field = [...document.querySelectorAll(".laborer_name")].pop()
-                            name_field.value = `Laborer ${add_laborer_count}`
-                            add_laborer_count++;
+                            name_field = [...document.querySelectorAll(".laborer_name")].pop();
+                            name_field.value = `Laborer ${covenfolk_count["laborer"]}`;
+                            covenfolk_count["laborer"]++;
                         }
                     }
                 } else if (quick_add_type === "Servants") {
-                    total = Number(quick_add_amount) + Number(add_servant_count)
+                    total = Number(quick_add_amount) + Number(covenfolk_count["servant"]);
                     if (total <= max_input_fields) {
-                        while (add_servant_count < total) {
+                        while (covenfolk_count["servant"] < total) {
                             $(servant_wrapper).append(new_servant); 
-                            name_field = [...document.querySelectorAll(".servant_name")].pop()
-                            name_field.value = `Servant ${add_servant_count}`
-                            add_servant_count++;
+                            name_field = [...document.querySelectorAll(".servant_name")].pop();
+                            name_field.value = `Servant ${covenfolk_count["servant"]}`;
+                            covenfolk_count["servant"]++;
                         }
                     }
                 } else if (quick_add_type === "Teamsters") {
-                    total = Number(quick_add_amount) + Number(add_teamster_count)
+                    total = Number(quick_add_amount) + Number(covenfolk_count["teamster"]);
                     if (total <= max_input_fields) {
-                        while (add_teamster_count < total) {
+                        while (covenfolk_count["teamster"] < total) {
                             $(teamster_wrapper).append(new_teamster); 
-                            name_field = [...document.querySelectorAll(".teamster_name")].pop()
-                            name_field.value = `Teamster ${add_teamster_count}`
-                            add_teamster_count++;
+                            name_field = [...document.querySelectorAll(".teamster_name")].pop();
+                            name_field.value = `Teamster ${covenfolk_count["teamster"]}`;
+                            covenfolk_count["teamster"]++;
                         }
                     }
                 } else if (quick_add_type === "Large Animals") {
-                    total = Number(quick_add_amount) + Number(add_animal_count)
+                    total = Number(quick_add_amount) + Number(covenfolk_count["animal"]);
                     if (total <= max_input_fields) {
-                        while (add_animal_count < total) {
+                        while (covenfolk_count["animal"] < total) {
                             $(animal_wrapper).append(new_animal); 
-                            name_field = [...document.querySelectorAll(".animal_name")].pop()
-                            name_field.value = `Animal ${add_animal_count}`
-                            add_animal_count++;
+                            name_field = [...document.querySelectorAll(".animal_name")].pop();
+                            name_field.value = `Animal ${covenfolk_count["animal"]}`;
+                            covenfolk_count["animal"]++;
                         }
                     }
                 }

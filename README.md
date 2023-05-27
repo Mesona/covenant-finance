@@ -6,9 +6,8 @@ https://lucid.app/lucidchart/2f313fc1-cce1-4b49-97aa-bbb3888e4326/edit?invitatio
 
 TODO BEFORE ALPHA:
   * User related:
-    * Income source value modifiers tied to inflation enabled/disabled
-    * Add column in covenfolk to show max savings possible per crafter/specialist
     * Button to automatically calculate number of servants and teamsters required
+    * Add one time modification to income source ability (like a bad crop)
   * Dev related:
     * Example usage for CLI
     * Front end tests
@@ -28,6 +27,8 @@ TODO BEFORE BETA:
   * Replace error screens with proper errors
   * Export covenant
   * Cost breakdown by type in covenant page
+TODO MAYBES BEFORE BETA:
+    * Add column in covenfolk to show max savings possible per crafter/specialist
 
 TODO BEFORE RELEASE:
   * Graphics
