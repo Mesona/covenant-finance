@@ -209,17 +209,17 @@
         $(document).ready(function(){
             var max_input_fields = 100;
             var covenfolk_count = {
-              "magi": 0,
-              "crafter": 0,
-              "specialist": 0,
-              "companion": 0,
-              "grog": 0,
-              "noble": 0,
-              "dependant": 0,
-              "laborer": 0,
-              "servant": 0,
-              "teamster": 0,
-              "animal": 0,
+              "magi": document.getElementsByClassName("magi_name").length,
+              "crafter": document.getElementsByClassName("crafter_name").length,
+              "specialist": document.getElementsByClassName("specialist_name").length,
+              "companion": document.getElementsByClassName("companion_name").length,
+              "grog": document.getElementsByClassName("grog_name").length,
+              "noble": document.getElementsByClassName("noble_name").length,
+              "dependant": document.getElementsByClassName("dependant_name").length,
+              "laborer": document.getElementsByName("laborer_name").length,
+              "servant": document.getElementsByClassName("servant_name").length,
+              "teamster": document.getElementsByClassName("teamster_name").length,
+              "animal": document.getElementsByClassName("animal_name").length,
 						};
 
 
@@ -266,7 +266,6 @@
 							  var new_covenfolk = `<div><input class="${classification}_name covenfolk_input" placeholder="Covenfolk Name" name="${classification}_name" type="text" required><a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a></div>`;
               }
               var new_covenfolk_input = 0;
-              covenfolk_count[classification] = 0;
 
 							if(covenfolk_count[classification] < max_input_fields){
 									covenfolk_count[classification]++; 
