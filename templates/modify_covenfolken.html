@@ -147,7 +147,7 @@
 
                 <hr>
                 Dependants:<a href="javascript:void(0);" class="add_dependant add_covenfolk" title="Add dependant"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
-                <div class="covenfolken_dependant_wrapper">
+                <div class="covenfolken_dependant_wrapper" id="covenfolken_dependant_wrapper">
                     {% for dependant in session["current_covenant"].covenfolken.get_covenfolk_of_classification("dependant") %}
                         <div>
                             <input class="dependant_name covenfolk_input" value="{{dependant.name}}" name="dependant_name" type="text" required>
@@ -158,7 +158,7 @@
 
                 <hr>
                 Laborers:<a href="javascript:void(0);" class="add_laborer add_covenfolk" title="Add laborer"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
-                <div class="covenfolken_laborer_wrapper">
+                <div class="covenfolken_laborer_wrapper" id="covenfolken_laborer_wrapper">
                     {% for laborer in session["current_covenant"].covenfolken.get_covenfolk_of_classification("laborer") %}
                         <div>
                             <input class="laborer_name covenfolk_input" value="{{laborer.name}}" name="laborer_name" type="text" required>
@@ -169,9 +169,9 @@
 
                 <hr>
                 Servants:<a href="javascript:void(0);" class="add_servant add_covenfolk" title="Add servant"><img width=20 height=20 src="/static/icon_plus.png"/></a>
-                <a href="javascript:void(0);" class="set_servants_to_minimum" title="Set Servants to Minimum"><button>Set servants to minumum</button></a>
+                <a href="javascript:void(0);" class="set_servants_to_minimum" title="Set Servants to Minimum" id="covenfolk_set_servants_to_minimum"><button>Set servants to minumum</button></a>
                 <br></p>
-                <div class="covenfolken_servant_wrapper">
+                <div class="covenfolken_servant_wrapper" id="covenfolken_servant_wrapper">
                     {% for servant in session["current_covenant"].covenfolken.get_covenfolk_of_classification("servant") %}
                         <div>
                             <input class="servant_name covenfolk_input" value="{{servant.name}}" name="servant_name" type="text" required>
@@ -182,7 +182,7 @@
 
                 <hr>
                 Teamsters:<a href="javascript:void(0);" class="add_teamster add_covenfolk" title="Add teamster"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
-                <div class="covenfolken_teamster_wrapper">
+                <div class="covenfolken_teamster_wrapper" id="covenfolken_teamster_wrapper">
                     {% for teamster in session["current_covenant"].covenfolken.get_covenfolk_of_classification("teamster") %}
                         <div>
                             <input class="teamster_name covenfolk_input" value="{{teamster.name}}" name="teamster_name" type="text" required>
@@ -223,9 +223,11 @@
 						};
 
 
-            function add_new_covenfolk(classification, count = 1) {
+            function add_new_covenfolk(classification, new_covenfolk_count = 1) {
               var add_covenfolk = `add_${classification}`;
               var add_covenfolk_wrapper = $(`.covenfolken_${classification}_wrapper`);
+              console.log("CLASSIFICATION:", classification);
+              console.log("NCC:", new_covenfolk_count);
               if (classification == "crafter") {
 								var new_covenfolk = `
 										<div>
@@ -245,9 +247,9 @@
 										</div>
 								`;
               } else if (classification == "specialist") {
-								var new_covenfolk = `
-										<div>
-												<input class="specialist_name covenfolk_input" placeholder="Name" name="specialist_name" type="text" required>
+							  var new_covenfolk = `
+								    <div>
+									    	<input class="specialist_name covenfolk_input" placeholder="Name" name="specialist_name" type="text" required>
 												<input class="covenfolk_input" placeholder="Profession" name="specialist_profession" type="text" required>
 												<select class="covenfolk_input" name="specialist_saving_category">
 														{% for saving_category in saving_categories %}
@@ -265,19 +267,26 @@
               } else {
 							  var new_covenfolk = `<div><input class="${classification}_name covenfolk_input" placeholder="Covenfolk Name" name="${classification}_name" type="text" required><a href="javascript:void(0);" class="remove_input" title="Remove input"><img width=20 height=20 src="/static/icon_minus.png"/></a></div>`;
               }
-              var new_covenfolk_input = 0;
 
-							if(covenfolk_count[classification] < max_input_fields){
-									covenfolk_count[classification]++; 
-									$(add_covenfolk_wrapper).append(new_covenfolk); 
-							}
+              while (new_covenfolk_count > 0) { 
+                  new_covenfolk_count--;
+									if(covenfolk_count[classification] < max_input_fields){
+											covenfolk_count[classification]++; 
+											$(add_covenfolk_wrapper).append(new_covenfolk); 
+											name_field = [...document.querySelectorAll(`.${classification}_name`)].pop();
+											name_field.value = `${classification} ${covenfolk_count[classification]}`;
+											console.log("TEST:", covenfolk_count[classification])
+									}
+						  }
 
-							$(add_covenfolk_wrapper).on('click', '.remove_input', function(e){
+							$(add_covenfolk_wrapper).on('click', '.remove_input', function(e) {
 									e.preventDefault();
 									$(this).parent('div').remove();
-									covenfolk_count[classification]--;
-							});
+                  // FIXME: WHY DOES THIS RUN +1 EVERY TIME A NEW COVENFOLK IS ADDED?
+                  covenfolk_count[classification] = document.getElementsByName("laborer_name").length;
+									console.log("TEST 2:", covenfolk_count[classification])
 
+							});
 						}
 
             var add_magi = $('.add_magi');
@@ -326,20 +335,26 @@
             });
 
             var set_servants_to_minimum = $('.set_servants_to_minimum');
-            $(set_servants_to_minimum).click(function() {
-                number_of_servants = 3;
-								total = Number(quick_add_amount) + Number(covenfolk_count["servant"])
-								if (total <= max_input_fields) {
-										while (covenfolk_count["servant"] < total) {
-												$(servant_wrapper).append(new_servant); 
-												name_field = [...document.querySelectorAll(".servant_name")].pop();
-												name_field.value = `Servant ${covenfolk_count["servant"]}`;
-												covenfolk_count["servant"]++;
-										}
-								}
-                while (number_of_servants > 0) {
-									  add_new_covenfolk("servant");
-                    number_of_servants--;
+            $(set_servants_to_minimum).click(function(e) {
+                e.preventDefault();
+                mocked_minimum = 3;
+							  if (covenfolk_count["servant"] == mocked_minimum) {
+                    console.log("Already match!");
+                    return "true";
+                } else if (covenfolk_count["servant"] < mocked_minimum) {
+                    console.log("COVENFOLK_COUNT:", covenfolk_count["servant"]);
+							      servants_to_add = mocked_minimum - covenfolk_count["servant"];
+                    console.log("SERVANT_TO_ADD:", servants_to_add);
+							    	add_new_covenfolk("servant", servants_to_add);
+                } else {
+                    existing_servants = document.getElementById("covenfolken_servant_wrapper");
+                    console.log("ES:", existing_servants.children[0])
+                    while (existing_servants.firstElementChild) {
+                        console.log("REMOVING INSTANCE")
+                        existing_servants.firstChild.remove();
+                        covenfolk_count["servant"] = 0;
+                    }
+                    add_new_covenfolk("servant", mocked_minimum);
 								}
 						});
 
@@ -365,18 +380,13 @@
                 if (quick_add_type === "Magi") {
                     total = Number(quick_add_amount) + Number(covenfolk_count["magi"]);
                     if (total <= max_input_fields) {
-                        while (covenfolk_count["magi"] < total) {
-                            $(magi_wrapper).append(new_magi); 
-                            name_field = [...document.querySelectorAll(".magi_name")].pop();
-                            name_field.value = `Magi ${covenfolk_count["magi"]}`;
-                            covenfolk_count["magi"]++;
-                        }
+                        add_new_covenfolk("magi", Number(quick_add_amount));
                     }
                 } else if (quick_add_type === "Nobles") {
                     total = Number(quick_add_amount) + Number(covenfolk_count["noble"]);
                     if (total <= max_input_fields) {
                         while (covenfolk_count["noble"] < total) {
-                            $(noble_wrapper).append(new_noble); 
+                            $(covenfolken_noble_wrapper).append(new_noble); 
                             name_field = [...document.querySelectorAll(".noble_name")].pop();
                             name_field.value = `Noble ${covenfolk_count["noble"]}`;
                             covenfolk_count["noble"]++;
@@ -386,7 +396,7 @@
                     total = Number(quick_add_amount) + Number(covenfolk_count["companion"]);
                     if (total <= max_input_fields) {
                         while (covenfolk_count["companion"] < total) {
-                            $(companion_wrapper).append(new_companion); 
+                            $(covenfolken_companion_wrapper).append(new_companion); 
                             name_field = [...document.querySelectorAll(".companion_name")].pop();
                             name_field.value = `Companion ${covenfolk_count["companion"]}`;
                             covenfolk_count["companion"]++;
@@ -396,7 +406,7 @@
                     total = Number(quick_add_amount) + Number(covenfolk_count["crafter"]);
                     if (total <= max_input_fields) {
                         while (covenfolk_count["crafter"] < total) {
-                            $(crafter_wrapper).append(new_crafter); 
+                            $(covenfolken_crafter_wrapper).append(new_crafter); 
                             name_field = [...document.querySelectorAll(".crafter_name")].pop();
                             name_field.value = `Crafter ${covenfolk_count["crafter"]}`;
                             covenfolk_count["crafter"]++;
@@ -406,7 +416,7 @@
                     total = Number(quick_add_amount) + Number(covenfolk_count["specialist"]);
                     if (total <= max_input_fields) {
                         while (covenfolk_count["specialist"] < total) {
-                            $(specialist_wrapper).append(new_specialist); 
+                            $(covenfolken_specialist_wrapper).append(new_specialist); 
                             name_field = [...document.querySelectorAll(".specialist_name")].pop();
                             name_field.value = `Specialist ${covenfolk_count["specialist"]}`;
                             covenfolk_count["specialist"]++;
@@ -416,7 +426,7 @@
                     total = Number(quick_add_amount) + Number(covenfolk_count["dependant"]);
                     if (total <= max_input_fields) {
                         while (covenfolk_count["dependant"] < total) {
-                            $(dependant_wrapper).append(new_dependant); 
+                            $(covenfolken_dependant_wrapper).append(new_dependant); 
                             name_field = [...document.querySelectorAll(".dependant_name")].pop();
                             name_field.value = `Dependant ${covenfolk_count["dependant"]}`;
                             covenfolk_count["dependant"]++;
@@ -426,7 +436,7 @@
                     total = Number(quick_add_amount) + Number(covenfolk_count["grog"]);
                     if (total <= max_input_fields) {
                         while (covenfolk_count["grog"] < total) {
-                            $(grog_wrapper).append(new_grog); 
+                            $(covenfolken_grog_wrapper).append(new_grog); 
                             name_field = [...document.querySelectorAll(".grog_name")].pop();
                             name_field.value = `Grog ${covenfolk_count["grog"]}`;
                             covenfolk_count["grog"]++;
@@ -436,7 +446,7 @@
                     total = Number(quick_add_amount) + Number(covenfolk_count["laborer"]);
                     if (total <= max_input_fields) {
                         while (covenfolk_count["laborer"] < total) {
-                            $(laborer_wrapper).append(new_laborer); 
+                            $(covenfolken_laborer_wrapper).append(new_laborer); 
                             name_field = [...document.querySelectorAll(".laborer_name")].pop();
                             name_field.value = `Laborer ${covenfolk_count["laborer"]}`;
                             covenfolk_count["laborer"]++;
@@ -446,7 +456,7 @@
                     total = Number(quick_add_amount) + Number(covenfolk_count["servant"]);
                     if (total <= max_input_fields) {
                         while (covenfolk_count["servant"] < total) {
-                            $(servant_wrapper).append(new_servant); 
+                            $(covenfolken_servant_wrapper).append(new_servant); 
                             name_field = [...document.querySelectorAll(".servant_name")].pop();
                             name_field.value = `Servant ${covenfolk_count["servant"]}`;
                             covenfolk_count["servant"]++;
@@ -456,7 +466,7 @@
                     total = Number(quick_add_amount) + Number(covenfolk_count["teamster"]);
                     if (total <= max_input_fields) {
                         while (covenfolk_count["teamster"] < total) {
-                            $(teamster_wrapper).append(new_teamster); 
+                            $(covenfolken_teamster_wrapper).append(new_teamster); 
                             name_field = [...document.querySelectorAll(".teamster_name")].pop();
                             name_field.value = `Teamster ${covenfolk_count["teamster"]}`;
                             covenfolk_count["teamster"]++;
@@ -466,7 +476,7 @@
                     total = Number(quick_add_amount) + Number(covenfolk_count["animal"]);
                     if (total <= max_input_fields) {
                         while (covenfolk_count["animal"] < total) {
-                            $(animal_wrapper).append(new_animal); 
+                            $(covenfolken_animal_wrapper).append(new_animal); 
                             name_field = [...document.querySelectorAll(".animal_name")].pop();
                             name_field.value = `Animal ${covenfolk_count["animal"]}`;
                             covenfolk_count["animal"]++;
