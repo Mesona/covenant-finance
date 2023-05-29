@@ -275,19 +275,18 @@
 											$(add_covenfolk_wrapper).append(new_covenfolk); 
 											name_field = [...document.querySelectorAll(`.${classification}_name`)].pop();
 											name_field.value = `${classification} ${covenfolk_count[classification]}`;
-											console.log("TEST:", covenfolk_count[classification])
 									}
 						  }
-
-							$(add_covenfolk_wrapper).on('click', '.remove_input', function(e) {
-									e.preventDefault();
-									$(this).parent('div').remove();
-                  // FIXME: WHY DOES THIS RUN +1 EVERY TIME A NEW COVENFOLK IS ADDED?
-                  covenfolk_count[classification] = document.getElementsByName("laborer_name").length;
-									console.log("TEST 2:", covenfolk_count[classification])
-
-							});
 						}
+
+            $('.remove_input').click(function(e){
+								e.preventDefault();
+                let wrapper_class_name = $(this).parent('div').parent('div').prop("className");
+                let classification = wrapper_class_name.split("_")[1];
+
+								$(this).parent('div').remove();
+								covenfolk_count[classification]--;
+						});
 
             var add_magi = $('.add_magi');
             $(add_magi).click(function(){
