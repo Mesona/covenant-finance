@@ -182,6 +182,7 @@
 
                 <hr>
                 Teamsters:<a href="javascript:void(0);" class="add_teamster add_covenfolk" title="Add teamster"><img width=20 height=20 src="/static/icon_plus.png"/></a><br></p>
+                <a href="javascript:void(0);" class="set_teamsters_to_minimum" title="Set Teamsters to Minimum" id="covenfolk_set_teamsters_to_minimum"><button>Set teamsters to minumum</button></a>
                 <div class="covenfolken_teamster_wrapper" id="covenfolken_teamster_wrapper">
                     {% for teamster in session["current_covenant"].covenfolken.get_covenfolk_of_classification("teamster") %}
                         <div>
@@ -397,12 +398,40 @@
 							    	add_new_covenfolk("servant", servants_to_add);
                 } else {
                     existing_servants = document.getElementById("covenfolken_servant_wrapper");
-                    console.log("ES:", existing_servants.children[0])
                     while (existing_servants.firstElementChild) {
                         existing_servants.firstChild.remove();
                         covenfolk_count["servant"] = 0;
                     }
                     add_new_covenfolk("servant", servant_minimum);
+								}
+						});
+
+            $('.set_teamsters_to_minimum').click(function(e) {
+                e.preventDefault();
+                let base_costs = Math.round(calculate_minimum_covenfolk_base_costs());
+
+                if ("{{covenant_season}}".toLowerCase() === "sping"  || "{{covenant_season}}".toLowerCase() === "winter") {
+                    base_costs = base_costs + covenfolk_count["servant"];
+                } else {
+                    base_costs = base_costs + (covenfolk_count["servant"] * 2);
+                }
+
+                base_costs = base_costs - (covenfolk_count["laborer"] * 2);
+
+                teamster_minimum = Math.round(base_costs);
+							  if (covenfolk_count["teamster"] == teamster_minimum) {
+                    console.log("Already match!");
+                    return "true";
+                } else if (covenfolk_count["teamster"] < teamster_minimum) {
+							      teamsters_to_add = teamster_minimum - covenfolk_count["teamster"];
+							    	add_new_covenfolk("teamster", teamsters_to_add);
+                } else {
+                    existing_teamsters = document.getElementById("covenfolken_teamster_wrapper");
+                    while (existing_teamsters.firstElementChild) {
+                        existing_teamsters.firstChild.remove();
+                        covenfolk_count["teamster"] = 0;
+                    }
+                    add_new_covenfolk("teamster", teamster_minimum);
 								}
 						});
 
