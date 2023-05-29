@@ -6,10 +6,10 @@ https://lucid.app/lucidchart/2f313fc1-cce1-4b49-97aa-bbb3888e4326/edit?invitatio
 
 TODO BEFORE ALPHA:
   * User related:
-    * Button to automatically calculate number of servants and teamsters required
+    * Embed lucidchart as an image in README
     * Add one time modification to income source ability (like a bad crop)
   * Dev related:
-    * Example usage for CLI
+    * Example usage for CLI / self hosting
     * Front end tests
     * Fix back end tests, too
     * Add tests for charged items
