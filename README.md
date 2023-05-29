@@ -2,7 +2,7 @@
 A program for the purpose of yearly advancement and tracking of covenant finances and advancement.
 
 Design Diagram:
-![ars finances design diagram](https://drive.google.com/file/d/1FOtXK-c8eIRnU7-4NOxJWv-vT5D7ITbe/view?usp=sharing)
+![ars finances design diagram](https://github.com/bmgratch/covenant-finance/tree/master/static/FinanceNavigationChart.png?raw=true)
 
 https://lucid.app/lucidchart/2f313fc1-cce1-4b49-97aa-bbb3888e4326/edit?invitationId=inv_9190d9ef-9b74-41b4-82db-e20480a2a77f
 
