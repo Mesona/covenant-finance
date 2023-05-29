@@ -111,7 +111,16 @@ Please select between spring, summer, autumn, and winter.
         self.expenses = float("inf")  # Prevents inflation from taking effect the first year
         self.current_year = int(current_year)
 
-            
+    def calculate_minimum_covenfolk_base_costs(self) -> int:
+        covenfolk_roles = ["magi", "noble", "companion", "crafter", "specialist", "dependant", "grog", "horse"]
+        covenfolk_points = 0
+
+        for classification in covenfolk_roles:
+            number_of_matching_covenfolk = self.covenfolken.total_count_of(classification)
+            covenfolk_points += self.calculate_covenfolk_point_costs(classification) * number_of_matching_covenfolk
+
+        return covenfolk_points
+
     def calculate_covenfolk_points(self):
         point_cost = 0
         for covenfolk in self.covenfolken.covenfolk.values():
@@ -125,13 +134,7 @@ Please select between spring, summer, autumn, and winter.
             return base_covenfolk_point_costs["expensive"][classification]
 
     def calculate_servant_minimum(self):
-        covenfolk_roles = ["magi", "noble", "companion", "crafter", "specialist", "dependant", "grog", "horse"]
-        covenfolk_points = 0
-
-        for classification in covenfolk_roles:
-            number_of_matching_covenfolk = self.covenfolken.total_count_of(classification)
-            covenfolk_points += self.calculate_covenfolk_point_costs(classification) * number_of_matching_covenfolk
-            test = self.calculate_covenfolk_point_costs(classification) * number_of_matching_covenfolk
+        covenfolk_points = self.calculate_minimum_covenfolk_base_costs()
 
         servant_minimums = math.ceil(covenfolk_points / 10) * 2
         laborer_savings = self.armory.calculate_savings_of("servants")
@@ -139,12 +142,8 @@ Please select between spring, summer, autumn, and winter.
         return servant_minimums
 
     def calculate_teamster_minimum(self):
-        covenfolk_roles = ["magi", "noble", "companion", "crafter", "specialist", "dependant", "grog", "horse", "servant"]
-        covenfolk_points = 0
-
-        for classification in covenfolk_roles:
-            number_of_matching_covenfolk = self.covenfolken.total_count_of(classification)
-            covenfolk_points += self.calculate_covenfolk_point_costs(classification) * number_of_matching_covenfolk
+        covenfolk_points = self.calculate_minimum_covenfolk_base_costs()
+        covenfolk_points += self.calculate_covenfolk_point_costs("servant") * self.covenfolken.total_count_of("servant")
 
         covenfolk_points -= (self.covenfolken.total_count_of("laborer") * 2)
         teamster_minimums = math.ceil(covenfolk_points / 10)

@@ -350,27 +350,59 @@
                 add_new_covenfolk("animal");
             });
 
-            var set_servants_to_minimum = $('.set_servants_to_minimum');
-            $(set_servants_to_minimum).click(function(e) {
+            function calculate_minimum_covenfolk_base_costs() {
+                let base_costs = 0;
+                covenant_season = "{{covenant_season}}".toLowerCase();
+                for (const [classification, quantity] of Object.entries(covenfolk_count)) {
+                    if (classification === "magi" || classification == "noble") {
+                        if (covenant_season === "spring" || covenant_season == "winter") {
+                            base_costs += quantity * 5;
+                        } else {
+                            base_costs += quantity * 10;
+                        }
+                    } else if (classification === "companion") {
+                        if (covenant_season === "spring" || covenant_season == "winter") {
+                            base_costs += quantity * 3;
+                        } else {
+                            base_costs += quantity * 5;
+                        }
+                    } else if (classification === "crafter" || classification === "specialist") {
+                        if (covenant_season === "spring" || covenant_season == "winter") {
+                            base_costs += quantity * 2;
+                        } else {
+                            base_costs += quantity * 3;
+                        }
+                    } else if (classification === "horse") {
+                        base_costs += quantity * 1;
+                    } else if (classification !== "servant" && classification !== "laborer" && classification !== "teamster")  {
+                        if (covenant_season === "spring" || covenant_season == "winter") {
+                            base_costs += quantity * 1;
+                        } else {
+                            base_costs += quantity * 2;
+                        }
+                    }
+                }
+
+                return base_costs;
+            }
+
+            $('.set_servants_to_minimum').click(function(e) {
                 e.preventDefault();
-                mocked_minimum = 3;
-							  if (covenfolk_count["servant"] == mocked_minimum) {
+                servant_minimum = Math.round(calculate_minimum_covenfolk_base_costs() / 5);
+							  if (covenfolk_count["servant"] == servant_minimum) {
                     console.log("Already match!");
                     return "true";
-                } else if (covenfolk_count["servant"] < mocked_minimum) {
-                    console.log("COVENFOLK_COUNT:", covenfolk_count["servant"]);
-							      servants_to_add = mocked_minimum - covenfolk_count["servant"];
-                    console.log("SERVANT_TO_ADD:", servants_to_add);
+                } else if (covenfolk_count["servant"] < servant_minimum) {
+							      servants_to_add = servant_minimum - covenfolk_count["servant"];
 							    	add_new_covenfolk("servant", servants_to_add);
                 } else {
                     existing_servants = document.getElementById("covenfolken_servant_wrapper");
                     console.log("ES:", existing_servants.children[0])
                     while (existing_servants.firstElementChild) {
-                        console.log("REMOVING INSTANCE")
                         existing_servants.firstChild.remove();
                         covenfolk_count["servant"] = 0;
                     }
-                    add_new_covenfolk("servant", mocked_minimum);
+                    add_new_covenfolk("servant", servant_minimum);
 								}
 						});
 
