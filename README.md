@@ -1,32 +1,56 @@
 # covenant-finance
 A program for the purpose of yearly advancement and tracking of covenant finances and advancement.
 
-Webpage Navigation Chart:
+Design Diagram:
+![ars finances design diagram](https://drive.google.com/file/d/1FOtXK-c8eIRnU7-4NOxJWv-vT5D7ITbe/view?usp=sharing)
+
 https://lucid.app/lucidchart/2f313fc1-cce1-4b49-97aa-bbb3888e4326/edit?invitationId=inv_9190d9ef-9b74-41b4-82db-e20480a2a77f
 
-TODO BEFORE ALPHA:
+To set up your own instance:
+  * Prereqs:
+    * PSQL
+        * `psql`
+        * `CREATE DATABASE finance;`
+        * `CREATE ROLE finance LOGIN;`
+        * `GRANT ALL PRIVILEGES ON DATABASE finance TO finance;`
+    * Ensure your database is running off port 5432 (default)
+        * If you set a password and/or a secret key, put the values in ./database_password.py
+  * Self hosting:
+    * Download project
+    * `pip install -r requirements.txt`
+    * `python -m venv venv`
+    * `source venv/bin/activate`
+    * `python app.py`
+  * Initialize Database Tables:
+    * In a python terminal within the virtual env:
+      * `from app import initialize_database`
+      * `initialize_database()`
+  * If using a browser:
+    * Open browser to "http://localhost:8000/"
+  * If using CLI:
+    * `python`
+    * `import src.covenant as C`
+    * `c = C.Covenant()`
+    * Make any modifications
+    * `C.save_covenant`
+
+TODO BEFORE BETA:
   * User related:
-    * Embed lucidchart as an image in README
-    * Add one time modification to income source ability (like a bad crop)
+    * User registration email validation
+    * User change password
+    * Password recovery
+    * Add tooltip to explain 250 income for greater virtue, 100 income for typical
+    * Add tooltips to describe different roles under covenfolk (Specialist vs Crafter for example)
+    * Add tooltips in general
+    * Replace error screens with proper errors
+    * Export covenant
+    * Cost breakdown by type in covenant page
   * Dev related:
-    * Example usage for CLI / self hosting
     * Front end tests
     * Fix back end tests, too
     * Add tests for charged items
     * Cap number of covenants a user can have
     * Cap number of income sources a covenant can have
-    * Limit database usage to prevent excess costs (might not be a problem in a free tier ec2 host?)
-
-TODO BEFORE BETA:
-  * User registration email validation
-  * User change password
-  * Password recovery
-  * Add tooltip to explain 250 income for greater virtue, 100 income for typical
-  * Add tooltips to describe different roles under covenfolk (Specialist vs Crafter for example)
-  * Add tooltips in general
-  * Replace error screens with proper errors
-  * Export covenant
-  * Cost breakdown by type in covenant page
 TODO MAYBES BEFORE BETA:
     * Add column in covenfolk to show max savings possible per crafter/specialist
 

@@ -117,7 +117,10 @@
                 </a>
             {% else %}
                 <form name="disbursement_form" action="advance_covenant" method="POST">
-                    Mage Disbursement: <input class="disbursement" placeholder="# of mythic pounds" name="disbursement" type="number">
+                    Amount distributed to magi: <input class="disbursement" placeholder="# of mythic pounds" name="disbursement" type="number">
+                    <br>
+                    Non standard additional income: <input class="singleton_finance_adjustment" placeholder="# of mythic pounds" name="singleton_finance_adjustment" type="number">
+                    <br>
                     <button>Advance Year</button>
                 </form>
                 <br>

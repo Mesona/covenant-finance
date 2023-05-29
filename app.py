@@ -272,9 +272,15 @@ def advance_covenant():
     except ValueError:
         disbursement = 0.0
 
-    covenant = session["current_covenant"]
+    try:
+        singleton_finance_adjustment = float(request.form["singleton_finance_adjustment"])
+    except ValueError:
+        singleton_finance_adjustment = 0.0
 
-    covenant.advance_year(disbursement)
+    covenant = session["current_covenant"]
+    total_modification = disbursement - singleton_finance_adjustment
+
+    covenant.advance_year(total_modification)
 
     session["current_covenant"] = covenant
 
@@ -412,11 +418,9 @@ def create_covenant_landing():
     """Shows the current state of the covenant being built. Should have buttons to add equipment, add labs, add covenfolk."""
     print("C3:", session.get("new_covenant"))
     if request.method == "GET":
-        print("C31")
         return render_template("create_covenant_landing.html")
 
     elif request.method == "POST":
-        print("C32")
         return render_template("create_covenant_landing.html")
 
 @app.route("/finalize_covenant", methods = ["POST", "GET"])
@@ -464,10 +468,6 @@ def finalize_covenant():
     #    covenant_names.append(name)
 
     #return render_template("home.html", username=g.username, covenants=covenant_names)
-
-#@app.route("/advance_covenant", methods = ["POST"])
-#def advance_covenant():
-#    return render_template("create_covenant_landing.html")
 
 @app.route("/modify_laboratories", methods = ["POST", "GET"])
 def modify_laboratories():
