@@ -6,16 +6,12 @@ class Laboratories:
         self.labs = defaultdict(bool)
 
     def lab_name_is_unique(self, name):
-        print("LAB NAME TEST:", name)
-        print("CURRENT LABS:", self.labs)
-        print("ACTUAL TEST:", self.labs[name])
         if self.labs[name]:
             return False
 
         return True
 
     def add_lab(self, *args):
-        # FIXME: No tests for these
         if isinstance(args[0], Laboratory):
             lab = args[0]
             if self.lab_name_is_unique(lab.name):

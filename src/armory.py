@@ -184,7 +184,7 @@ class Armory:
                         "magic_item_years_worth_of_charges": magic_item_years_worth_of_charges,
                     }
             )
-        if equipment_type == "charged":
+        elif equipment_type == "charged":
             self.charged.append(
                     {
                         "name": name,
@@ -195,7 +195,7 @@ class Armory:
                         "magic_item_years_worth_of_charges": magic_item_years_worth_of_charges,
                     }
             )
-        else:
+        elif equipment_type:
             if not et[name]:
                 et[name] = defaultdict(int)
 

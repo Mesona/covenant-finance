@@ -2,6 +2,7 @@
 # pylint: disable=missing-function-docstring
 
 import pytest
+import os
 
 from src.covenfolk import Covenfolk
 from src.covenant import Covenant
@@ -20,6 +21,31 @@ covenfolken = {
     'teamster' : 7,
     'horse': 0
 }
+
+@pytest.fixture(autouse=True)
+def clean_env():
+    """Ensures no environment bleed occurrs, and errors if it somehow fails."""
+
+    os.environ["cleaned"] = "false"
+    old_env = os.environ.copy()
+    os.environ["cleaned"] = "true"
+
+    try:
+        yield
+    finally:
+        os.environ.clear()
+        os.environ.update(old_env)
+        assert os.environ["cleaned"] == "false"
+        assert os.environ.get("env") is None
+
+@pytest.fixture
+def set_and_clean_up_semita():
+    """Helps semita based tests run in parllel."""
+    cov = semita()
+
+    yield cov
+
+    del cov
 
 def custom_covenant():
     cov = Covenant(
@@ -61,19 +87,21 @@ class DescribeCovenant:
         assert cov.inflation_enabled is False
         assert cov.inflation == 10
 
-    @staticmethod
-    def it_can_initialize_semita():
-        semita()
+    # FIXME: These 2 tests cause env bleed
+    #@staticmethod
+    #def it_can_initialize_semita(set_and_clean_up_semita):
+    #    assert set_and_clean_up_semita
+
+    #@staticmethod
+    #def it_calculates_semita_servant_requirements_same_as_book(set_and_clean_up_semita):
+    #    assert set_and_clean_up_semita == 16
 
     @staticmethod
-    def it_calculates_semita_servant_requirements_same_as_book():
+    def it_calculates_semita_teamster_and_servant_requirements_same_as_book():
         cov = semita()
         assert cov.calculate_servant_minimum() == 16
-
-    @staticmethod
-    def it_calculates_semita_teamster_requirements_same_as_book():
-        cov = semita()
         assert cov.calculate_teamster_minimum() == 4
+        cov.delete_covenant()
 
     @staticmethod
     def it_correctly_capitalizes_season():
@@ -231,12 +259,14 @@ class DescribeSaveCovenant:
         cov.covenfolken.add_covenfolk("Barg", "magi")
         cov.covenfolken.add_covenfolk("le", "dependant")
         cov.armory.add_equipment("earthquake machine", "heavy siege", "expensive")
-        cov.laboratories.add_lab("Haunted mansion")
+        cov.laboratories.add_lab("Haunted mansion Ooo")
         save_covenant(cov, "cov.json")
         with open("cov.json", "r+") as f:
-            cov_json = f.readlines()
+            cov_list = f.readlines()
             # TODO: find a better way to assert this succeeds without using load
-            assert len(cov_json) > 1
+            cov_string = cov_list[0]
+            assert len(cov_list) == 1
+            assert "Vernus" in cov_string
 
 
 class DescribeLoadCovenant:
@@ -248,7 +278,7 @@ class DescribeLoadCovenant:
         cov.covenfolken.add_covenfolk("Barg", "magi")
         cov.covenfolken.add_covenfolk("le", "dependant")
         cov.armory.add_equipment("earthquake machine", "heavy siege", "expensive")
-        cov.laboratories.add_lab("Haunted mansion")
+        cov.laboratories.add_lab("Haunted mansion Aaaa")
         save_covenant(cov, "cov.json")
         loaded = load_covenant_from_file("cov.json")
         assert loaded.covenfolken.covenfolk["Barg"]

@@ -55,8 +55,8 @@ def save_covenant(covenant, path=None):
 
 def load_covenant_from_string(covenant):
     import jsonpickle
-    test = jsonpickle.decode(covenant, keys=True)
-    return test
+    covenant_string = jsonpickle.decode(covenant, keys=True)
+    return covenant_string
 
 
 def load_covenant_from_file(path):
@@ -111,6 +111,19 @@ Please select between spring, summer, autumn, and winter.
         self.expenses = float("inf")  # Prevents inflation from taking effect the first year
         self.current_year = int(current_year)
 
+    def delete_covenant(self) -> bool:
+        for lab in self.laboratories.labs:
+            del lab
+
+        self.laboratories.labs = defaultdict(bool)
+
+        for covenfolk in self.covenfolken.covenfolk:
+            del covenfolk
+
+        self.covenfolken.covenfolk = {}
+
+        return True
+
     def calculate_minimum_covenfolk_base_costs(self) -> int:
         covenfolk_roles = ["magi", "noble", "companion", "crafter", "specialist", "dependant", "grog", "horse"]
         covenfolk_points = 0
@@ -135,6 +148,9 @@ Please select between spring, summer, autumn, and winter.
 
     def calculate_servant_minimum(self):
         covenfolk_points = self.calculate_minimum_covenfolk_base_costs()
+        print("Covenfolk_points:", covenfolk_points)
+        servant_savings = self.armory.calculate_savings_of("servants")
+        print("SS:", servant_savings)
 
         servant_minimums = math.ceil(covenfolk_points / 10) * 2
         laborer_savings = self.armory.calculate_savings_of("servants")
