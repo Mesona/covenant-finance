@@ -45,7 +45,7 @@ def set_and_clean_up_semita():
 
     yield cov
 
-    del cov
+    cov.delete_covenant()
 
 def custom_covenant():
     cov = Covenant(
@@ -88,25 +88,23 @@ class DescribeCovenant:
         assert cov.inflation == 10
 
     # FIXME: These 2 tests cause env bleed
-    #@staticmethod
-    #def it_can_initialize_semita(set_and_clean_up_semita):
-    #    assert set_and_clean_up_semita
-
-    #@staticmethod
-    #def it_calculates_semita_servant_requirements_same_as_book(set_and_clean_up_semita):
-    #    assert set_and_clean_up_semita == 16
+    @staticmethod
+    def it_can_initialize_semita(set_and_clean_up_semita):
+        assert set_and_clean_up_semita
 
     @staticmethod
-    def it_calculates_semita_teamster_and_servant_requirements_same_as_book():
-        cov = semita()
-        assert cov.calculate_servant_minimum() == 16
-        assert cov.calculate_teamster_minimum() == 4
-        cov.delete_covenant()
+    def it_calculates_semita_servant_requirements_same_as_book(set_and_clean_up_semita):
+        assert set_and_clean_up_semita.calculate_servant_minimum() == 16
+
+    @staticmethod
+    def it_calculates_semita_teamster_requirements_same_as_book(set_and_clean_up_semita):
+        assert set_and_clean_up_semita.calculate_teamster_minimum() == 4
 
     @staticmethod
     def it_correctly_capitalizes_season():
         cov = Covenant(season = "WINTER")
         assert cov.season == "winter"
+        cov.delete_covenant()
 
     @staticmethod
     def it_does_not_accept_custom_seaons():
@@ -129,6 +127,7 @@ class DescribeCovenant:
         cov.income_sources["wishing well"] = 250
         cov.advance_year()
         assert cov.treasury == 500.0
+        cov.delete_covenant()
 
     @staticmethod
     def it_calculates_covenfolk_changes():
@@ -136,6 +135,7 @@ class DescribeCovenant:
         folk = Covenfolk("george", "magi")
         cov.covenfolken.add_covenfolk(folk)
         assert cov.covenfolken.covenfolk["george"] == folk
+        cov.delete_covenant()
 
     @staticmethod
     def it_can_change_seasons():
@@ -159,6 +159,7 @@ class DescribeCovenant:
         assert cov.treasury == 60.0
         cov.bank(-100)
         assert cov.treasury == -40.0
+        cov.delete_covenant()
 
     @staticmethod
     def it_calculates_lab_cost_saving_changes():
@@ -172,6 +173,7 @@ class DescribeCovenant:
         assert cov.calculate_expenditures() == 5.2
         cov.covenfolken.add_covenfolk("worker 2", "crafter", "brickmaker", "laboratories", 10, "rare")
         assert cov.calculate_expenditures() == 7.2
+        cov.delete_covenant()
 
     @staticmethod
     def it_correctly_factors_cost_saving_caps_per_profession():
@@ -180,6 +182,7 @@ class DescribeCovenant:
         assert cov.calculate_expenditures() == 15.0
         cov.covenfolken.add_covenfolk("worker", "crafter", "brickmaker", "laboratories", 200, "common")
         assert cov.calculate_expenditures() == 14.0
+        cov.delete_covenant()
 
     @staticmethod
     def it_calculates_laboratory_changes():
@@ -187,6 +190,7 @@ class DescribeCovenant:
         assert cov.calculate_expenditures() == 0.0
         cov.laboratories.add_lab("route 66")
         assert cov.calculate_expenditures() == 1.0
+        cov.delete_covenant()
 
     @staticmethod
     def it_can_verify_too_few_teamsters_exist():
@@ -196,6 +200,7 @@ class DescribeCovenant:
         cov.covenfolken.add_covenfolk("Todd", "laborer")
         cov.covenfolken.add_covenfolk("Tammy", "laborer")
         assert cov.meets_laborer_minimum() == True
+        cov.delete_covenant()
         
     @staticmethod
     def it_can_verify_too_few_laborers_exist():
@@ -204,6 +209,7 @@ class DescribeCovenant:
         assert cov.meets_teamster_minimum() == False
         cov.covenfolken.add_covenfolk("Teamster", "teamster")
         assert cov.meets_teamster_minimum() == True
+        cov.delete_covenant()
 
     @staticmethod
     def it_correctly_factors_in_laborers_for_teamster_requirements():
@@ -219,18 +225,21 @@ class DescribeCovenant:
         cov.covenfolken.add_covenfolk("lab", "laborer")
         cov.covenfolken.add_covenfolk("orer", "laborer")
         assert cov.meets_teamster_minimum() == False
+        cov.delete_covenant()
 
     @staticmethod
     def it_correctly_calculates_inflation():
         cov = Covenant()
         cov.inflation = 0
         assert cov.calculate_inflation(100, 200) == 2
+        cov.delete_covenant()
 
     @staticmethod
     def it_does_not_increase_inflation_if_expenses_lowered():
         cov = Covenant()
         cov.inflation = 5
         assert cov.calculate_inflation(300, 150) == 5
+        cov.delete_covenant()
 
     @staticmethod
     def it_calculates_armory_increases():
@@ -248,6 +257,7 @@ class DescribeCovenant:
         cov.armory.add_equipment("Missle", "heavy siege", "expensive")
         cov.armory.add_equipment("Missle", "heavy siege", "expensive")
         assert cov.calculate_expenditures() == 1.05
+        cov.delete_covenant()
 
 
 class DescribeSaveCovenant:
@@ -267,6 +277,7 @@ class DescribeSaveCovenant:
             cov_string = cov_list[0]
             assert len(cov_list) == 1
             assert "Vernus" in cov_string
+        cov.delete_covenant()
 
 
 class DescribeLoadCovenant:
@@ -286,3 +297,4 @@ class DescribeLoadCovenant:
         assert loaded.armory.weapons["pistol"] == {}
         assert loaded.laboratories.labs["Haunted mansion"].size == 0
         assert loaded.expenses == 9999999
+        cov.delete_covenant()
