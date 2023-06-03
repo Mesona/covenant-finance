@@ -259,7 +259,7 @@ Please select between spring, summer, autumn, and winter.
         return sum(self.income_sources.values())
 
     def change_season(self, season):
-        self.season = season
+        self.season = season.lower()
 
     def display_finances(self):
         # TODO: this is broken
