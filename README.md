@@ -7,14 +7,19 @@ Design Diagram:
 To set up your own instance:
   * Prereqs:
     * PSQL
+        * edit "/etc/postgresql/14/main/pg_hba.conf" and swap "local all all md5" with "local all all trust"
+        * `sudo -i -u postgres`
         * `psql`
         * `CREATE DATABASE finance;`
-        * `CREATE ROLE finance LOGIN;`
+        * `CREATE ROLE finance  WITH LOGIN ENCRYPTED PASSWORD 'password';`
         * `GRANT ALL PRIVILEGES ON DATABASE finance TO finance;`
     * Ensure your database is running off port 5432 (default)
         * If you set a password and/or a secret key, put the values in ./database_password.py
+    * Reenable password authentication
+        * edit "/etc/postgresql/14/main/pg_hba.conf" and swap "local all all trust" with "local all all md5"
   * Self hosting:
     * Download project
+    * `sudo apt-get install apache2-dev`
     * `pip install -r requirements.txt`
     * `python -m venv venv`
     * `source venv/bin/activate`
@@ -33,6 +38,10 @@ To set up your own instance:
     * `C.save_covenant`
 
 TODO BEFORE BETA:
+  * HOSTING FIXES:
+    * A RECORD
+    * Change '/flask_session' location and permissions
+    * Change '/test.log' location and permissions
   * User related:
     * User registration email validation
     * User change password
