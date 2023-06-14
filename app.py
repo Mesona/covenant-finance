@@ -39,11 +39,6 @@ def in_aws():
 
 
 def create_connection():
-    if in_heroku():
-        return psycopg2.connect(os.environ["DATABASE_URL"], sslmode='require')
-        #return psycopg2.connect(user="finance", database="postgresql-polished-48712", password=PASSWORD, sslmode='require')
-    else:
-        return psycopg2.connect(user="finance", database="finance", password=PASSWORD)
     return psycopg2.connect(user="finance", database="finance", password=PASSWORD)
 
 def create_cursor(connection):
@@ -513,7 +508,14 @@ def modify_laboratories():
 def modify_covenfolken():
     if request.method == "GET":
         print("COVENANT SEASON:", session["current_covenant"].season)
-        return render_template("modify_covenfolken.html", saving_categories=SAVING_CATEGORIES, covenant_season=session["current_covenant"].season)
+        return render_template(
+                "modify_covenfolken.html",
+                saving_categories=SAVING_CATEGORIES,
+                covenant_season=session["current_covenant"].season,
+                calculate_servant_minimum=session["current_covenant"].calculate_servant_minimum,
+                calculate_teamster_minimum=session["current_covenant"].calculate_teamster_minimum,
+                covenant_armory=session["current_covenant"].armory
+                )
 
     if request.method == "POST":
         covenant = session["current_covenant"]
