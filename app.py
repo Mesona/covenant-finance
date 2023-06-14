@@ -3,16 +3,16 @@
 from flask import Flask, flash, redirect, render_template, \
      request, url_for, session, g
 #from flask_mail import Mail, Message
-from flask_bcrypt import Bcrypt
 from flask_session import Session
+from flask_bcrypt import Bcrypt
 from database_password import PASSWORD, SECRET_KEY
-import psycopg2
 from src.covenant import Covenant, save_covenant, load_covenant_from_string
 from src.laboratory import Laboratories
 from src.covenfolk import Covenfolken, SAVING_CATEGORIES
 from src.armory import Armory
 import logging
 import os
+import psycopg2
 
 
 app = Flask(__name__)
@@ -30,20 +30,15 @@ logger.addHandler(handler) # adds handler to the werkzeug WSGI logger
 ######################################
 
 
-def in_heroku():
-    for key in os.environ.keys():
-        if "HEROKU" in key:
+def in_aws():
+    for key, val in os.environ.items():
+        if "/var/www" in val:
             return True
 
     return False
 
 
 def create_connection():
-    if in_heroku():
-        return psycopg2.connect(os.environ["DATABASE_URL"], sslmode='require')
-        #return psycopg2.connect(user="finance", database="postgresql-polished-48712", password=PASSWORD, sslmode='require')
-    else:
-        return psycopg2.connect(user="finance", database="finance", password=PASSWORD)
     return psycopg2.connect(user="finance", database="finance", password=PASSWORD)
 
 def create_cursor(connection):
@@ -657,7 +652,9 @@ def modify_armory():
 
 
 if __name__ == "__main__":
-    if in_heroku():
-        app.run(host="0.0.0.0", port=os.environ["PORT"], debug=True)
+    if in_aws():
+        print("IN AWS")
+        app.run()
     else:
+        print("NOT IN AWS")
         app.run(host="127.0.0.1", port=8000, debug=True)
