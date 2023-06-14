@@ -31,8 +31,8 @@ logger.addHandler(handler) # adds handler to the werkzeug WSGI logger
 
 
 def in_aws():
-    for key, val in os.environ.items():
-        if "/var/www" in val:
+    for key in os.environ.keys():
+        if "/var/www" in key:
             return True
 
     return False
@@ -508,7 +508,14 @@ def modify_laboratories():
 def modify_covenfolken():
     if request.method == "GET":
         print("COVENANT SEASON:", session["current_covenant"].season)
-        return render_template("modify_covenfolken.html", saving_categories=SAVING_CATEGORIES, covenant_season=session["current_covenant"].season)
+        return render_template(
+                "modify_covenfolken.html",
+                saving_categories=SAVING_CATEGORIES,
+                covenant_season=session["current_covenant"].season,
+                calculate_servant_minimum=session["current_covenant"].calculate_servant_minimum,
+                calculate_teamster_minimum=session["current_covenant"].calculate_teamster_minimum,
+                covenant_armory=session["current_covenant"].armory
+                )
 
     if request.method == "POST":
         covenant = session["current_covenant"]
@@ -653,8 +660,7 @@ def modify_armory():
 
 if __name__ == "__main__":
     if in_aws():
-        print("IN AWS")
-        app.run()
+        app.run(host="0.0.0.0", port=8000, debug=True)
     else:
         print("NOT IN AWS")
         app.run(host="127.0.0.1", port=8000, debug=True)

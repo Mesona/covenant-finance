@@ -389,7 +389,7 @@
 
             $('.set_servants_to_minimum').click(function(e) {
                 e.preventDefault();
-                servant_minimum = Math.round(calculate_minimum_covenfolk_base_costs() / 5);
+                servant_minimum = 2 * Math.ceil(calculate_minimum_covenfolk_base_costs() / 10);
 							  if (covenfolk_count["servant"] == servant_minimum) {
                     console.log("Already match!");
                     return "true";
@@ -408,7 +408,7 @@
 
             $('.set_teamsters_to_minimum').click(function(e) {
                 e.preventDefault();
-                let base_costs = Math.round(calculate_minimum_covenfolk_base_costs());
+                let base_costs = Math.ceil(calculate_minimum_covenfolk_base_costs());
 
                 if ("{{covenant_season}}".toLowerCase() === "sping"  || "{{covenant_season}}".toLowerCase() === "winter") {
                     base_costs = base_costs + covenfolk_count["servant"];
@@ -418,7 +418,7 @@
 
                 base_costs = base_costs - (covenfolk_count["laborer"] * 2);
 
-                teamster_minimum = Math.round(base_costs);
+                teamster_minimum = Math.ceil(base_costs / 10);
 							  if (covenfolk_count["teamster"] == teamster_minimum) {
                     console.log("Already match!");
                     return "true";
