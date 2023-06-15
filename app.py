@@ -31,8 +31,8 @@ logger.addHandler(handler) # adds handler to the werkzeug WSGI logger
 
 
 def in_aws():
-    for key in os.environ.keys():
-        if "/var/www" in key:
+    for key, val in os.environ.items():
+        if "/var/www" in val:
             return True
 
     return False
@@ -660,7 +660,7 @@ def modify_armory():
 
 if __name__ == "__main__":
     if in_aws():
+        print("IN AWS")
         app.run(host="0.0.0.0", port=8000, debug=True)
     else:
-        print("NOT IN AWS")
         app.run(host="127.0.0.1", port=8000, debug=True)
