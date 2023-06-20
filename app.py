@@ -3,13 +3,16 @@
 from flask import Flask, flash, redirect, render_template, \
      request, url_for, session, g
 #from flask_mail import Mail, Message
-from flask_session import Session
 from flask_bcrypt import Bcrypt
+from flask_mail import Mail
+from flask_session import Session
 from database_password import PASSWORD, SECRET_KEY
 from src.covenant import Covenant, save_covenant, load_covenant_from_string
 from src.laboratory import Laboratories
 from src.covenfolk import Covenfolken, SAVING_CATEGORIES
 from src.armory import Armory
+from static import errors
+
 import logging
 import os
 import psycopg2
@@ -21,6 +24,7 @@ app.config["SESSION_TYPE"] = "filesystem"
 app.secret_key = SECRET_KEY
 Session(app)
 bcypt = Bcrypt(app)
+mail = Mail(app)
 
 logger = logging.getLogger('werkzeug') # grabs underlying WSGI logger
 handler = logging.FileHandler('test.log') # creates handler for the log file
@@ -369,6 +373,13 @@ def register():
     clean_user_session()
     session.clear()
     return render_template('register.html')
+
+
+@app.route('/password_recovery')
+def password_recovery():
+    clean_user_session()
+    session.clear()
+    return render_template('password_recovery.html')
 
 
 @app.route('/login', methods = ['POST'])

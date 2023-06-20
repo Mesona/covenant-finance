@@ -39,7 +39,6 @@ To set up your own instance:
 
 TODO BEFORE BETA:
   * HOSTING FIXES:
-    * A RECORD
     * Change '/flask_session' location and permissions
     * Change '/test.log' location and permissions
   * User related:
@@ -54,8 +53,6 @@ TODO BEFORE BETA:
     * Cost breakdown by type in covenant page
   * Dev related:
     * Front end tests
-    * Fix back end tests, too
-    * Add tests for charged items
     * Cap number of covenants a user can have
     * Cap number of income sources a covenant can have
 TODO MAYBES BEFORE BETA:
