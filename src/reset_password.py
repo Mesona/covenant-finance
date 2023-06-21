@@ -1,3 +1,5 @@
+"""Instructions modified from https://dev.to/paurakhsharma/flask-rest-api-part-5-password-reset-2f2e"""
+
 import datetime
 from flask import request, render_template
 from flask_jwt_extended import create_access_token, decode_token
@@ -7,7 +9,7 @@ from static.errors import SchemaValidationError, InternalServerError, \
     EmailDoesNotExistsError, BadTokenError
 from services.mail_service import send_email
 
-class ForgotPassword():
+class ForgotPassword(Resource):
     def post(self):
         url = request.host_url + 'reset/'
         try:
