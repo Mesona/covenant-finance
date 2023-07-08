@@ -4,7 +4,7 @@ A program for the purpose of yearly advancement and tracking of covenant finance
 Design Diagram:
 ![ars finances design diagram](./static/FinanceNavigationChart.png?raw=true)
 
-To set up your own instance:
+To set up your own instance or do local development:
   * Prereqs:
     * PSQL
         * edit "/etc/postgresql/14/main/pg_hba.conf" and swap "local all all md5" with "local all all trust"
@@ -17,6 +17,10 @@ To set up your own instance:
         * If you set a password and/or a secret key, put the values in ./database_password.py
     * Reenable password authentication
         * edit "/etc/postgresql/14/main/pg_hba.conf" and swap "local all all trust" with "local all all md5"
+    * Virtualenv:
+        * `python -m venv venv`
+        * `echo "export ENV_FILE_LOCATION='./.env'" > ./venv/bin/activate`
+        * `source ./venv/bin/activate`
   * Self hosting:
     * Download project
     * `sudo apt-get install apache2-dev`
