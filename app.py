@@ -14,18 +14,18 @@ from src.covenant import Covenant, save_covenant, load_covenant_from_string
 from src.laboratory import Laboratories
 from src.covenfolk import Covenfolken, SAVING_CATEGORIES
 from src.armory import Armory
-from src.reset_password import ForgotPassword
 
 
 app = Flask(__name__)
-app.config.from_envvar('ENV_FILE_LOCATION')
+app.config.from_envvar("ENV_FILE_LOCATION")
+mail = Mail(app)
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
-app.secret_key = os.environ['DATABASE_SECRET_KEY']
+app.secret_key = app.config["DATABASE_SECRET_KEY"]
+
 Session(app)
 bcypt = Bcrypt(app)
 jwt = JWTManager(app)
-mail = Mail(app)
 
 logger = logging.getLogger('werkzeug') # grabs underlying WSGI logger
 handler = logging.FileHandler('test.log') # creates handler for the log file
@@ -37,7 +37,7 @@ logger.addHandler(handler) # adds handler to the werkzeug WSGI logger
 
 
 def create_connection():
-    return psycopg2.connect(user="finance", database="finance", password=is.environ['DATABASE_PASSWORD'])
+    return psycopg2.connect(user="finance", database="finance", password=app.config['DATABASE_PASSWORD'])
 
 def create_cursor(connection):
     return connection.cursor()
@@ -94,17 +94,17 @@ def add_covenant_to_database(cursor, covenant):
 #    print("Email updated!")
 
 def update_username(cursor, user_id, username):
-    cursor.execute("UPDATE login SET username = %s WHERE user_id = %s", (username, user_id))
+    cursor.execute("UPDATE login SET username = %s WHERE id = %s", (username, user_id))
     print("Username updated!")
 
 def update_user_password(cursor, user_id, password):
     bcrypt = Bcrypt()
-    cursor.execute("UPDATE login SET password = %s WHERE user_id = %s", (bcrypt.generate_password_hash(password).decode("utf-8"), user_id))
+    cursor.execute("UPDATE login SET password = %s WHERE id = %s", (bcrypt.generate_password_hash(password).decode("utf-8"), user_id))
     print("Password updated!")
 
 
 def update_covenant_in_database(cursor, covenant):
-    cursor.execute("UPDATE covenant SET cov = %s WHERE name = %s AND user_id = %s", (save_covenant(covenant), covenant.name, g.username))
+    cursor.execute("UPDATE covenant SET cov = %s WHERE name = %s AND id = %s", (save_covenant(covenant), covenant.name, g.username))
 
 #def save_covenant_to_database(cursor, covenant):
 #    cursor.execute("INSERT INTO cov (name, cov, login_id) values (%s, %s, %s)", (covenant.name, covenant, user_id))
@@ -153,8 +153,11 @@ def get_user_id_from_email(email):
     connection = create_connection()
     cursor = create_cursor(connection)
 
-    command = f"SELECT user_id FROM users WHERE email = '{email}'"
-    user_id = cursor.execute(command, g.username)
+    command = f"SELECT id FROM login WHERE email = '{email}';"
+    print("COMMAND:", command)
+    cursor.execute(command, g.username)
+    user_id = cursor.fetchone()[0]
+    print("PSQL USER ID:", user_id)
 
     close_connections(connection, cursor)
     return user_id
@@ -397,15 +400,23 @@ def register():
 
 @app.route('/forgot_password', methods = ["GET", "POST"])
 def forgot_password():
+    from src.reset_password import forgotPassword
+
     if request.method == "GET":
         clean_user_session()
         session.clear()
+        print("IN PAGE")
+        print("REQUEST METHOD:", request.method)
         return render_template('forgot_password.html')
     elif request.method == "POST":
+        print("IN POST")
+        print("REQUEST METHOD:", request.method)
         user_email = request.form['email']
+        print("EMAIL:", user_email)
         user_id = get_user_id_from_email(user_email)
+        print("USER ID:", user_id)
 
-        ForgotPassword(user_email, user_id)
+        forgotPassword(user_email, user_id)
         return render_template('login.html')
 
 
@@ -423,7 +434,7 @@ def reset_password():
     elif request.method == "POST":
         url = request.base_url + 'reset_password/'
         token = url.split("reset_password/")[-1]
-        user_id = decode_token(token)['identity']
+        user_id = decode_token(token)['sub']
 
         password = request.form['password']
         confirm_password = request.form['confirm_password']
@@ -725,5 +736,3 @@ def modify_armory():
         session["current_covenant"] = covenant
 
         return render_template("create_covenant_landing.html")
-
-
