@@ -2,5 +2,4 @@
 __pycache__/
 *.swp
 *.swo
-database_password.py
 .DS_Store

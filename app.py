@@ -1,29 +1,30 @@
 #!/usr/bin/env python3
 
-from flask import Flask, flash, redirect, render_template, \
-     request, url_for, session, g
-#from flask_mail import Mail, Message
-from flask_bcrypt import Bcrypt
-from flask_mail import Mail
-from flask_session import Session
-from database_password import PASSWORD, SECRET_KEY
-from src.covenant import Covenant, save_covenant, load_covenant_from_string
-from src.laboratory import Laboratories
-from src.covenfolk import Covenfolken, SAVING_CATEGORIES
-from src.armory import Armory
-from static import errors
-
 import logging
 import os
 import psycopg2
 
+from flask import Flask, flash, redirect, render_template, \
+     request, url_for, session, g
+from flask_bcrypt import Bcrypt
+from flask_jwt_extended import decode_token, JWTManager
+from flask_mail import Mail
+from flask_session import Session
+from src.covenant import Covenant, save_covenant, load_covenant_from_string
+from src.laboratory import Laboratories
+from src.covenfolk import Covenfolken, SAVING_CATEGORIES
+from src.armory import Armory
+from src.reset_password import ForgotPassword
+
 
 app = Flask(__name__)
+app.config.from_envvar('ENV_FILE_LOCATION')
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
-app.secret_key = SECRET_KEY
+app.secret_key = os.environ['DATABASE_SECRET_KEY']
 Session(app)
 bcypt = Bcrypt(app)
+jwt = JWTManager(app)
 mail = Mail(app)
 
 logger = logging.getLogger('werkzeug') # grabs underlying WSGI logger
@@ -34,16 +35,9 @@ logger.addHandler(handler) # adds handler to the werkzeug WSGI logger
 ######################################
 
 
-def in_aws():
-    for key, val in os.environ.items():
-        if "/var/www" in val:
-            return True
-
-    return False
-
 
 def create_connection():
-    return psycopg2.connect(user="finance", database="finance", password=PASSWORD)
+    return psycopg2.connect(user="finance", database="finance", password=is.environ['DATABASE_PASSWORD'])
 
 def create_cursor(connection):
     return connection.cursor()
@@ -94,6 +88,21 @@ def add_user_to_database(cursor, username, email, password):
 def add_covenant_to_database(cursor, covenant):
     cursor.execute("INSERT INTO covenant (name, cov, user_id) values (%s, %s, %s)", (covenant.name, save_covenant(covenant), g.username))
 
+#TODO: Create validation for changing email
+#def update_user_email(cursor, user_id, email):
+#    cursor.execute("UPDATE login SET email = %s WHERE user_id = %s", (email, user_id))
+#    print("Email updated!")
+
+def update_username(cursor, user_id, username):
+    cursor.execute("UPDATE login SET username = %s WHERE user_id = %s", (username, user_id))
+    print("Username updated!")
+
+def update_user_password(cursor, user_id, password):
+    bcrypt = Bcrypt()
+    cursor.execute("UPDATE login SET password = %s WHERE user_id = %s", (bcrypt.generate_password_hash(password).decode("utf-8"), user_id))
+    print("Password updated!")
+
+
 def update_covenant_in_database(cursor, covenant):
     cursor.execute("UPDATE covenant SET cov = %s WHERE name = %s AND user_id = %s", (save_covenant(covenant), covenant.name, g.username))
 
@@ -138,6 +147,17 @@ def get_covenant_names(cursor, connection):
 def append_to_covenant_names(covenant_name):
     session["covenant_names"].append(covenant_name)
     return session["covenant_names"]
+
+
+def get_user_id_from_email(email):
+    connection = create_connection()
+    cursor = create_cursor(connection)
+
+    command = f"SELECT user_id FROM users WHERE email = '{email}'"
+    user_id = cursor.execute(command, g.username)
+
+    close_connections(connection, cursor)
+    return user_id
 
 
 ######################################
@@ -375,11 +395,49 @@ def register():
     return render_template('register.html')
 
 
-@app.route('/password_recovery')
-def password_recovery():
-    clean_user_session()
-    session.clear()
-    return render_template('password_recovery.html')
+@app.route('/forgot_password', methods = ["GET", "POST"])
+def forgot_password():
+    if request.method == "GET":
+        clean_user_session()
+        session.clear()
+        return render_template('forgot_password.html')
+    elif request.method == "POST":
+        user_email = request.form['email']
+        user_id = get_user_id_from_email(user_email)
+
+        ForgotPassword(user_email, user_id)
+        return render_template('login.html')
+
+
+@app.route('/reset_password/*', methods = ["GET", "POST"])
+def reset_password():
+    if request.method == "GET":
+        clean_user_session()
+        session.clear()
+        url = request.base_url + 'reset_password/'
+
+        if len(url) <= 2:
+            return redirect(url_for("home"))
+
+        return render_template('password_reset.html')
+    elif request.method == "POST":
+        url = request.base_url + 'reset_password/'
+        token = url.split("reset_password/")[-1]
+        user_id = decode_token(token)['identity']
+
+        password = request.form['password']
+        confirm_password = request.form['confirm_password']
+
+        if password != confirm_password:
+            raise ValueError("Passwords must match!")
+
+        connection = create_connection()
+        cursor = create_cursor(connection)
+
+        update_user_password(cursor, user_id, password)
+
+        close_connections(connection, cursor)
+        return render_template('login.html')
 
 
 @app.route('/login', methods = ['POST'])
@@ -669,9 +727,3 @@ def modify_armory():
         return render_template("create_covenant_landing.html")
 
 
-if __name__ == "__main__":
-    if in_aws():
-        print("IN AWS")
-        app.run(host="0.0.0.0", port=8000, debug=True)
-    else:
-        app.run(host="127.0.0.1", port=8000, debug=True)
