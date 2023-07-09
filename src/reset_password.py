@@ -28,7 +28,7 @@ def forgotPassword(user_email, user_id):
         #if not user:
         #    raise EmailDoesNotExistsError
 
-        expires = datetime.timedelta(hours=24)
+        expires = datetime.timedelta(hours=1)
         reset_token = create_access_token(str(user_id), expires_delta=expires)
         #print("TEXT BODY:", render_template('templates/reset_password.txt', url=url + reset_token))
         #print("HTML BODY:", render_template('templates/reset_password.html', url=url + reset_token))

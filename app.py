@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import time
 import logging
 import os
 import psycopg2
@@ -444,6 +445,10 @@ def reset_password(path):
         url = request.base_url
         token = session["token"]
         user_id = decode_token(token)['sub']
+        token_expiration = decode_token(token)['exp']
+
+        if token_expiration < time.time():
+            raise ValueError("Password reset link has expired! Please request a new one!")
 
         password = request.form['password']
         confirm_password = request.form['confirm_password']
