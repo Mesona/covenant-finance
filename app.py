@@ -174,7 +174,7 @@ def get_user_id_from_email(email):
 
 ######################################
 
-@app.route("/", defaults={"u_path": ""})
+@app.route("/")
 def root():
     session["covenant_names"] = None
     print("COVENANT NAMES WIPED:", session["covenant_names"])
@@ -429,10 +429,6 @@ def forgot_password():
         return render_template('login.html')
 
 
-@app.route("/reset/passord/")
-def redirect_to_login():
-    return render_template('login.html')
-
 @app.route('/reset_password/<path:path>', methods = ["GET", "POST"])
 def reset_password(path):
     if request.method == "GET":
@@ -459,7 +455,7 @@ def reset_password(path):
 
         session["token"] = ""
 
-        return render_template('login.html')
+        return redirect("/")
 
 
 @app.route('/login', methods = ['POST'])
