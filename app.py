@@ -93,17 +93,27 @@ def add_covenant_to_database(cursor, covenant):
 #    print("Email updated!")
 
 def update_username(cursor, user_id, username):
-    cursor.execute("UPDATE login SET username = %s WHERE id = %s", (username, user_id))
+    cursor.execute("UPDATE login SET username = %s WHERE id = %s;", (username, user_id))
     print("Username updated!")
 
-def update_user_password(cursor, user_id, password):
+def update_user_password(user_id, password):
     bcrypt = Bcrypt()
-    cursor.execute("UPDATE login SET password = %s WHERE id = %s", (bcrypt.generate_password_hash(password).decode("utf-8"), user_id))
+    new_password = bcrypt.generate_password_hash(password).decode("utf-8")
+
+    command = f"UPDATE login SET password = '{new_password}' WHERE id = {int(user_id)};"
+
+    connection = create_connection()
+    cursor = create_cursor(connection)
+
+    cursor.execute(command)
+    connection.commit()
+
+    close_connections(connection, cursor)
     print("Password updated!")
 
 
 def update_covenant_in_database(cursor, covenant):
-    cursor.execute("UPDATE covenant SET cov = %s WHERE name = %s AND id = %s", (save_covenant(covenant), covenant.name, g.username))
+    cursor.execute("UPDATE covenant SET cov = %s WHERE name = %s AND id = %s;", (save_covenant(covenant), covenant.name, g.username))
 
 #def save_covenant_to_database(cursor, covenant):
 #    cursor.execute("INSERT INTO cov (name, cov, login_id) values (%s, %s, %s)", (covenant.name, covenant, user_id))
@@ -164,7 +174,7 @@ def get_user_id_from_email(email):
 
 ######################################
 
-@app.route("/")
+@app.route("/", defaults={"u_path": ""})
 def root():
     session["covenant_names"] = None
     print("COVENANT NAMES WIPED:", session["covenant_names"])
@@ -419,24 +429,24 @@ def forgot_password():
         return render_template('login.html')
 
 
-@app.route('/reset_password/*', methods = ["GET", "POST"])
-def reset_password():
-    print("HERE")
+@app.route("/reset/passord/")
+def redirect_to_login():
+    return render_template('login.html')
+
+@app.route('/reset_password/<path:path>', methods = ["GET", "POST"])
+def reset_password(path):
     if request.method == "GET":
-        print("IN RP GET")
         clean_user_session()
         session.clear()
-        #url = request.base_url + 'reset_password/'
-        print("RP URL:", request.base_url)
 
-        if len(request.base_url) <= 2:
-            return redirect(url_for("home"))
-
-        return render_template('password_reset.html')
-    elif request.method == "POST":
-        print("IN RP POST")
         url = request.base_url
         token = url.split("reset_password/")[-1]
+        session["token"] = token
+
+        return render_template('reset_password.html', token=token)
+    elif request.method == "POST":
+        url = request.base_url
+        token = session["token"]
         user_id = decode_token(token)['sub']
 
         password = request.form['password']
@@ -445,12 +455,10 @@ def reset_password():
         if password != confirm_password:
             raise ValueError("Passwords must match!")
 
-        connection = create_connection()
-        cursor = create_cursor(connection)
+        update_user_password(user_id, password)
 
-        update_user_password(cursor, user_id, password)
+        session["token"] = ""
 
-        close_connections(connection, cursor)
         return render_template('login.html')
 
 
@@ -506,18 +514,13 @@ def finalize_covenant():
     connection = create_connection()
     cursor = create_cursor(connection)
 
-    print("SESSION COVENANT:", session["current_covenant"].name)
-
-    print("C2:", session.get("new_covenant"))
     if session["current_covenant"].name in session.get("covenant_names") and session.get("new_covenant") is True:
         flash("Covenant names must be unique!")
         return redirect("create_covenant_landing")
     elif not session["new_covenant"]:
-        print("YO")
         update_covenant_in_database(cursor, session["current_covenant"])
         covenant_names = session["covenant_names"]
     else:
-        print("OY")
         add_covenant_to_database(cursor, session["current_covenant"])
         covenant_names = append_to_covenant_names(session["current_covenant"].name)
 
