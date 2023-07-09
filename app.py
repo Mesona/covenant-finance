@@ -15,7 +15,6 @@ from src.laboratory import Laboratories
 from src.covenfolk import Covenfolken, SAVING_CATEGORIES
 from src.armory import Armory
 
-
 app = Flask(__name__)
 app.config.from_envvar("ENV_FILE_LOCATION")
 mail = Mail(app)
@@ -422,17 +421,21 @@ def forgot_password():
 
 @app.route('/reset_password/*', methods = ["GET", "POST"])
 def reset_password():
+    print("HERE")
     if request.method == "GET":
+        print("IN RP GET")
         clean_user_session()
         session.clear()
-        url = request.base_url + 'reset_password/'
+        #url = request.base_url + 'reset_password/'
+        print("RP URL:", request.base_url)
 
-        if len(url) <= 2:
+        if len(request.base_url) <= 2:
             return redirect(url_for("home"))
 
         return render_template('password_reset.html')
     elif request.method == "POST":
-        url = request.base_url + 'reset_password/'
+        print("IN RP POST")
+        url = request.base_url
         token = url.split("reset_password/")[-1]
         user_id = decode_token(token)['sub']
 

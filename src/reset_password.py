@@ -1,7 +1,7 @@
 """Instructions modified from https://dev.to/paurakhsharma/flask-rest-api-part-5-password-reset-2f2e"""
 
 import datetime
-from flask import request, render_template
+from flask import request, render_template, url_for
 from flask_jwt_extended import create_access_token, decode_token
 from jwt.exceptions import ExpiredSignatureError, DecodeError, \
     InvalidTokenError
@@ -9,39 +9,44 @@ from static.errors import SchemaValidationError, InternalServerError, \
     EmailDoesNotExistsError, BadTokenError
 from services.mail_service import send_email
 
+from app import app
+
 def forgotPassword(user_email, user_id):
-        print("INIT FORGOTPASSWORD")
-        user_email = user_email
-        user_id = user_id
+    print("INIT FORGOTPASSWORD")
+    user_email = user_email
+    user_id = user_id
 
-        url = request.base_url + 'reset_password/'
-        try:
-            # Create log for someone spamming password recovery
-            #if not email:
-            #   raise SchemaValidationError
+    # TODO: There must be a better way to handle this
+    url = request.base_url.split("/forgot_password")
+    url = "".join(url + ['/reset_password/'])
 
-            #if not user:
-            #    raise EmailDoesNotExistsError
+    try:
+        # Create log for someone spamming password recovery
+        #if not email:
+        #   raise SchemaValidationError
 
-            expires = datetime.timedelta(hours=24)
-            reset_token = create_access_token(str(user_id), expires_delta=expires)
-            print("recipients:", user_email)
-            #print("TEXT BODY:", render_template('templates/reset_password.txt', url=url + reset_token))
-            #print("HTML BODY:", render_template('templates/reset_password.html', url=url + reset_token))
-
-            return send_email('Ars Magic Covenant Finance -- Reset Your Password',
-                              sender='support@TBD',
-                              recipients=[user_email],
-                              text_body=render_template('templates/reset_password.txt',
-                                                        url=url + reset_token),
-                              html_body=render_template('templates/reset_password.html',
-                                                        url=url + reset_token))
-        #except SchemaValidationError:
-        #    raise SchemaValidationError
-        #except EmailDoesNotExistsError:
+        #if not user:
         #    raise EmailDoesNotExistsError
-        except Exception as e:
-            raise InternalServerError
+
+        expires = datetime.timedelta(hours=24)
+        reset_token = create_access_token(str(user_id), expires_delta=expires)
+        #print("TEXT BODY:", render_template('templates/reset_password.txt', url=url + reset_token))
+        #print("HTML BODY:", render_template('templates/reset_password.html', url=url + reset_token))
+
+        return send_email('Ars Magic Covenant Finance Calculator Password Reset',
+                          sender='ars-finances@mesona.net',
+                          recipients=[user_email],
+                          text_body=render_template('reset_password.txt',
+                                                    url=url + reset_token),
+                          html_body=render_template('reset_password.html',
+                                                    url=url + reset_token)
+               )
+    #except SchemaValidationError:
+    #    raise SchemaValidationError
+    #except EmailDoesNotExistsError:
+    #    raise EmailDoesNotExistsError
+    except Exception as e:
+        raise InternalServerError
 
 
 #class ResetPassword():
