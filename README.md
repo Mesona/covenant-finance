@@ -19,7 +19,7 @@ To set up your own instance or do local development:
         * edit "/etc/postgresql/14/main/pg_hba.conf" and swap "local all all trust" with "local all all md5"
     * Virtualenv:
         * `python -m venv venv`
-        * `echo "export ENV_FILE_LOCATION='./.env'" > ./venv/bin/activate`
+        * `echo "export ENV_FILE_LOCATION='./.env'" >> ./venv/bin/activate`
         * `source ./venv/bin/activate`
   * Self hosting:
     * Download project
