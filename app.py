@@ -21,6 +21,8 @@ app.config.from_envvar("ENV_FILE_LOCATION")
 mail = Mail(app)
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
+app.config["MAIL_USE_TLS"] = False
+app.config["MAIL_USE_SSL"] = True
 app.secret_key = app.config["DATABASE_SECRET_KEY"]
 
 Session(app)
