@@ -17,6 +17,7 @@ from src.covenfolk import Covenfolken, SAVING_CATEGORIES
 from src.armory import Armory
 
 app = Flask(__name__)
+os.environ['ENV_FILE_LOCATION'] = "./.env"
 app.config.from_envvar("ENV_FILE_LOCATION")
 mail = Mail(app)
 app.config["SESSION_PERMANENT"] = False
@@ -39,7 +40,7 @@ logger.addHandler(handler) # adds handler to the werkzeug WSGI logger
 
 
 def create_connection():
-    return psycopg2.connect(user="finance", database="finance", password=app.config['DATABASE_PASSWORD'])
+    return psycopg2.connect(user="finance", database="finance", password=app.config["DATABASE_PASSWORD"])
 
 def create_cursor(connection):
     return connection.cursor()
@@ -197,6 +198,7 @@ def before_request():
 
 @app.route("/home")
 def home():
+    print("C1")
     print("IN HOME")
     print("SCN 0:", session.get("covenant_names"))
     session["current_covenant"] = None
@@ -447,10 +449,10 @@ def reset_password(path):
         url = request.base_url
         token = session["token"]
         user_id = decode_token(token)['sub']
-        token_expiration = decode_token(token)['exp']
+        #token_expiration = decode_token(token)['exp']
 
-        if token_expiration < time.time():
-            raise ValueError("Password reset link has expired! Please request a new one!")
+        #if token_expiration < time.time():
+        #    raise ValueError("Password reset link has expired! Please request a new one!")
 
         password = request.form['password']
         confirm_password = request.form['confirm_password']
@@ -467,17 +469,21 @@ def reset_password(path):
 
 @app.route('/login', methods = ['POST'])
 def handle_create_new_user():
+    print("H1")
     bcrypt = Bcrypt()
 
     username = request.form['username']
+    print("H2")
     email = request.form['email']
     password = request.form['password']
     connection = create_connection()
     cursor = create_cursor(connection)
 
+    print("H3")
     cursor.execute("SELECT username, email FROM login")
     connection.commit()
     data = cursor.fetchall()
+    print("H4")
 
     if any([ username in i for i in data]) or any([ email in i for i in data]):
         close_connections(connection, cursor)
@@ -745,3 +751,21 @@ def modify_armory():
         session["current_covenant"] = covenant
 
         return render_template("create_covenant_landing.html")
+
+#TODO: Better detection than /var/www
+def in_aws():
+    """Checks if this is running in an AWS environment."""
+    for _, val in os.environ.items():
+        if "/var/www" in val:
+            return True
+
+    return False
+
+if __name__ == "__main__":
+    print("YO")
+    if in_aws():
+        print("IN AWS")
+        app.run(host="0.0.0.0", port=8000, debug=True)
+    else:
+        print("NOT ON AWS!")
+        app.run(host="127.0.0.1", port=8000, debug=True)
