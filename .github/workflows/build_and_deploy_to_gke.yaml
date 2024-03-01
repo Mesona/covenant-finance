@@ -22,7 +22,7 @@ env:
   GCLOUD_PROJECT: ${{ secrets.GKE_PROJECT_ID }}
   PROJECT_ID: ${{ secrets.GKE_PROJECT_ID }}
   PROJECT_NUMBER: ${{ secrets.GKE_PROJECT_NUMBER }}
-  GKE_CLUSTER_NAME: covenant_finances
+  GKE_CLUSTER_NAME: covenant-finances
   GKE_ZONE: us-west1
   DEPLOYMENT_NAME: covenant_finances_deployment.yaml
   IMAGE: covenant-finances-images
