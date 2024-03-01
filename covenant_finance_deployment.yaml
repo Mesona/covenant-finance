@@ -1,0 +1,47 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: covenant-finances
+  namespace: covenant-finances
+  labels:
+    app: covenant-finances
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: covenant-finances
+  template:
+    metadata:
+      labels:
+        app: covenant-finances
+    spec:
+      containers:
+        - name: covenant-finances-app
+          image: us-central1-docker.pkg.dev/ars-magica-npc-generator/covenant-finances-images/covenant-finances:latest
+          ports:
+          - containerPort: 5000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask-service
+  namespace: covenant-finances
+spec:
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 5000
+  selector:
+    app: covenant-finances
+  type: LoadBalancer
+  loadBalancerIP: ""
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: covenant-finances
+  labels:
+    name: covenant-finances

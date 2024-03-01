@@ -1,0 +1,83 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+# GitHub recommends pinning actions to a commit SHA.
+# To get a newer version, you will need to update the SHA.
+# You can also reference a tag or branch, but the action may change without warning.
+
+name: Build and Deploy to GKE
+
+on:
+  push:
+    branches:
+      - main
+      - github_actions
+  pull_request:
+    branches:
+      - main
+
+env:
+  GCLOUD_PROJECT: ${{ secrets.GKE_PROJECT_ID }}
+  PROJECT_ID: ${{ secrets.GKE_PROJECT_ID }}
+  PROJECT_NUMBER: ${{ secrets.GKE_PROJECT_NUMBER }}
+  GKE_CLUSTER_NAME: covenant_finances
+  GKE_ZONE: us-west1
+  DEPLOYMENT_NAME: covenant_finances_deployment.yaml
+  IMAGE: covenant-finances-images
+  DOCKER_TAG: "$GKE_ZONE-docker.pkg.dev/$GCLOUD_PROJECT/$IMAGE/$GKE_CLUSTER_NAME"
+
+jobs:
+  setup-build-publish-deploy:
+    name: Setup, Build, Publish, and Deploy
+    runs-on: ubuntu-latest
+    environment: production
+
+    permissions:
+      contents: "write"
+      id-token: "write"
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - uses: google-github-actions/auth@v2
+      with:
+        credentials_json: ${{ secrets.GKE_SA_KEY }}
+
+    - run: |-
+        gcloud --quiet auth configure-docker
+
+    - name: 'Set up Cloud SDK'
+      uses: google-github-actions/setup-gcloud@v2
+      with:
+        version: '>= 363.0.0'
+        project_id: ${{ secrets.GKE_PROJECT }}
+
+
+    - name: 'Docker auth'
+      run: |-
+        gcloud auth configure-docker ${{ env.GKE_ZONE }}-docker.pkg.dev --quiet
+
+    - name: 'Get GKE credentials'
+      uses: google-github-actions/get-gke-credentials@v2
+      with:
+        cluster_name: ${{ env.GKE_CLUSTER_NAME }}
+        location: ${{ env.GKE_ZONE }}
+
+    - name: 'Build Docker image'
+      run: |-
+        docker build \
+          --tag ${{ env.DOCKER_TAG }} \
+          --build-arg GITHUB_SHA="$GITHUB_SHA" \
+          --build-arg GITHUB_REF="$GITHUB_REF" \
+          .
+
+    - name: 'Publish Docker image to Artifact Registry'
+      run: |-
+        docker push ${{ env.DOCKER_TAG }}
+
+    - name: 'Deploy Docker image to GKE cluster'
+      run: |-
+        kubectl apply -f ${{ env.DEPLOYMENT_NAME }}
