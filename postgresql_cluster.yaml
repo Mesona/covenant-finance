@@ -11,18 +11,16 @@ metadata:
   name: postgres-cluster
   namespace: postgres
 spec:
-  enableMasterLoadBalancer: true
-  loadBalancerIP: "10.138.0.7"
   teamId: "postgres"
   volume:
     size: 2Gi
   numberOfInstances: 2
   users:
-    finance:  # database owner
+    finance_owner:  # database owner
     - superuser
     - createdb
   databases:
-    demo: finance  # dbname: owner
+    demo: finance_owner # dbname: owner
   preparedDatabases:
     finance: {}
   postgresql:
