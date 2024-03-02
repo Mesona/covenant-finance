@@ -1,0 +1,29 @@
+# from https://thedatabaseme.de/2022/03/13/keep-the-elefants-in-line-deploy-zalando-operator-on-your-kubernetes-cluster/
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: postgres
+
+---
+apiVersion: "acid.zalan.do/v1"
+kind: postgresql
+metadata:
+  name: postgres-cluster
+  namespace: postgres
+spec:
+  enableMasterLoadBalancer: true
+  loadBalancerIP: "10.138.0.7"
+  teamId: "postgres"
+  volume:
+    size: 2Gi
+  numberOfInstances: 2
+  users:
+    finance:  # database owner
+    - superuser
+    - createdb
+  databases:
+    demo: finance  # dbname: owner
+  preparedDatabases:
+    finance: {}
+  postgresql:
+    version: "14"

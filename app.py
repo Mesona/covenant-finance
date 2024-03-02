@@ -38,8 +38,17 @@ logger.addHandler(handler) # adds handler to the werkzeug WSGI logger
 ######################################
 
 
+def in_gke() -> bool:
+    gke_variable = os.environ.get("KUBERNETES_SERVICE_HOST")
+    if gke_variable:
+        return True
+
+    return False
 
 def create_connection():
+    if in_gke():
+        return psycopg2.connect(user="finance_owner", database="finance", password=app.config["DATABASE_PASSWORD"], host="10.138.0.7", post="6432")
+
     return psycopg2.connect(user="finance", database="finance", password=app.config["DATABASE_PASSWORD"])
 
 def create_cursor(connection):
