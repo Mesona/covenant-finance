@@ -80,7 +80,7 @@ jobs:
 
     - name: 'Create PSQL cluster'
       run: |-
-        kubectl apply -f postgresql_cluster.yaml
+        kubectl create -f postgresql_cluster.yaml
 
     - name: 'Deploy Docker image to GKE cluster'
       run: |-
