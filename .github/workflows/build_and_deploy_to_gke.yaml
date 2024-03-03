@@ -79,9 +79,9 @@ jobs:
         docker push ${{ env.DOCKER_TAG }}
 
     # Uncomment when deploying to a new cluster
-    #- name: 'Create PSQL cluster'
-    #  run: |-
-    #    kubectl create -f postgresql_cluster.yaml
+    - name: 'Create PSQL cluster'
+      run: |-
+        kubectl apply -f postgresql_cluster.yaml
 
     - name: 'Deploy Docker image to GKE cluster'
       run: |-
