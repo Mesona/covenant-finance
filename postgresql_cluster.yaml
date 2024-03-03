@@ -11,7 +11,6 @@ metadata:
   name: postgres-cluster
   namespace: postgres
 spec:
-  clusterIP: 34.118.229.100
   teamId: "postgres"
   volume:
     size: 2Gi
@@ -26,3 +25,20 @@ spec:
     finance: {}
   postgresql:
     version: "14"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgresql-dns
+  namespace: postgres
+spec:
+  clusterIP: 34.118.230.250
+  ports:
+  - name: psql
+    port: 5432
+    protocol: TCP
+    targetPort: 5432
+  selector:
+    application: spilo
+  type: ClusterIP
