@@ -11,6 +11,7 @@ metadata:
   name: postgres-cluster
   namespace: postgres
 spec:
+  clusterIP: 34.118.229.100
   teamId: "postgres"
   volume:
     size: 2Gi
