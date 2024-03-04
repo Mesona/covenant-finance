@@ -26,7 +26,7 @@ spec:
     spec:
       containers:
         - name: covenant-finances-app
-          image: us-central1-docker.pkg.dev/covenant-finances/covenant-finances-images/covenant-finances:latest
+          image: us-central1-docker.pkg.dev/covenant-finances/covenant-finances-images/cluster-db1:latest
           ports:
           - containerPort: 5000
 
