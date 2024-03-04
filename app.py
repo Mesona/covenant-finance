@@ -47,7 +47,7 @@ def in_gke() -> bool:
 
 def create_connection():
     if in_gke():
-        return psycopg2.connect(user="finance_owner", database="finance", password=app.config["DATABASE_PASSWORD"], host="34.118.230.250", port="5432")
+        return psycopg2.connect(user="finance_owner", database="finance", password=app.config["DATABASE_PASSWORD"], host="192.168.118.110", port="5432")
 
     return psycopg2.connect(user="finance", database="finance", password=app.config["DATABASE_PASSWORD"])
 
@@ -775,7 +775,9 @@ if __name__ == "__main__":
     if in_aws():
         print("IN AWS")
         app.run(host="0.0.0.0", port=5000, debug=True)
+    elif in_gke():
+        print("IN GKE")
+        app.run(host="0.0.0.0", port=5000)
     else:
         print("NOT ON AWS!")
-        #app.run(host="127.0.0.1", port=8000, debug=True)
-        app.run(host="0.0.0.0", port=5000, debug=True)
+        app.run(host="127.0.0.1", port=8000, debug=True)
