@@ -44,4 +44,4 @@ spec:
   selector:
     app: covenant-finances
   type: LoadBalancer
-  loadBalancerIP: "34.145.71.41"
+  loadBalancerIP: "34.168.79.137"
