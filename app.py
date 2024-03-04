@@ -47,7 +47,7 @@ def in_gke() -> bool:
 
 def create_connection():
     if in_gke():
-        return psycopg2.connect(user="finance_owner", database="finance", password=app.config["DATABASE_PASSWORD"], host="34.118.230.250", post="5432")
+        return psycopg2.connect(user="finance_owner", database="finance", password=app.config["DATABASE_PASSWORD"], host="34.118.230.250", port="5432")
 
     return psycopg2.connect(user="finance", database="finance", password=app.config["DATABASE_PASSWORD"])
 

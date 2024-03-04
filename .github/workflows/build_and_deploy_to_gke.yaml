@@ -22,11 +22,11 @@ env:
   GCLOUD_PROJECT: ${{ secrets.GKE_PROJECT_ID }}
   PROJECT_ID: ${{ secrets.GKE_PROJECT_ID }}
   PROJECT_NUMBER: ${{ secrets.GKE_PROJECT_NUMBER }}
-  GKE_CLUSTER_NAME: covenant-finances
-  GKE_ZONE: us-west1
+  GKE_CLUSTER_NAME: cluster-db1
+  GKE_ZONE: us-central1
   DEPLOYMENT_NAME: covenant_finances_deployment.yaml
   IMAGE: covenant-finances-images
-  DOCKER_TAG: "$GKE_ZONE-docker.pkg.dev/$GCLOUD_PROJECT/$IMAGE/$GKE_CLUSTER_NAME"
+  DOCKER_TAG: "us-west1-docker.pkg.dev/$GCLOUD_PROJECT/$IMAGE/$GKE_CLUSTER_NAME"
 
 jobs:
   setup-build-publish-deploy:
