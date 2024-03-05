@@ -30,7 +30,6 @@ env:
 
 jobs:
   test:
-    steps:
     runs-on: ubuntu-latest
 
     steps:
