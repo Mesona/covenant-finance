@@ -76,3 +76,13 @@ BUGS TO FIX:
   * User's covenants do not populate until new login (create covenant redirect missing data)
   * New Covenent screen's Income Sources +/- button is offset on the first entry for some reason (create multiple and look at the first)
   * Specialsts do not provide savings
+
+
+RANDOM STUFF:
+  * Manual steps to get PSQL running on GKE:
+    * Followed instructions here: https://cloud.google.com/kubernetes-engine/docs/tutorials/stateful-workloads/postgresql
+    * The versions of the pg* images are all wrong, need to be updated. Can be found by inspecting the pod failures
+    * Creating pg-client pod, entering PSQL admin through `psql -h $HOST_PGPOOL -U postgres`, used that to create finance DB and finance_owner account
+    * Ran the following command from within the pgpool pod to add finance_owner's login:
+      * `pg_enc -m -f "/opt/bitnami/pgpool/conf/pgpool.conf" -k "/opt/bitnami/pgpool/conf/.pgpoolkey" -u user password`
+

@@ -70,7 +70,6 @@ def initialize_database():
     cursor = create_cursor(connection)
 
     login = "CREATE TABLE login (id SERIAL PRIMARY KEY, username VARCHAR(128) UNIQUE NOT NULL, email VARCHAR(128) UNIQUE NOT NULL, password VARCHAR(256) NOT NULL);"
-    #covenant = "create table covenant (id serial primary key, name varchar(128), cov json, login_id serial references login(id));"
     covenant = "CREATE TABLE covenant (id SERIAL PRIMARY KEY, name VARCHAR(128) NOT NULL, cov VARCHAR NOT NULL, user_id VARCHAR(128) NOT NULL);"
 
     try:
@@ -126,39 +125,20 @@ def update_user_password(user_id, password):
 
 
 def update_covenant_in_database(cursor, covenant):
-    cursor.execute("UPDATE covenant SET cov = %s WHERE name = %s AND id = %s;", (save_covenant(covenant), covenant.name, g.username))
-
-#def save_covenant_to_database(cursor, covenant):
-#    cursor.execute("INSERT INTO cov (name, cov, login_id) values (%s, %s, %s)", (covenant.name, covenant, user_id))
-#    pass
-#
-#def update_database():
-#    pass
-#    #add_user_to_database()
-#    #add_covenant_to_database()
-#    #cursor.commit()
-#
-#def fetch_user_id(cursor, email):
-#    cursor.execute(f"SELECT id from login where email='{email}';")
-#    user_id = cursor.fetchone()[0]
-#    return user_id
+    cursor.execute("UPDATE covenant SET cov = %s WHERE name = %s AND user_id = %s;", (save_covenant(covenant), covenant.name, g.username))
 
 
 def get_covenant_names(cursor, connection):
     if not session.get("covenant_names"):
         command = f"SELECT name FROM covenant WHERE user_id = '{g.username}'"
-        print("COMMAND:", command)
-        #command = "SELECT name FROM covenant WHERE user_id=%s"
         cursor.execute(command, g.username)
         covenant_dump = cursor.fetchall()
         close_database(connection)
-        print("DUMP:", covenant_dump)
 
         covenant_names = []
         for covenant in covenant_dump:
             name = covenant[0]
             covenant_names.append(name)
-        print("P2:", covenant_names)
         session["covenant_names"] = covenant_names
 
         return covenant_names
@@ -176,10 +156,8 @@ def get_user_id_from_email(email):
     cursor = create_cursor(connection)
 
     command = f"SELECT id FROM login WHERE email = '{email}';"
-    print("COMMAND:", command)
     cursor.execute(command, g.username)
     user_id = cursor.fetchone()[0]
-    print("PSQL USER ID:", user_id)
 
     close_connections(connection, cursor)
     return user_id
@@ -207,61 +185,38 @@ def before_request():
 
 @app.route("/home")
 def home():
-    print("C1")
-    print("IN HOME")
-    print("SCN 0:", session.get("covenant_names"))
     session["current_covenant"] = None
     session["new_covenant"] = None
     if g.username and not session.get("covenant_names"):
-        print("USERNAME:", g.username)
         connection = create_connection()
-        print("a")
         cursor = create_cursor(connection)
-        print("b")
 
         user_id_query = f"SELECT id FROM login WHERE username = '{g.username}'"
-        #user_id_query = "SELECT id FROM login WHERE username = %s"
-        print("1")
-        print("G.USERNAME:", g.username)
-        print("GU TYPE:", type(g.username))
-        print("UIDQ:", user_id_query)
         cursor.execute(user_id_query)
-        print("2")
         user_id = cursor.fetchone()[0]
-        print("USER_ID", user_id)
 
         user_email_query = f"SELECT email FROM login WHERE username = '{g.username}'"
         cursor.execute(user_email_query)
-        #cursor.execute(user_email_query, g.username)
         user_email = cursor.fetchone()[0]
-        print("USER_EMAIL:", user_email)
 
         covenant_names = get_covenant_names(cursor, connection)
 
         session["user_id"] = user_id
 
         session["covenant_names"] = covenant_names  # pylint: disable=assigning-non-slot
-        print("SCN:", session["covenant_names"])
         return render_template("home.html", username = g.username, covenants=covenant_names)
     elif g.username and session.get("covenant_names"):
-        print("ALL DATA REQUIRED IS GATHERED")
         return render_template("home.html", username = g.username, covenants=session["covenant_names"])
     else:
-        print("OPTION 3")
         return render_template("login.html")
 
 
 def clean_user_session():
-    print("a")
     session["new_covenant"] = False
-    print("b")
     session.clear()
-    print("c")
     session["current_covenant"] = None
-    print("d")
     if g.get("username"):
         g.username = None
-    print("e")
 
 
 @app.route("/authentication", methods=["POST"])
@@ -291,20 +246,7 @@ def authenticate():
         if (bcrypt.check_password_hash(hashed_pw, password)) == True:  
             session["username"] = request.form["username"]
 
-            #command = f"SELECT name FROM covenant WHERE user_id='{username}'"
-            #cursor.execute(command)
-            #connection.commit()
-
-            #covenant_dump = cursor.fetchall()
-            #close_database(connection)
-
-            #covenant_names = []
-            #for covenant in covenant_dump:
-            #    name = covenant[0]
-            #    covenant_names.append(name)
-
             return redirect(url_for("home"))
-            #return redirect(url_for("home", username=username, covenants=covenant_names))
         else:
             flash("Invalid Username or Password !!")
             return render_template("login.html")
@@ -348,7 +290,6 @@ def process_new_covenant():
         income_sources[income_source] = float(income_value)
 
     covenant.income_sources = income_sources
-    #covenant.tithes = request.form["covenant_tithes"]
     covenant_tithes = {}
     for tithe_source, tithe_value in zip(
             request.form.getlist('tithe_sources_names'),
@@ -385,23 +326,22 @@ def load_existing_covenant():
     connection = create_connection()
     cursor = create_cursor(connection)
 
-    print("USER ID:", g.username)
-    print("OCVENANT NAME:", covenant_name)
-    print("ARGS:", request.args)
+    #print("USER ID:", g.username)
+    #print("OCVENANT NAME:", covenant_name)
+    #print("ARGS:", request.args)
     command = f"SELECT cov FROM covenant WHERE user_id='{g.username}' AND name='{covenant_name}'"
     cursor.execute(command)
 
     covenant_dump = cursor.fetchall()[0][0]
-    print("DUMP:", covenant_dump)
-    print("DUMP TYPE:", type(covenant_dump))
+    #print("DUMP:", covenant_dump)
+    #print("DUMP TYPE:", type(covenant_dump))
     covenant = load_covenant_from_string(covenant_dump)
-    print("COVENANT:", covenant)
+    #print("COVENANT:", covenant)
 
     connection.commit()
     close_database(connection)
 
     session['current_covenant'] = covenant
-    #session['current_covenant'] = covenant_dump
     return render_template("create_covenant_landing.html")
 
 
@@ -428,16 +368,16 @@ def forgot_password():
     if request.method == "GET":
         clean_user_session()
         session.clear()
-        print("IN PAGE")
-        print("REQUEST METHOD:", request.method)
+        #print("IN PAGE")
+        #print("REQUEST METHOD:", request.method)
         return render_template('forgot_password.html')
     elif request.method == "POST":
-        print("IN POST")
-        print("REQUEST METHOD:", request.method)
+        #print("IN POST")
+        #print("REQUEST METHOD:", request.method)
         user_email = request.form['email']
-        print("EMAIL:", user_email)
+        #print("EMAIL:", user_email)
         user_id = get_user_id_from_email(user_email)
-        print("USER ID:", user_id)
+        #print("USER ID:", user_id)
 
         forgotPassword(user_email, user_id)
         return render_template('login.html')
@@ -478,21 +418,17 @@ def reset_password(path):
 
 @app.route('/login', methods = ['POST'])
 def handle_create_new_user():
-    print("H1")
     bcrypt = Bcrypt()
 
     username = request.form['username']
-    print("H2")
     email = request.form['email']
     password = request.form['password']
     connection = create_connection()
     cursor = create_cursor(connection)
 
-    print("H3")
     cursor.execute("SELECT username, email FROM login")
     connection.commit()
     data = cursor.fetchall()
-    print("H4")
 
     if any([ username in i for i in data]) or any([ email in i for i in data]):
         close_connections(connection, cursor)
@@ -507,12 +443,9 @@ def handle_create_new_user():
 
 @app.route("/create_covenant", methods = ["GET"])
 def create_covenant():
-    print("C1:", session.get("new_covenant"))
-    print("C1.1:", session.get("current_covenant"))
     if not session.get("new_covenant") and not session.get("current_covenant"):
         session["current_covenant"] = Covenant()
         session["new_covenant"] = True
-        print("C1.5:", session.get("new_covenant"))
 
     if request.method == "GET":
         return render_template("create_covenant.html")
@@ -520,7 +453,6 @@ def create_covenant():
 @app.route("/create_covenant_landing", methods = ["POST", "GET"])
 def create_covenant_landing():
     """Shows the current state of the covenant being built. Should have buttons to add equipment, add labs, add covenfolk."""
-    print("C3:", session.get("new_covenant"))
     if request.method == "GET":
         return render_template("create_covenant_landing.html")
 
@@ -548,25 +480,11 @@ def finalize_covenant():
 
     close_database(connection)
 
-    #g.covenant_names = g.covenant_names.append(session["current_covenant"].name)  # pylint: disable=assigning-non-slot
     session["new_covenant"] = False
     session["current_covenant"] = None
 
-    #return redirect("home.html", username = g.username, covenants=covenant_names)
     return redirect(url_for("home"))
 
-    ## TODO: Modularlize 328-337 and DRY from def home()
-    #command = f"SELECT name FROM covenant WHERE user_id='{g.username}'"
-    #cursor.execute(command)
-    #covenant_dump = cursor.fetchall()
-    #connection.commit()
-
-    #covenant_names = []
-    #for covenant in covenant_dump:
-    #    name = covenant[0]
-    #    covenant_names.append(name)
-
-    #return render_template("home.html", username=g.username, covenants=covenant_names)
 
 @app.route("/modify_laboratories", methods = ["POST", "GET"])
 def modify_laboratories():
@@ -771,7 +689,6 @@ def in_aws():
     return False
 
 if __name__ == "__main__":
-    print("YO")
     if in_aws():
         print("IN AWS")
         app.run(host="0.0.0.0", port=5000, debug=True)
@@ -779,5 +696,5 @@ if __name__ == "__main__":
         print("IN GKE")
         app.run(host="0.0.0.0", port=5000)
     else:
-        print("NOT ON AWS!")
+        print("RUNNING LOCALLY")
         app.run(host="127.0.0.1", port=8000, debug=True)
