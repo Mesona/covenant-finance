@@ -23,6 +23,9 @@ spec:
     metadata:
       labels:
         app: covenant-finances
+        # Change below when you want to force a new remote build
+        # git rev-parse HEAD
+        latest_commit_sha: 77a4d8d11b25dace8f3657c0b8552d91f1209fdb
     spec:
       containers:
         - name: covenant-finances-app
