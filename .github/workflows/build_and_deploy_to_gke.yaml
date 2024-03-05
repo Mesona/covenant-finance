@@ -39,6 +39,10 @@ jobs:
       id-token: "write"
 
     steps:
+    - name: "Unit tests"
+      run: |-
+        pytest
+
     - name: Checkout
       uses: actions/checkout@v4
 
